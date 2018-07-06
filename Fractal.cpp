@@ -45,7 +45,7 @@ GLfloat* multiplyAgain(GLfloat matrix1[], GLfloat matrix2[], GLfloat result[]){
 }
 
 string generatePattern(){												//Generates a pattern to create a tree.
-    int numIts = 4; // Number of iterations
+    int numIts = 1; // Number of iterations
     string pattern = "F"; //"[X]";    // Using F for the pattern
 
     for (int i = 0; i < numIts; i++){
@@ -344,10 +344,10 @@ int main() {
 			leafPoints[leafCount + 2] = currentPosition[2];
 			leafCount += 3;
 
-			/*cout << endl;
+			cout << endl << "After:" << endl;
 			cout << "Position X: " << currentPosition[0] << endl;
 			cout << "Position Y: " << currentPosition[1] << endl;
-			cout << "Position Z: " << currentPosition[2] << endl << endl;*/
+			cout << "Position Z: " << currentPosition[2] << endl << endl;
 
 			currentPosition[0] = PositionStack.top();											//Sets the current position back to the top of the stack.
 			PositionStack.pop();																//Pops the current position from the top of the stack.
@@ -374,6 +374,12 @@ int main() {
 		}
 
 		else if (pattern.substr(idx, 1).compare("F") == 0){
+
+			cout << endl << "Before:" << endl;
+			cout << "Position X: " << currentPosition[0] << endl;
+			cout << "Position Y: " << currentPosition[1] << endl;
+			cout << "Position Z: " << currentPosition[2] << endl << endl;
+
 			currentPosition[0] += currentHeading[0]*.2;											//Changes the height of the tree, I like .2.
 			currentPosition[1] += currentHeading[1]*.2;
 			currentPosition[2] += currentHeading[2]*.2;
@@ -385,7 +391,7 @@ int main() {
 			pointsCount += 3;
 		}
 
-		else if (pattern.substr(idx, 1).compare("+") == 0){
+		else if (pattern.substr(idx, 1).compare("+") == 0){				// Rotates tree branch left
 			rotation = rand() % 65 + 1;															//Chooses a random number to rotate by from 0 to 65.
 			//rotation = 25;
 			float rz =-  ((rotation * 3.14159) / 180);											//Converts degrees of the rotation to radians.
@@ -401,7 +407,7 @@ int main() {
 			currentHeading[3] = result[3] / magnitude;
 		}
 
-		else if (pattern.substr(idx, 1).compare("-") == 0){
+		else if (pattern.substr(idx, 1).compare("-") == 0){				// Rotates a tree branch right
 			rotation = rand() % 65 + 1;															//Chooses a random number to rotate by from 0 to 65.
 			//rotation = 25;
 			float rz =+ ((rotation * 3.14159) / 180);											//Converts degrees of the rotation to radians.
