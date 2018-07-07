@@ -45,7 +45,7 @@ GLfloat* multiplyAgain(GLfloat matrix1[], GLfloat matrix2[], GLfloat result[]){
 }
 
 string generatePattern(){												//Generates a pattern to create a tree.
-    int numIts = 4; // Number of iterations
+    int numIts = 1; // Number of iterations
     string pattern = "F"; //"[X]";    // Using F for the pattern
 
     for (int i = 0; i < numIts; i++){
@@ -272,6 +272,8 @@ int main() {
 
 	float rz = (90 * 3.14159) / 180;								//For the first rotation, so the trunk is 90 degrees from the bottom of the screen. Converts degrees to radians.
 	float rz2 = 0; //(30 * 3.14159) / 180;								//For rotation of leaf.
+	float leafRotation = 0;
+	float leafRotationRad = 0;
 	float rx = -(90 * 3.14159) / 180;								//Rotates the leaf OBJ to be upright in radians.
 	float ry = (0 * 3.14159) / 180;									//Rotates the leaf along the y-axis.
 	GLfloat dx = 0;													//For leaf translation along the x-axis.
@@ -281,8 +283,8 @@ int main() {
 	GLfloat sy = 1; //.1095;										//Scales the leaf.
 	GLfloat sz = 1; //.1095;										//Scales the leaf.
 	GLfloat currentPosition[] = {0.0f, -0.25f, 0.0f, 1.0f};			//Beginning current position of the tree.
-	GLfloat currentHeading[] = {0.0f, 0.5f, 0.0f, 0.0f};			//Beginning current heading of the tree.
-	GLfloat rotateZ[] = 											//Rotation matrix for the z-axis.
+	GLfloat currentHeading[] = {0.0f, 0.5f, 0.0f, 0.0f};				//Beginning current heading of the tree.
+	GLfloat rotateZ[] = 																				//Rotation matrix for the z-axis.
 		{cos(rz),sin(rz),0,0,
 		-sin(rz),cos(rz),0,0,
 		0,0,1,0,
@@ -292,7 +294,7 @@ int main() {
 		-sin(rz2),cos(rz2),0,0,
 		0,0,1,0,
 		0,0,0,1};
-	GLfloat scale[] =																			//Scale matrix.
+	GLfloat scale[] =																				//Scale matrix.
 		{sx,0,0,0,
 		 0,sy,0,0,
 		 0,0,sz,0,
@@ -307,7 +309,7 @@ int main() {
 		 0,1,0,0,
 		 sin(ry),0,cos(ry),0,
 		 0,0,0,1};
-	GLfloat translateMat[] =																		//Translation matrix.
+	GLfloat translateMat[] =																//Translation matrix.
 		{1,0,0,0,
 		 0,1,0,0,
 		 0,0,1,0,
@@ -344,7 +346,7 @@ int main() {
 			leafPoints[leafCount + 2] = currentPosition[2];
 			leafCount += 3;
 
-			/*cout << endl;
+			/*cout << endl << "After:" << endl;
 			cout << "Position X: " << currentPosition[0] << endl;
 			cout << "Position Y: " << currentPosition[1] << endl;
 			cout << "Position Z: " << currentPosition[2] << endl << endl;*/
@@ -374,6 +376,12 @@ int main() {
 		}
 
 		else if (pattern.substr(idx, 1).compare("F") == 0){
+
+			/*cout << endl << "Before:" << endl;
+			cout << "Position X: " << currentPosition[0] << endl;
+			cout << "Position Y: " << currentPosition[1] << endl;
+			cout << "Position Z: " << currentPosition[2] << endl << endl;*/
+
 			currentPosition[0] += currentHeading[0]*.2;											//Changes the height of the tree, I like .2.
 			currentPosition[1] += currentHeading[1]*.2;
 			currentPosition[2] += currentHeading[2]*.2;
@@ -385,7 +393,7 @@ int main() {
 			pointsCount += 3;
 		}
 
-		else if (pattern.substr(idx, 1).compare("+") == 0){
+		else if (pattern.substr(idx, 1).compare("+") == 0){				// Rotates tree branch left
 			rotation = rand() % 65 + 1;															//Chooses a random number to rotate by from 0 to 65.
 			//rotation = 25;
 			float rz =-  ((rotation * 3.14159) / 180);											//Converts degrees of the rotation to radians.
@@ -401,7 +409,7 @@ int main() {
 			currentHeading[3] = result[3] / magnitude;
 		}
 
-		else if (pattern.substr(idx, 1).compare("-") == 0){
+		else if (pattern.substr(idx, 1).compare("-") == 0){				// Rotates a tree branch right
 			rotation = rand() % 65 + 1;															//Chooses a random number to rotate by from 0 to 65.
 			//rotation = 25;
 			float rz =+ ((rotation * 3.14159) / 180);											//Converts degrees of the rotation to radians.
@@ -500,6 +508,11 @@ int main() {
 			dy = leafPoints[beginLeaf*3 + 1];													// Gets the y value of the end of the current branch.
 			dz = leafPoints[beginLeaf*3 + 2];													// Gets the z value of the end of the current branch.
 
+			//cout << "DX " << dx << endl;
+			leafRotation = 90*(1 - ((dx - 0)/(1-0)) + 180*((dx - 0)/(1-0)));
+			leafRotationRad = -(leafRotation * 3.14159) / 180;
+			//cout << "Rotation Amount " << leafRotationRad << endl;
+
 			translateMat[12] = dx;																	// Sets the dx value of translateMat to be the x-val of the current branch.
 			translateMat[13] = dy;																	// Sets the dy value of translateMat to be the y-val of the current branch.
 			translateMat[14] = dz;																	// Sets the dz value of translateMat to be the z-val of the current branch.
@@ -530,7 +543,7 @@ int main() {
 			points[i + 1] = new4x1[1];															// Sets current points y-val to be the y-val of the new	4x1 matrix.
 			points[i + 2] = new4x1[2];															// Sets current points z-val to be the z-val of the new	4x1 matrix.
 		}
-
+		//cout << "Rotation Amount " << leafRotationRad << endl;
 		//cout << dx << " " << dy << " " << dz << endl;
 		//cout << beginLeaf*9*numFaces << " " << endLeaf*9*numFaces - 1 << endl << endl;
 	}
