@@ -1,6 +1,5 @@
 //g++ -w -o Makayla.exe gl_utils.cpp maths_funcs.cpp Fractal.cpp libglew32.dll.a libglfw3dll.a -I include -lglfw3 -lgdi32 -lopengl32 -L ./ -lglew32 -lglfw3 //Not using
 //g++ -w -o Makayla.exe Fractal.cpp libglew32.dll.a libglfw3dll.a -I include -lOpenGL32 -L ./ -lglew32 -lglfw3 // Not using
-
 //g++ -w -o Makayla.exe gl_utils.cpp maths_funcs.cpp Fractal.cpp libglfw3dll.a libglew32.dll.a -I include -lglfw3 -lgdi32 -lopengl32
 // g++ -w -o Makayla.exe gl_utils.cpp maths_funcs.cpp Fractal.cpp libglfw3dll.a libglew32.dll.a -I include -lgdi32 -lopengl32 -L ./ -lglew32 -lglfw3
 
@@ -19,9 +18,9 @@
 #define _USE_MATH_DEFINES
 #include <time.h>
 #include <assert.h>
-#include <string>
 #include <string.h>
 #include <stdarg.h>
+//#include "functions.h"
 #define GL_LOG_FILE "gl.log"
 using namespace std;
 
@@ -45,8 +44,8 @@ GLfloat* multiplyAgain(GLfloat matrix1[], GLfloat matrix2[], GLfloat result[]){
 }
 
 string generatePattern(){												//Generates a pattern to create a tree.
-    int numIts = 1; // Number of iterations
-    string pattern = "F"; //"[X]";    // Using F for the pattern
+    int numIts = 1; 														// Number of iterations
+    string pattern = "F"; //"[X]";    					// Using F for the pattern
 
     for (int i = 0; i < numIts; i++){
         string newPattern = "";
@@ -236,14 +235,11 @@ void loadFaces(string modelName, GLint faces[]){    					//To read in Maya OBJ f
     cout << "Done loading faces\n";
 }
 
-
 int g_gl_width = 640;
 int g_gl_height = 480;
 GLFWwindow* g_window = NULL;
 
 int main() {
-
-
 	//GLFWwindow *window = NULL;
 	const GLubyte *renderer;
 	const GLubyte *version;
