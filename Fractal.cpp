@@ -7,7 +7,7 @@
 
 #include "gl_utils.h"
 #include "maths_funcs.h"
-#include <GL/glew.h>		/* include GLEW and new version of GL on Windows */
+#include <GL/glew.h>				/* include GLEW and new version of GL on Windows */
 #include <GLFW/glfw3.h>     /* GLFW helper library */
 #include <math.h>
 #include <stdio.h>
