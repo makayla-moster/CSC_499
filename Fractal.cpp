@@ -1,7 +1,7 @@
 //g++ -w -o Makayla.exe gl_utils.cpp maths_funcs.cpp Fractal.cpp libglew32.dll.a libglfw3dll.a -I include -lglfw3 -lgdi32 -lopengl32 -L ./ -lglew32 -lglfw3 //Not using
-//g++ -w -o Makayla.exe Fractal.cpp libglew32.dll.a libglfw3dll.a -I include -lOpenGL32 -L ./ -lglew32 -lglfw3 // Not using
-//g++ -w -o Makayla.exe gl_utils.cpp maths_funcs.cpp Fractal.cpp libglfw3dll.a libglew32.dll.a -I include -lglfw3 -lgdi32 -lopengl32
-// g++ -w -o Makayla.exe gl_utils.cpp maths_funcs.cpp Fractal.cpp libglfw3dll.a libglew32.dll.a -I include -lgdi32 -lopengl32 -L ./ -lglew32 -lglfw3
+//g++ -w -o Makayla.exe Fractal.cpp libglew32.dll.a libglfw3dll.a -I include -lOpenGL32 -L ./ -lglew32 -lglfw3 																							// Not using
+//g++ -w -o Makayla.exe gl_utils.cpp maths_funcs.cpp Fractal.cpp libglfw3dll.a libglew32.dll.a -I include -lglfw3 -lgdi32 -lopengl32												// Not using
+// g++ -w -o Makayla.exe gl_utils.cpp maths_funcs.cpp Fractal.cpp libglfw3dll.a libglew32.dll.a -I include -lgdi32 -lopengl32 -L ./ -lglew32 -lglfw3				// Not using
 
 // g++ -w -o monkm.exe gl_utils.cpp maths_funcs.cpp Fractal.cpp libglfw3dll.a libglew32.dll.a -I include -lgdi32 -lopengl32 -L ./ -lglew32 -lglfw3
 
@@ -235,6 +235,68 @@ void loadFaces(string modelName, GLint faces[]){    					//To read in Maya OBJ f
     cout << "Done loading faces\n";
 }
 
+
+
+/*float x,y,z, rx, ry, rz =0;
+float sy = 1.0;
+float sx = 1.0;
+float sz = 0.0;
+float d = 1.6;
+float fov = 67 * 3.14159 /180.0;
+float aspect = 1.0;
+float near = 0.01;
+float far = 100.0;
+float range = tan(fov*0.5)*near;
+float Sx = (2*near)/((range*aspect)+(range*aspect));
+float Sy = near/range;
+float Sz = -(far+near)/(far-near);
+float Pz = -(2*far*near)/(far-near);
+
+GLfloat proMat[] = {Sx, 0.0f, 0.0f, 0.0f,
+				0.0f, Sy, 0.0f, 0.0f,
+				0.0f, 0.0f, Sz, -1.0,
+				0.0f, 0.0f, Pz, 1.0f};
+
+GLfloat ortho[] =  {1,0,0,0,
+							0,1,0,0,
+							0,0,0,0,
+							0,0,0,1};
+
+GLfloat lookAt[] = {1.0f, 0.0f, -0.0f, 0.0f,
+					0.0f, 1.0f, -0.0f, 0.0f,
+					0.0f, 0.0f, 1.0f, 0.0f,
+					-0.0f, -0.0f, -1.0f, 1.0f};
+
+GLfloat view[] =  { 1,0,0,0,
+					0,1,0,0,
+					0,0,1,0,
+					0,0,0,1};
+GLfloat* viewResult = new float[16];
+GLfloat* viewMat = new float[16];
+
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods){
+	//cout<<"\n key \n";
+	if(key == GLFW_KEY_W && action == GLFW_PRESS){
+		//cout<<"A pressed\n";
+		x -= 0.1;
+	}
+	if(key == GLFW_KEY_A && action == GLFW_PRESS){
+		//cout<<"D pressed\n";
+		x += 0.1;
+	}
+	if(key == GLFW_KEY_S && action == GLFW_PRESS){
+		//cout<<"W pressed\n";
+		y += 0.1;
+	}
+	if(key == GLFW_KEY_D && action == GLFW_PRESS){
+		//cout<<"S pressed\n";
+		y -= 0.1;
+	}
+}*/		//Adds in user interaction feature
+
+
+
 int g_gl_width = 640;
 int g_gl_height = 480;
 GLFWwindow* g_window = NULL;
@@ -278,7 +340,7 @@ int main() {
 	GLfloat sx = 1; //.0095;										//Scales the leaf.
 	GLfloat sy = 1; //.1095;										//Scales the leaf.
 	GLfloat sz = 1; //.1095;										//Scales the leaf.
-	GLfloat currentPosition[] = {0.0f, -0.25f, 0.0f, 1.0f};			//Beginning current position of the tree.
+	GLfloat currentPosition[] = {0.0f, -0.25f, 0.2f, 1.0f};			//Beginning current position of the tree.
 	GLfloat currentHeading[] = {0.0f, 0.5f, 0.0f, 0.0f};				//Beginning current heading of the tree.
 	GLfloat rotateZ[] = 																				//Rotation matrix for the z-axis.
 		{cos(rz),sin(rz),0,0,
@@ -342,10 +404,10 @@ int main() {
 			leafPoints[leafCount + 2] = currentPosition[2];
 			leafCount += 3;
 
-			/*cout << endl << "After:" << endl;
+			cout << endl << "After:" << endl;
 			cout << "Position X: " << currentPosition[0] << endl;
 			cout << "Position Y: " << currentPosition[1] << endl;
-			cout << "Position Z: " << currentPosition[2] << endl << endl;*/
+			cout << "Position Z: " << currentPosition[2] << endl << endl;
 
 			currentPosition[0] = PositionStack.top();											//Sets the current position back to the top of the stack.
 			PositionStack.pop();																//Pops the current position from the top of the stack.
@@ -373,10 +435,10 @@ int main() {
 
 		else if (pattern.substr(idx, 1).compare("F") == 0){
 
-			/*cout << endl << "Before:" << endl;
+			cout << endl << "Before:" << endl;
 			cout << "Position X: " << currentPosition[0] << endl;
 			cout << "Position Y: " << currentPosition[1] << endl;
-			cout << "Position Z: " << currentPosition[2] << endl << endl;*/
+			cout << "Position Z: " << currentPosition[2] << endl << endl;
 
 			currentPosition[0] += currentHeading[0]*.2;											//Changes the height of the tree, I like .2.
 			currentPosition[1] += currentHeading[1]*.2;
