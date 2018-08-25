@@ -1,14 +1,13 @@
 //g++ -w -o Makayla.exe gl_utils.cpp maths_funcs.cpp Fractal.cpp libglew32.dll.a libglfw3dll.a -I include -lglfw3 -lgdi32 -lopengl32 -L ./ -lglew32 -lglfw3 //Not using
-//g++ -w -o Makayla.exe Fractal.cpp libglew32.dll.a libglfw3dll.a -I include -lOpenGL32 -L ./ -lglew32 -lglfw3 // Not using
-
-//g++ -w -o Makayla.exe gl_utils.cpp maths_funcs.cpp Fractal.cpp libglfw3dll.a libglew32.dll.a -I include -lglfw3 -lgdi32 -lopengl32
-// g++ -w -o Makayla.exe gl_utils.cpp maths_funcs.cpp Fractal.cpp libglfw3dll.a libglew32.dll.a -I include -lgdi32 -lopengl32 -L ./ -lglew32 -lglfw3
+//g++ -w -o Makayla.exe Fractal.cpp libglew32.dll.a libglfw3dll.a -I include -lOpenGL32 -L ./ -lglew32 -lglfw3 																							// Not using
+//g++ -w -o Makayla.exe gl_utils.cpp maths_funcs.cpp Fractal.cpp libglfw3dll.a libglew32.dll.a -I include -lglfw3 -lgdi32 -lopengl32												// Not using
+// g++ -w -o Makayla.exe gl_utils.cpp maths_funcs.cpp Fractal.cpp libglfw3dll.a libglew32.dll.a -I include -lgdi32 -lopengl32 -L ./ -lglew32 -lglfw3				// Not using
 
 // g++ -w -o monkm.exe gl_utils.cpp maths_funcs.cpp Fractal.cpp libglfw3dll.a libglew32.dll.a -I include -lgdi32 -lopengl32 -L ./ -lglew32 -lglfw3
 
 #include "gl_utils.h"
 #include "maths_funcs.h"
-#include <GL/glew.h>		/* include GLEW and new version of GL on Windows */
+#include <GL/glew.h>				/* include GLEW and new version of GL on Windows */
 #include <GLFW/glfw3.h>     /* GLFW helper library */
 #include <math.h>
 #include <stdio.h>
@@ -19,34 +18,53 @@
 #define _USE_MATH_DEFINES
 #include <time.h>
 #include <assert.h>
-#include <string>
 #include <string.h>
 #include <stdarg.h>
+//#include "functions.h"
 #define GL_LOG_FILE "gl.log"
 using namespace std;
 
+void multiplyNew(GLfloat matrix1[], GLfloat matrix2[], GLfloat result[]){
 
-void multiply(GLfloat matrix1[], GLfloat matrix2[], GLfloat result[]){   // this is to multiply a 4x4 and a 4x1 matrix together
-	result[0] = (matrix1[0]*matrix2[0]) + (matrix1[4]*matrix2[1]) + (matrix1[8]*matrix2[2]) + (matrix1[12]*matrix2[3]);
-	result[1] = (matrix1[1]*matrix2[0]) + (matrix1[5]*matrix2[1]) + (matrix1[9]*matrix2[2]) + (matrix1[13]*matrix2[3]);
-	result[2] = (matrix1[2]*matrix2[0]) + (matrix1[6]*matrix2[1]) + (matrix1[10]*matrix2[2]) + (matrix1[14]*matrix2[3]);
-	result[3] = (matrix1[3]*matrix2[0]) + (matrix1[7]*matrix2[1]) + (matrix1[11]*matrix2[2]) + (matrix1[15]*matrix2[3]);
+	result[0] = (matrix1[0]*matrix2[0])+(matrix1[4]*matrix2[1])+(matrix1[8]*matrix2[2])+(matrix1[12]*matrix2[3]);
+	result[4] = (matrix1[0]*matrix2[4])+(matrix1[4]*matrix2[5])+(matrix1[8]*matrix2[6])+(matrix1[12]*matrix2[7]);
+	result[8] = (matrix1[0]*matrix2[8])+(matrix1[4]*matrix2[9])+(matrix1[8]*matrix2[10])+(matrix1[12]*matrix2[11]);
+	result[12] = (matrix1[0]*matrix2[12])+(matrix1[4]*matrix2[13])+(matrix1[8]*matrix2[14])+(matrix1[12]*matrix2[15]);
+	result[1] = (matrix1[1]*matrix2[0])+(matrix1[5]*matrix2[1])+(matrix1[9]*matrix2[2])+(matrix1[13]*matrix2[3]);
+	result[5] = (matrix1[1]*matrix2[4])+(matrix1[5]*matrix2[5])+(matrix1[9]*matrix2[6])+(matrix1[13]*matrix2[7]);
+	result[9] = (matrix1[1]*matrix2[8])+(matrix1[5]*matrix2[9])+(matrix1[9]*matrix2[10])+(matrix1[13]*matrix2[11]);
+	result[13] = (matrix1[1]*matrix2[12])+(matrix1[5]*matrix2[13])+(matrix1[9]*matrix2[14])+(matrix1[13]*matrix2[15]);
+	result[2] = (matrix1[2]*matrix2[0])+(matrix1[6]*matrix2[1])+(matrix1[10]*matrix2[2])+(matrix1[14]*matrix2[3]);
+	result[6] = (matrix1[2]*matrix2[4])+(matrix1[6]*matrix2[5])+(matrix1[10]*matrix2[6])+(matrix1[14]*matrix2[7]);
+	result[10] = (matrix1[2]*matrix2[8])+(matrix1[6]*matrix2[9])+(matrix1[10]*matrix2[10])+(matrix1[14]*matrix2[11]);
+	result[14] = (matrix1[2]*matrix2[12])+(matrix1[6]*matrix2[13])+(matrix1[10]*matrix2[14])+(matrix1[14]*matrix2[15]);
+	result[3] = (matrix1[3]*matrix2[0])+(matrix1[7]*matrix2[1])+(matrix1[11]*matrix2[2])+(matrix1[15]*matrix2[3]);
+	result[7] = (matrix1[3]*matrix2[4])+(matrix1[7]*matrix2[5])+(matrix1[11]*matrix2[6])+(matrix1[15]*matrix2[7]);
+	result[11] = (matrix1[3]*matrix2[8])+(matrix1[7]*matrix2[9])+(matrix1[11]*matrix2[10])+(matrix1[15]*matrix2[11]);
+	result[15] = (matrix1[3]*matrix2[12])+(matrix1[7]*matrix2[13])+(matrix1[11]*matrix2[14])+(matrix1[15]*matrix2[15]);
 }
 
-GLfloat* multiplyAgain(GLfloat matrix1[], GLfloat matrix2[], GLfloat result[]){
+void multiply(GLfloat matrix1[], GLfloat matrix2[], GLfloat result1[]){   // this is to multiply a 4x4 and a 4x1 matrix together
+	result1[0] = (matrix1[0]*matrix2[0]) + (matrix1[4]*matrix2[1]) + (matrix1[8]*matrix2[2]) + (matrix1[12]*matrix2[3]);
+	result1[1] = (matrix1[1]*matrix2[0]) + (matrix1[5]*matrix2[1]) + (matrix1[9]*matrix2[2]) + (matrix1[13]*matrix2[3]);
+	result1[2] = (matrix1[2]*matrix2[0]) + (matrix1[6]*matrix2[1]) + (matrix1[10]*matrix2[2]) + (matrix1[14]*matrix2[3]);
+	result1[3] = (matrix1[3]*matrix2[0]) + (matrix1[7]*matrix2[1]) + (matrix1[11]*matrix2[2]) + (matrix1[15]*matrix2[3]);
+}
+
+GLfloat* multiplyAgain(GLfloat matrix1[], GLfloat matrix2[], GLfloat result1[]){
 	for (int i = 0; i < 16; i++){
 		for (int j = 0; j < 4; j++){
-			result[i] = result[i] + (matrix2[(i / 4) * 4 + j] * matrix1[(i % 4)+(4*j)]);
+			result1[i] = result1[i] + (matrix2[(i / 4) * 4 + j] * matrix1[(i % 4)+(4*j)]);
 			//cout << matrix2[(i / 4) * 4 + j]  * matrix1[(i % 4)+(4*j)] << endl;
-			//cout << i << " " << j << " " << result[i] << endl;
+			//cout << i << " " << j << " " << result1[i] << endl;
 		}
 	}
-	return result;
+	return result1;
 }
 
 string generatePattern(){												//Generates a pattern to create a tree.
-    int numIts = 1; // Number of iterations
-    string pattern = "F"; //"[X]";    // Using F for the pattern
+    int numIts = 4; 														// Number of iterations
+    string pattern = "F"; //"[X]";    					// Using F for the pattern
 
     for (int i = 0; i < numIts; i++){
         string newPattern = "";
@@ -237,13 +255,176 @@ void loadFaces(string modelName, GLint faces[]){    					//To read in Maya OBJ f
 }
 
 
+/* Begin Code for User Interaction feature */
+
+
+float x,y,z, rx, ry, rz =0;
+float sy = 1.0;
+float sx = 1.0;
+float sz = 0.0;
+float d = 1.6;
+float fov = 67 * 3.14159 /180.0;
+float aspect = 1.0;
+float near = 0.01;
+float far = 100.0;
+float range = tan(fov*0.5)*near;
+float Sx = (2*near)/((range*aspect)+(range*aspect));
+float Sy = near/range;
+float Sz = -(far+near)/(far-near);
+float Pz = -(2*far*near)/(far-near);
+
+GLfloat proMat[] = {Sx, 0.0f, 0.0f, 0.0f,
+				0.0f, Sy, 0.0f, 0.0f,
+				0.0f, 0.0f, Sz, -1.0,
+				0.0f, 0.0f, Pz, 1.0f};
+
+GLfloat ortho[] =  {1,0,0,0,
+							0,1,0,0,
+							0,0,0,0,
+							0,0,0,1};
+
+GLfloat lookAt[] = {1.0f, 0.0f, -0.0f, 0.0f,
+					0.0f, 1.0f, -0.0f, 0.0f,
+					0.0f, 0.0f, 1.0f, 0.0f,
+					-0.0f, -0.0f, -1.0f, 1.0f};
+
+GLfloat view[] =  { 1,0,0,0,
+					0,1,0,0,
+					0,0,1,0,
+					0,0,0,1};
+GLfloat* viewResult = new float[16];
+GLfloat* viewMat = new float[16];
+
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods){
+	//cout<<"\n key \n";
+	if(key == GLFW_KEY_W && action == GLFW_PRESS){
+		cout<<"W pressed\n";
+		x -= 0.1;
+	}
+	if(key == GLFW_KEY_A && action == GLFW_PRESS){
+		cout<<"A pressed\n";
+		x += 0.1;
+	}
+	if(key == GLFW_KEY_S && action == GLFW_PRESS){
+		cout<<"S pressed\n";
+		y += 0.1;
+	}
+	if(key == GLFW_KEY_D && action == GLFW_PRESS){
+		cout<<"D pressed\n";
+		y -= 0.1;
+	}
+	if(key == GLFW_KEY_X && action == GLFW_PRESS){
+		cout<<"X pressed\n";
+		z += 0.1;
+	}
+	if(key == GLFW_KEY_Z && action == GLFW_PRESS){
+		cout<<"Z pressed\n";
+		z -= 0.1;
+	}
+	if(key == GLFW_KEY_I && action == GLFW_PRESS){
+		cout<<"I pressed\n";
+		sx -= 0.1;
+		//cout<<"-sx :"<<sx<<"\n";
+	}
+	if(key == GLFW_KEY_K && action == GLFW_PRESS){
+		cout<<"K pressed\n";
+		sx += 0.1;
+		//cout<<"+sx :"<<sx<<"\n";
+	}
+	if(key == GLFW_KEY_L && action == GLFW_PRESS){
+		cout<<"L pressed\n";
+		sy += 0.1;
+		//cout<<"+sy :"<<sy<<"\n";
+	}
+	if(key == GLFW_KEY_J && action == GLFW_PRESS){
+		cout<<"J pressed\n";
+		sy -= 0.1;
+		//cout<<"-sy :"<<sy<<"\n";
+	}
+	if(key == GLFW_KEY_M && action == GLFW_PRESS){
+		cout<<"M pressed\n";
+		sz += 0.1;
+		//cout<<"+sz :"<<sz<<"\n";
+	}
+	if(key == GLFW_KEY_N && action == GLFW_PRESS){
+		cout<<"N pressed\n";
+		sz -= 0.1;
+		//cout<<"-sz :"<<sz<<"\n";
+	}
+	if(key == GLFW_KEY_R && action == GLFW_PRESS){
+		cout<<"R pressed\n";
+		rx -= 0.1;
+	}
+	if(key == GLFW_KEY_T && action == GLFW_PRESS){
+		cout<<"T pressed\n";
+		rx += 0.1;
+	}
+	if(key == GLFW_KEY_F && action == GLFW_PRESS){
+		cout<<"F pressed\n";
+		ry -= 0.1;
+	}
+	if(key == GLFW_KEY_G && action == GLFW_PRESS){
+		cout<<"G pressed\n";
+		ry += 0.1;
+	}
+	if(key == GLFW_KEY_V && action == GLFW_PRESS){
+		cout<<"V pressed\n";
+		rz -= 0.1;
+		//cout<<"rz + :"<<rz<<"\n";
+	}
+	if(key == GLFW_KEY_B && action == GLFW_PRESS){
+		cout<<"B pressed\n";
+		rz += 0.1;
+		//cout<<"rz - :"<<rz<<"\n";
+	}
+	if(key == GLFW_KEY_P && action == GLFW_PRESS){
+		cout<<"P pressed\n";
+		d += 0.1;
+		//cout<<d<<"\n";
+	}
+	if(key == GLFW_KEY_O && action == GLFW_PRESS){
+		cout<<"O pressed\n";
+		d -= 0.1;
+		//cout<<d<<"\n";
+	}
+	if(key == GLFW_KEY_Y && action == GLFW_PRESS){
+		cout<<"Y pressed\n";
+		fov += 0.1;
+		//cout<<d<<"\n";
+	}
+	if(key == GLFW_KEY_U && action == GLFW_PRESS){
+		cout<<"U pressed\n";
+		fov -= 0.1;
+		//cout<<d<<"\n";
+	}
+	if(key == GLFW_KEY_E && action == GLFW_PRESS){
+		cout<<"E pressed\n";
+		aspect += 0.1;
+		//cout<<d<<"\n";
+	}
+	if(key == GLFW_KEY_C && action == GLFW_PRESS){
+		cout<<"O pressed\n";
+		aspect -= 0.1;
+		//cout<<d<<"\n";
+	}
+	if(key == GLFW_KEY_Q && action == GLFW_PRESS){
+		cout << "Q pressed - change to orthogonal\n";
+		viewMat = ortho;
+	}
+	if(key == GLFW_KEY_H && action == GLFW_PRESS){
+		cout << "H pressed - changed to promat\n";
+		viewMat = proMat;
+	}
+}		//Adds in user interaction feature
+
+/* End code for user interaction feature */
+
 int g_gl_width = 640;
 int g_gl_height = 480;
 GLFWwindow* g_window = NULL;
 
 int main() {
-
-
 	//GLFWwindow *window = NULL;
 	const GLubyte *renderer;
 	const GLubyte *version;
@@ -264,50 +445,50 @@ int main() {
 
 	GLfloat branchPoints[totalCount*3]; 							//List of points to make the branches. Includes extra points for lines.
 	GLfloat leafPoints[countBracket*3];								//List of points to place the leaves - only on the ends of branches though.
-	GLfloat* result = new float[4];									//This is a new 4x1 matrix to acquire the new heading.
+	GLfloat* result1 = new float[4];									//This is a new 4x1 matrix to acquire the new heading.
 	stack<float> PositionStack;										//Stack to put branch point positions on.
 	stack<float> HeadingStack;										//Stack to put branch headings on.
 	int pointsCount = 0;											//Counts number of points needed to make a matrix of points.
 	int leafCount = 0;												//Counts number of points needed to make a matrix for leaves.
 
-	float rz = (90 * 3.14159) / 180;								//For the first rotation, so the trunk is 90 degrees from the bottom of the screen. Converts degrees to radians.
-	float rz2 = 0; //(30 * 3.14159) / 180;								//For rotation of leaf.
+	float numRotateZ = (90 * 3.14159) / 180;								//For the first rotation, so the trunk is 90 degrees from the bottom of the screen. Converts degrees to radians.
+	float numRotateZ2 = 0; //(30 * 3.14159) / 180;								//For rotation of leaf.
 	float leafRotation = 0;
 	float leafRotationRad = 0;
-	float rx = -(90 * 3.14159) / 180;								//Rotates the leaf OBJ to be upright in radians.
-	float ry = (0 * 3.14159) / 180;									//Rotates the leaf along the y-axis.
+	float numRotateX = -(90 * 3.14159) / 180;								//Rotates the leaf OBJ to be upright in radians.
+	float numRotateY = (0 * 3.14159) / 180;									//Rotates the leaf along the y-axis.
 	GLfloat dx = 0;													//For leaf translation along the x-axis.
 	GLfloat dy = 0;													//For leaf translation along the y-axis.
 	GLfloat dz = 0;													//For leaf translation along the z-axis.
-	GLfloat sx = 1; //.0095;										//Scales the leaf.
-	GLfloat sy = 1; //.1095;										//Scales the leaf.
-	GLfloat sz = 1; //.1095;										//Scales the leaf.
-	GLfloat currentPosition[] = {0.0f, -0.25f, 0.0f, 1.0f};			//Beginning current position of the tree.
+	GLfloat scaleXNum = 1; //.0095;										//Scales the leaf.
+	GLfloat scaleYNum = 1; //.1095;										//Scales the leaf.
+	GLfloat scaleZNum = 1; //.1095;										//Scales the leaf.
+	GLfloat currentPosition[] = {0.0f, -0.25f, 0.2f, 1.0f};			//Beginning current position of the tree.
 	GLfloat currentHeading[] = {0.0f, 0.5f, 0.0f, 0.0f};				//Beginning current heading of the tree.
-	GLfloat rotateZ[] = 																				//Rotation matrix for the z-axis.
-		{cos(rz),sin(rz),0,0,
-		-sin(rz),cos(rz),0,0,
+	GLfloat rotateZ1[] = 																				//Rotation matrix for the z-axis.
+		{cos(numRotateZ),sin(numRotateZ),0,0,
+		-sin(numRotateZ),cos(numRotateZ),0,0,
 		0,0,1,0,
 		0,0,0,1};
 	GLfloat rotateZ2[] = 																		//Rotation matrix for the z-axis.
-		{cos(rz2),sin(rz2),0,0,
-		-sin(rz2),cos(rz2),0,0,
+		{cos(numRotateZ2),sin(numRotateZ2),0,0,
+		-sin(numRotateZ2),cos(numRotateZ2),0,0,
 		0,0,1,0,
 		0,0,0,1};
-	GLfloat scale[] =																				//Scale matrix.
-		{sx,0,0,0,
-		 0,sy,0,0,
-		 0,0,sz,0,
+	GLfloat scale1[] =																				//Scale matrix.
+		{scaleXNum,0,0,0,
+		 0,scaleYNum,0,0,
+		 0,0,scaleZNum,0,
 		 0,0,0,1};
-	GLfloat rotateX[] = 																		//Rotation matrix for the x-axis.
+	GLfloat rotateX1[] = 																		//Rotation matrix for the x-axis.
 		{1,0,0,0,
-		 0,cos(rx),sin(rx),0,
-		 0,-sin(rx),cos(rx),0,
+		 0,cos(numRotateX),sin(numRotateX),0,
+		 0,-sin(numRotateX),cos(numRotateX),0,
 		 0,0,0,1};
-	GLfloat rotateY[] =																			//Rotation matrix for the y-axis.
-		{cos(ry),0,-sin(ry),0,
+	GLfloat rotateY1[] =																			//Rotation matrix for the y-axis.
+		{cos(numRotateY),0,-sin(numRotateY),0,
 		 0,1,0,0,
-		 sin(ry),0,cos(ry),0,
+		 sin(numRotateY),0,cos(numRotateY),0,
 		 0,0,0,1};
 	GLfloat translateMat[] =																//Translation matrix.
 		{1,0,0,0,
@@ -319,6 +500,64 @@ int main() {
 		 0,1,0,0,
 		 0,0,1,0,
 		 0,0,0,1};
+
+/* Code to begin the User Interaction feature of this project */
+
+		 GLfloat translate[]={1,0,0,0,
+	 						 0,1,0,0,
+	 						 0,0,1,0,
+	 						 x,y,z,1};
+
+	 	GLfloat scale[] =  {sx,0,0,0,
+	 						0,sy,0,0,
+	 						0,0,sz,0,
+	 						0,0,0,1};
+
+	 	GLfloat skew[] ={1,0,0,0,
+	 					 (1/tan(d)),1,0,0,
+	 					 0,0,1,0,
+	 					 0,0,0,1};
+
+	 	GLfloat rotateX[]= {1,0,0,0,
+	 						0, cos(rx),sin(rx),0,
+	 						0, -sin(rx),cos(rx),0,
+	 						0,0,0,1};
+
+	 	GLfloat rotateY[]= {cos(ry),0,-sin(ry),0,
+	 						0, 1,0,0,
+	 						sin(ry),0,cos(ry),0,
+	 						0,0,0,1};
+
+	 	GLfloat rotateZ[]= {cos(rz),sin(rz),0,0,
+	 						-sin(rz), cos(rz),0,0,
+	 						0, 0,1,0,
+	 						0,0,0,1};
+
+
+	 	GLfloat trans[] = { 1,0,0,0,
+	 						0,1,0,0,
+	 						0,0,1,0,
+	 						0,0,0,1};
+
+	 	GLfloat proMat[] = {Sx, 0.0f, 0.0f, 0.0f,
+	 						0.0f, Sy, 0.0f, 0.0f,
+	 						0.0f, 0.0f, Sz, -1.0,
+	 						0.0f, 0.0f, Pz, 1.0f};
+
+	 	GLfloat lookAt[] = {1.0f, 0.0f, -0.0f, 0.0f,
+	 						0.0f, 1.0f, -0.0f, 0.0f,
+	 						0.0f, 0.0f, 1.0f, 0.0f,
+	 						-0.0f, -0.0f, -1.0f, 1.0f};
+
+	 	GLfloat ortho[] = {1,0,0,0,
+	 						0,1,0,0,
+	 						0,0,0,0,
+	 						0,0,0,1};
+
+	 	GLfloat* result = new float[16];
+
+		/* End code for user interaction feature */
+
 
 	branchPoints[pointsCount + 0] = currentPosition[0];											//These lines add the first set of points to the list of points.
 	branchPoints[pointsCount + 1] = currentPosition[1];
@@ -395,34 +634,34 @@ int main() {
 
 		else if (pattern.substr(idx, 1).compare("+") == 0){				// Rotates tree branch left
 			rotation = rand() % 65 + 1;															//Chooses a random number to rotate by from 0 to 65.
-			//rotation = 25;
-			float rz =-  ((rotation * 3.14159) / 180);											//Converts degrees of the rotation to radians.
-			rotateZ[0] = cos(rz);
-			rotateZ[1] = sin(rz);
-			rotateZ[4] = -sin(rz);
-			rotateZ[5] = cos(rz);
-			multiply(rotateZ, currentHeading, result);											//Multiplies the rotateZ matrix by the currentHeading to get the new currentHeading.
-			float magnitude = sqrt((result[0]*result[0]) + (result[1]*result[1]) + (result[2]*result[2]) + (result[3]*result[3]));	//Finds magnitude for normalization of heading.
-			currentHeading[0] = result[0] / magnitude;											//Normalizes the currentHeading vector.
-			currentHeading[1] = result[1] / magnitude;
-			currentHeading[2] = result[2] / magnitude;
-			currentHeading[3] = result[3] / magnitude;
+			// rotation = 25;
+			float numRotateZ =-  ((rotation * 3.14159) / 180);											//Converts degrees of the rotation to radians.
+			rotateZ1[0] = cos(numRotateZ);
+			rotateZ1[1] = sin(numRotateZ);
+			rotateZ1[4] = -sin(numRotateZ);
+			rotateZ1[5] = cos(numRotateZ);
+			multiply(rotateZ1, currentHeading, result1);											//Multiplies the rotateZ1 matrix by the currentHeading to get the new currentHeading.
+			float magnitude = sqrt((result1[0]*result1[0]) + (result1[1]*result1[1]) + (result1[2]*result1[2]) + (result1[3]*result1[3]));	//Finds magnitude for normalization of heading.
+			currentHeading[0] = result1[0] / magnitude;											//Normalizes the currentHeading vector.
+			currentHeading[1] = result1[1] / magnitude;
+			currentHeading[2] = result1[2] / magnitude;
+			currentHeading[3] = result1[3] / magnitude;
 		}
 
 		else if (pattern.substr(idx, 1).compare("-") == 0){				// Rotates a tree branch right
 			rotation = rand() % 65 + 1;															//Chooses a random number to rotate by from 0 to 65.
-			//rotation = 25;
-			float rz =+ ((rotation * 3.14159) / 180);											//Converts degrees of the rotation to radians.
-			rotateZ[0] = cos(rz);
-			rotateZ[1] = sin(rz);
-			rotateZ[4] = -sin(rz);
-			rotateZ[5] = cos(rz);
-			multiply(rotateZ, currentHeading, result);											//Multiplies the rotateZ matrix by the currentHeading to get the new currentHeading.
-			float magnitude = sqrt((result[0]*result[0]) + (result[1]*result[1]) + (result[2]*result[2]) + (result[3]*result[3]));	//Finds magnitude for normalization of heading.
-			currentHeading[0] = result[0] / magnitude;											//Normalizes the currentHeading vector.
-			currentHeading[1] = result[1] / magnitude;
-			currentHeading[2] = result[2] / magnitude;
-			currentHeading[3] = result[3] / magnitude;
+			// rotation = 25;
+			float numRotateZ =+ ((rotation * 3.14159) / 180);											//Converts degrees of the rotation to radians.
+			rotateZ1[0] = cos(numRotateZ);
+			rotateZ1[1] = sin(numRotateZ);
+			rotateZ1[4] = -sin(numRotateZ);
+			rotateZ1[5] = cos(numRotateZ);
+			multiply(rotateZ1, currentHeading, result1);											//Multiplies the rotateZ1 matrix by the currentHeading to get the new currentHeading.
+			float magnitude = sqrt((result1[0]*result1[0]) + (result1[1]*result1[1]) + (result1[2]*result1[2]) + (result1[3]*result1[3]));	//Finds magnitude for normalization of heading.
+			currentHeading[0] = result1[0] / magnitude;											//Normalizes the currentHeading vector.
+			currentHeading[1] = result1[1] / magnitude;
+			currentHeading[2] = result1[2] / magnitude;
+			currentHeading[3] = result1[3] / magnitude;
 		}
 	}
 
@@ -517,22 +756,22 @@ int main() {
 			translateMat[13] = dy;																	// Sets the dy value of translateMat to be the y-val of the current branch.
 			translateMat[14] = dz;																	// Sets the dz value of translateMat to be the z-val of the current branch.
 
-			sx = .0389;
-			sy = .0389;
-			sz = .0389;
+			scaleXNum = .0389;
+			scaleYNum = .0389;
+			scaleZNum = .0389;
 
-			scale[0] = sx;
-			scale[5] = sy;
-			scale[10] = sz;
+			scale1[0] = scaleXNum;
+			scale1[5] = scaleYNum;
+			scale1[10] = scaleZNum;
 
-			rz2 = (25 * 3.14159) / -180;
+			numRotateZ2 = (25 * 3.14159) / -180;
 
-			rotateZ2[0] = cos(rz2);
-			rotateZ2[1] = sin(rz2);
-			rotateZ2[5] = -sin(rz2);
-			rotateZ2[6] = cos(rz2);
+			rotateZ2[0] = cos(numRotateZ2);
+			rotateZ2[1] = sin(numRotateZ2);
+			rotateZ2[5] = -sin(numRotateZ2);
+			rotateZ2[6] = cos(numRotateZ2);
 
-			new4x4 = multiplyAgain(rotateX, scale, new4x4);										// Multiplies two 4x4 matrices together and makes a new matrix.
+			new4x4 = multiplyAgain(rotateX1, scale1, new4x4);										// Multiplies two 4x4 matrices together and makes a new matrix.
 			//newest4x4 = multiplyAgain(rotateZ2, new4x4, newest4x4);
 			newest4x4 = multiplyAgain(translateMat, new4x4, newest4x4);							// Multiplies two 4x4 matrices together and makes a new matrix.
 
@@ -554,8 +793,9 @@ int main() {
 	the vertex shader positions each vertex point */
 	const char *vertex_shader = "#version 410\n"												// Vertex Shader for tree.
 		"attribute vec3 vp;"
+		"uniform mat4 model, view, proj;"
 		"void main () {"
-		"  gl_Position = vec4 (vp, 1.0);"														// Tree position.
+		"  gl_Position = proj * view * model * vec4(vp, 1.0);"														// Tree position.
 		"}";
 	/* the fragment shader colours each fragment (pixel-sized area of the
 	triangle) */
@@ -576,12 +816,12 @@ int main() {
 	//	"attribute vec3 vp;"
 		"layout (location = 0) in vec3 vp;"
 		"layout (location = 1) in vec3 vertex_normal;"
-	//	"uniform mat4;" 																		// Gets matrices inside vertex shader.
+	  "uniform mat4 model, view, proj;" 																		// Gets matrices inside vertex shader.
 		"out vec3 position_eye, normal_eye;"
 		"void main () {"
 		"	position_eye = vp;"
 		"	normal_eye = vertex_normal, 1.0;"
-		"  gl_Position = vec4 (vp, 1.0);"														// Multiplies vec4 by matrices.
+		"  gl_Position = proj * view * model * vec4(vp, 1.0);"														// Multiplies vec4 by matrices.
 		"}";
 	/* the fragment shader colours each fragment (pixel-sized area of the
 	triangle) */
@@ -741,7 +981,27 @@ int main() {
 			that we have a 'currently displayed' surface, and 'currently being drawn'
 			surface. hence the 'swap' idea. in a single-buffering system we would see
 			stuff being drawn one-after-the-other */
+  multiplyNew(view, proMat, viewResult);
 	while ( !glfwWindowShouldClose( g_window ) ) {
+		multiplyNew(trans, translate, result);
+		multiplyNew(result, scale, result);
+		multiplyNew(result, rotateX, result);
+		multiplyNew(result, rotateY, result);
+		multiplyNew(result, rotateZ, result);
+		multiplyNew(result, skew, result);
+
+		//View matrix info
+		int trans_mat_location = glGetUniformLocation (shader_programme, "model");
+		glUseProgram( shader_programme );
+		glUniformMatrix4fv (trans_mat_location, 1, GL_FALSE, result);
+		int view_mat_location = glGetUniformLocation (shader_programme, "view");
+		glUseProgram( shader_programme );
+		glUniformMatrix4fv (view_mat_location, 1, GL_FALSE, lookAt);
+		int proj_mat_location = glGetUniformLocation (shader_programme, "proj");
+		glUseProgram( shader_programme );
+		glUniformMatrix4fv (proj_mat_location, 1, GL_FALSE, viewResult);
+		//glUniformMatrix4fv (proj_mat_location, 1, GL_FALSE, proMat);
+
 		/* wipe the drawing surface clear */
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glUseProgram(shader_programme);
@@ -750,6 +1010,19 @@ int main() {
 		/* draw points 0-3 from the currently bound VAO with current in-use shader */
 		glDrawArrays(GL_LINES, 0, totalCount);
 	//------------------------------------------------------------------------------------	Leaf stuff
+
+	//View matrix info
+	int trans_mat_location2 = glGetUniformLocation (shader_programme2, "model");
+	glUseProgram( shader_programme2 );
+	glUniformMatrix4fv (trans_mat_location2, 1, GL_FALSE, result);
+	int view_mat_location2 = glGetUniformLocation (shader_programme2, "view");
+	glUseProgram( shader_programme2 );
+	glUniformMatrix4fv (view_mat_location2, 1, GL_FALSE, lookAt);
+	int proj_mat_location2 = glGetUniformLocation (shader_programme2, "proj");
+	glUseProgram( shader_programme2 );
+	glUniformMatrix4fv (proj_mat_location2, 1, GL_FALSE, viewResult);
+	//glUniformMatrix4fv (proj_mat_location, 1, GL_FALSE, proMat);
+
 		glUseProgram(shader_programme2);
 		glBindVertexArray(vao2);
 		glDrawArrays(GL_TRIANGLES, 0, leavesWanted * numPoints);
@@ -757,6 +1030,35 @@ int main() {
 
 		/* update other events like input handling */
 		glfwPollEvents();
+
+		glfwSetKeyCallback(g_window, key_callback);
+
+		translate[12]=x;
+		translate[13]=y;
+		translate[14]=z;
+		scale[0]=sx;
+		scale[5]=sy;
+		scale[10]=sz;
+		rotateX[5]=cos(rx);
+		rotateX[6]=sin(rx);
+		rotateX[9]=-sin(rx);
+		rotateX[10]=cos(rx);
+		rotateY[0]=cos(ry);
+		rotateY[2]=sin(ry);
+		rotateY[8]=-sin(ry);
+		rotateY[10]=cos(ry);
+		rotateZ[0]=cos(rz);
+		rotateZ[1]=sin(rz);
+		rotateZ[4]=-sin(rz);
+		rotateZ[5]=cos(rz);
+		skew[4]=(1/tan(d));
+		float range = tan(fov*0.5)*near;
+		proMat[0] = (2*near)/((range*aspect)+(range*aspect));
+		proMat[5] = near/range;
+		proMat[10] = -(far+near)/(far-near);
+		proMat[14] = -(2*far*near)/(far-near);
+		multiplyNew(view, viewMat, viewResult);
+
 		/* put the stuff we've been drawing onto the display */
 		glfwSwapBuffers( g_window );
 	}
