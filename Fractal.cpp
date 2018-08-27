@@ -24,7 +24,7 @@
 #define GL_LOG_FILE "gl.log"
 using namespace std;
 
-void multiplyNew(GLfloat matrix1[], GLfloat matrix2[], GLfloat result[]){
+void multiplyNew(GLfloat matrix1[], GLfloat matrix2[], GLfloat result[]){  // multiply for the user interaction
 
 	result[0] = (matrix1[0]*matrix2[0])+(matrix1[4]*matrix2[1])+(matrix1[8]*matrix2[2])+(matrix1[12]*matrix2[3]);
 	result[4] = (matrix1[0]*matrix2[4])+(matrix1[4]*matrix2[5])+(matrix1[8]*matrix2[6])+(matrix1[12]*matrix2[7]);
@@ -795,7 +795,7 @@ int main() {
 		"attribute vec3 vp;"
 		"uniform mat4 ortho, model, view, proj;"
 		"void main () {"
-		"  gl_Position = ortho * proj * view * model * vec4(vp, 1.0);"														// Tree position.
+		"  gl_Position = proj * view * model * vec4(vp, 1.0);"	// ADDING IN *ORTHO	BREAKS THE LEAVES FROM THE BRANCHES	// Tree position.
 		"}";
 	/* the fragment shader colours each fragment (pixel-sized area of the
 	triangle) */
