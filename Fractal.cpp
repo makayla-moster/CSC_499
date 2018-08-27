@@ -298,20 +298,20 @@ GLfloat* viewMat = new float[16];
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods){
 	//cout<<"\n key \n";
-	if(key == GLFW_KEY_W && action == GLFW_PRESS){
-		cout<<"W pressed\n";
+	if(key == GLFW_KEY_A && action == GLFW_PRESS){
+		cout<<"A pressed\n"; // Moves the tree left
 		x -= 0.1;
 	}
-	if(key == GLFW_KEY_A && action == GLFW_PRESS){
-		cout<<"A pressed\n";
+	if(key == GLFW_KEY_D && action == GLFW_PRESS){
+		cout<<"D pressed\n"; // Moves the tree right
 		x += 0.1;
 	}
-	if(key == GLFW_KEY_S && action == GLFW_PRESS){
-		cout<<"S pressed\n";
+	if(key == GLFW_KEY_W && action == GLFW_PRESS){
+		cout<<"W pressed\n"; // Moves the tree upward
 		y += 0.1;
 	}
-	if(key == GLFW_KEY_D && action == GLFW_PRESS){
-		cout<<"D pressed\n";
+	if(key == GLFW_KEY_S && action == GLFW_PRESS){
+		cout<<"S pressed\n"; // Moves the tree downward
 		y -= 0.1;
 	}
 	if(key == GLFW_KEY_X && action == GLFW_PRESS){
@@ -793,9 +793,9 @@ int main() {
 	the vertex shader positions each vertex point */
 	const char *vertex_shader = "#version 410\n"												// Vertex Shader for tree.
 		"attribute vec3 vp;"
-		"uniform mat4 model, view, proj;"
+		"uniform mat4 ortho, model, view, proj;"
 		"void main () {"
-		"  gl_Position = proj * view * model * vec4(vp, 1.0);"														// Tree position.
+		"  gl_Position = ortho * proj * view * model * vec4(vp, 1.0);"														// Tree position.
 		"}";
 	/* the fragment shader colours each fragment (pixel-sized area of the
 	triangle) */
@@ -991,6 +991,11 @@ int main() {
 		multiplyNew(result, skew, result);
 
 		//View matrix info
+
+		int ortho_mat_location = glGetUniformLocation (shader_programme, "ortho");
+		glUseProgram( shader_programme );
+		glUniformMatrix4fv (ortho_mat_location, 1, GL_FALSE, result);
+
 		int trans_mat_location = glGetUniformLocation (shader_programme, "model");
 		glUseProgram( shader_programme );
 		glUniformMatrix4fv (trans_mat_location, 1, GL_FALSE, result);
