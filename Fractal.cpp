@@ -24,7 +24,7 @@
 #define GL_LOG_FILE "gl.log"
 using namespace std;
 
-void multiplyNew(GLfloat matrix1[], GLfloat matrix2[], GLfloat result[]){
+void multiplyNew(GLfloat matrix1[], GLfloat matrix2[], GLfloat result[]){  // multiply for the user interaction
 
 	result[0] = (matrix1[0]*matrix2[0])+(matrix1[4]*matrix2[1])+(matrix1[8]*matrix2[2])+(matrix1[12]*matrix2[3]);
 	result[4] = (matrix1[0]*matrix2[4])+(matrix1[4]*matrix2[5])+(matrix1[8]*matrix2[6])+(matrix1[12]*matrix2[7]);
@@ -63,7 +63,7 @@ GLfloat* multiplyAgain(GLfloat matrix1[], GLfloat matrix2[], GLfloat result1[]){
 }
 
 string generatePattern(){												//Generates a pattern to create a tree.
-    int numIts = 4; 														// Number of iterations
+    int numIts = 2; 														// Number of iterations
     string pattern = "F"; //"[X]";    					// Using F for the pattern
 
     for (int i = 0; i < numIts; i++){
@@ -258,7 +258,7 @@ void loadFaces(string modelName, GLint faces[]){    					//To read in Maya OBJ f
 /* Begin Code for User Interaction feature */
 
 
-float x,y,z, rx, ry, rz =0;
+float x, y, z, rx, ry, rz =0;
 float sy = 1.0;
 float sx = 1.0;
 float sz = 0.0;
@@ -293,7 +293,11 @@ GLfloat view[] =  { 1,0,0,0,
 					0,0,1,0,
 					0,0,0,1};
 GLfloat* viewResult = new float[16];
-GLfloat* viewMat = new float[16];
+GLfloat viewMat[] = {1,0,0,0,											// Changed to Orthogonal Matrix so the tree appears instantly
+							0,1,0,0,
+							0,0,0,0,
+							0,0,0,1};
+// new float[16];
 
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods){
@@ -408,14 +412,14 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		aspect -= 0.1;
 		//cout<<d<<"\n";
 	}
-	if(key == GLFW_KEY_Q && action == GLFW_PRESS){
-		cout << "Q pressed - change to orthogonal\n";
-		viewMat = ortho;
-	}
-	if(key == GLFW_KEY_H && action == GLFW_PRESS){
-		cout << "H pressed - changed to promat\n";
-		viewMat = proMat;
-	}
+	// if(key == GLFW_KEY_Q && action == GLFW_PRESS){
+	// 	cout << "Q pressed - change to orthogonal\n";
+	// 	viewMat = ortho;
+	// }
+	// if(key == GLFW_KEY_H && action == GLFW_PRESS){
+	// 	cout << "H pressed - changed to promat\n";
+	// 	viewMat = proMat;
+	// }
 }		//Adds in user interaction feature
 
 /* End code for user interaction feature */
@@ -464,7 +468,7 @@ int main() {
 	GLfloat scaleYNum = 1; //.1095;										//Scales the leaf.
 	GLfloat scaleZNum = 1; //.1095;										//Scales the leaf.
 	GLfloat currentPosition[] = {0.0f, -0.25f, 0.2f, 1.0f};			//Beginning current position of the tree.
-	GLfloat currentHeading[] = {0.0f, 0.5f, 0.0f, 0.0f};				//Beginning current heading of the tree.
+	GLfloat currentHeading[] = {0.0f, 0.5f, 0.5f, 0.0f};				//Beginning current heading of the tree.
 	GLfloat rotateZ1[] = 																				//Rotation matrix for the z-axis.
 		{cos(numRotateZ),sin(numRotateZ),0,0,
 		-sin(numRotateZ),cos(numRotateZ),0,0,
@@ -533,7 +537,6 @@ int main() {
 	 						0, 0,1,0,
 	 						0,0,0,1};
 
-
 	 	GLfloat trans[] = { 1,0,0,0,
 	 						0,1,0,0,
 	 						0,0,1,0,
@@ -585,10 +588,10 @@ int main() {
 			leafPoints[leafCount + 2] = currentPosition[2];
 			leafCount += 3;
 
-			/*cout << endl << "After:" << endl;
+			cout << endl << "After:" << endl;
 			cout << "Position X: " << currentPosition[0] << endl;
 			cout << "Position Y: " << currentPosition[1] << endl;
-			cout << "Position Z: " << currentPosition[2] << endl << endl;*/
+			cout << "Position Z: " << currentPosition[2] << endl << endl;
 
 			currentPosition[0] = PositionStack.top();											//Sets the current position back to the top of the stack.
 			PositionStack.pop();																//Pops the current position from the top of the stack.
@@ -616,10 +619,10 @@ int main() {
 
 		else if (pattern.substr(idx, 1).compare("F") == 0){
 
-			/*cout << endl << "Before:" << endl;
+			cout << endl << "Before:" << endl;
 			cout << "Position X: " << currentPosition[0] << endl;
 			cout << "Position Y: " << currentPosition[1] << endl;
-			cout << "Position Z: " << currentPosition[2] << endl << endl;*/
+			cout << "Position Z: " << currentPosition[2] << endl << endl;
 
 			currentPosition[0] += currentHeading[0]*.2;											//Changes the height of the tree, I like .2.
 			currentPosition[1] += currentHeading[1]*.2;
@@ -795,7 +798,7 @@ int main() {
 		"attribute vec3 vp;"
 		"uniform mat4 ortho, model, view, proj;"
 		"void main () {"
-		"  gl_Position = ortho * proj * view * model * vec4(vp, 1.0);"														// Tree position.
+		"  gl_Position = proj * view * model * vec4(vp, 1.0);"	// ADDING IN *ORTHO	BREAKS THE LEAVES FROM THE BRANCHES	// Tree position.
 		"}";
 	/* the fragment shader colours each fragment (pixel-sized area of the
 	triangle) */
@@ -1016,17 +1019,17 @@ int main() {
 		glDrawArrays(GL_LINES, 0, totalCount);
 	//------------------------------------------------------------------------------------	Leaf stuff
 
-	//View matrix info
-	int trans_mat_location2 = glGetUniformLocation (shader_programme2, "model");
-	glUseProgram( shader_programme2 );
-	glUniformMatrix4fv (trans_mat_location2, 1, GL_FALSE, result);
-	int view_mat_location2 = glGetUniformLocation (shader_programme2, "view");
-	glUseProgram( shader_programme2 );
-	glUniformMatrix4fv (view_mat_location2, 1, GL_FALSE, lookAt);
-	int proj_mat_location2 = glGetUniformLocation (shader_programme2, "proj");
-	glUseProgram( shader_programme2 );
-	glUniformMatrix4fv (proj_mat_location2, 1, GL_FALSE, viewResult);
-	//glUniformMatrix4fv (proj_mat_location, 1, GL_FALSE, proMat);
+		//View matrix info
+		int trans_mat_location2 = glGetUniformLocation (shader_programme2, "model");
+		glUseProgram( shader_programme2 );
+		glUniformMatrix4fv (trans_mat_location2, 1, GL_FALSE, result);
+		int view_mat_location2 = glGetUniformLocation (shader_programme2, "view");
+		glUseProgram( shader_programme2 );
+		glUniformMatrix4fv (view_mat_location2, 1, GL_FALSE, lookAt);
+		int proj_mat_location2 = glGetUniformLocation (shader_programme2, "proj");
+		glUseProgram( shader_programme2 );
+		glUniformMatrix4fv (proj_mat_location2, 1, GL_FALSE, viewResult);
+		//glUniformMatrix4fv (proj_mat_location, 1, GL_FALSE, proMat);
 
 		glUseProgram(shader_programme2);
 		glBindVertexArray(vao2);
