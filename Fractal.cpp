@@ -408,7 +408,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		//cout<<d<<"\n";
 	}
 	if(key == GLFW_KEY_C && action == GLFW_PRESS){
-		cout<<"O pressed\n";
+		cout<<"C pressed\n";
 		aspect -= 0.1;
 		//cout<<d<<"\n";
 	}
