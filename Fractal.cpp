@@ -293,10 +293,11 @@ GLfloat view[] =  { 1,0,0,0,
 					0,0,1,0,
 					0,0,0,1};
 GLfloat* viewResult = new float[16];
-GLfloat viewMat[] = {1,0,0,0,											// Changed to Orthogonal Matrix so the tree appears instantly
-							0,1,0,0,
-							0,0,0,0,
-							0,0,0,1};
+GLfloat* viewMat = new float[16];
+// GLfloat viewMat[] = {1,0,0,0,											// Changed to Orthogonal Matrix so the tree appears instantly
+							// 0,1,0,0,
+							// 0,0,0,0,
+							// 0,0,0,1};
 // new float[16];
 
 
@@ -412,14 +413,14 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		aspect -= 0.1;
 		//cout<<d<<"\n";
 	}
-	// if(key == GLFW_KEY_Q && action == GLFW_PRESS){
-	// 	cout << "Q pressed - change to orthogonal\n";
-	// 	viewMat = ortho;
-	// }
-	// if(key == GLFW_KEY_H && action == GLFW_PRESS){
-	// 	cout << "H pressed - changed to promat\n";
-	// 	viewMat = proMat;
-	// }
+	if(key == GLFW_KEY_Q && action == GLFW_PRESS){
+		cout << "Q pressed - change to orthogonal\n";
+		viewMat = ortho;
+	}
+	if(key == GLFW_KEY_H && action == GLFW_PRESS){
+		cout << "H pressed - changed to promat\n";
+		viewMat = proMat;
+	}
 }		//Adds in user interaction feature
 
 /* End code for user interaction feature */
@@ -467,7 +468,7 @@ int main() {
 	GLfloat scaleXNum = 1; //.0095;										//Scales the leaf.
 	GLfloat scaleYNum = 1; //.1095;										//Scales the leaf.
 	GLfloat scaleZNum = 1; //.1095;										//Scales the leaf.
-	GLfloat currentPosition[] = {0.0f, -0.25f, 0.2f, 1.0f};			//Beginning current position of the tree.
+	GLfloat currentPosition[] = {0.0f, -0.25f, 0.25f, 1.0f};			//Beginning current position of the tree.
 	GLfloat currentHeading[] = {0.0f, 0.5f, 0.5f, 0.0f};				//Beginning current heading of the tree.
 	GLfloat rotateZ1[] = 																				//Rotation matrix for the z-axis.
 		{cos(numRotateZ),sin(numRotateZ),0,0,
@@ -1065,6 +1066,7 @@ int main() {
 		proMat[5] = near/range;
 		proMat[10] = -(far+near)/(far-near);
 		proMat[14] = -(2*far*near)/(far-near);
+		viewMat = ortho;
 		multiplyNew(view, viewMat, viewResult);
 
 		/* put the stuff we've been drawing onto the display */
