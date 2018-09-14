@@ -801,15 +801,25 @@ int main() {
 		"void main () {"
 		"  gl_Position = proj * view * model * vec4(vp, 1.0);"	// ADDING IN *ORTHO	BREAKS THE LEAVES FROM THE BRANCHES	// Tree position.
 		"}";
-	/* the fragment shader colours each fragment (pixel-sized area of the
-	triangle) */
+
+		const char *geometry_shader = "#version 410\n"
+			"layout(lines) in;"
+			"layout(lines, max_vertices = 1) out;"
+
+			"void main() {"
+			"	gl_Position = gl_in[0].gl_Position;"
+			"	EmitVertex();"
+			"	EndPrimitive();"
+			"}";
+
+	/* the fragment shader colours each fragment */
 	const char *fragment_shader = "#version 410\n"												// Fragment Shader for tree.
 		"out vec4 frag_colour;"
 		"void main () {"
 		"  frag_colour = vec4 (0.545, 0.27, 0.074, 1.0);"    									//Makes tree brown.
 		"}";
 	/* GL shader objects for vertex and fragment shader [components] */
-	GLuint vert_shader, frag_shader;
+	GLuint vert_shader, frag_shader, geometryShader;
 	/* GL shader program object [combined, to link] */
 	GLuint shader_programme;
 
@@ -827,6 +837,7 @@ int main() {
 		"	normal_eye = vertex_normal, 1.0;"
 		"  gl_Position = proj * view * model * vec4(vp, 1.0);"														// Multiplies vec4 by matrices.
 		"}";
+
 	/* the fragment shader colours each fragment (pixel-sized area of the
 	triangle) */
 	const char *fragment_shader2 = "#version 410\n"												// Fragment Shader for leaf.
@@ -957,11 +968,15 @@ int main() {
 	vert_shader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vert_shader, 1, &vertex_shader, NULL);
 	glCompileShader(vert_shader);
+	geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
+	glShaderSource(geometryShader, 1, &geometry_shader, NULL);
+	glCompileShader(geometryShader);
 	frag_shader = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(frag_shader, 1, &fragment_shader, NULL);
 	glCompileShader(frag_shader);
 	shader_programme = glCreateProgram();
 	glAttachShader(shader_programme, frag_shader);
+	glAttachShader(shader_programme, geometryShader);
 	glAttachShader(shader_programme, vert_shader);
 	glLinkProgram(shader_programme);
 	glPointSize(5.0);
