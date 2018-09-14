@@ -802,15 +802,15 @@ int main() {
 		"  gl_Position = proj * view * model * vec4(vp, 1.0);"	// ADDING IN *ORTHO	BREAKS THE LEAVES FROM THE BRANCHES	// Tree position.
 		"}";
 
-		const char *geometry_shader = "#version 410\n"
-			"layout(lines) in;"
-			"layout(lines, max_vertices = 1) out;"
+	const char *geometry_shader = "#version 410\n"
+		"layout(lines) in;"
+		"layout(lines, max_vertices = 1) out;"
 
-			"void main() {"
-			"	gl_Position = gl_in[0].gl_Position;"
-			"	EmitVertex();"
-			"	EndPrimitive();"
-			"}";
+		"void main() {"
+		"	gl_Position = gl_in[0].gl_Position;"
+		"	EmitVertex();"
+		"	EndPrimitive();"
+		"}";
 
 	/* the fragment shader colours each fragment */
 	const char *fragment_shader = "#version 410\n"												// Fragment Shader for tree.
