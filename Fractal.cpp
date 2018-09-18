@@ -797,26 +797,36 @@ int main() {
 	the vertex shader positions each vertex point */
 	const char *vertex_shader = "#version 410\n"												// Vertex Shader for tree.
 		"attribute vec3 vp;"
+		"out vec4 v_frag_colour"
 		"uniform mat4 ortho, model, view, proj;"
+
 		"void main () {"
+		"	 v_frag_colour = vec4 (0.545, 0.27, 0.074, 1.0);"
 		"  gl_Position = proj * view * model * vec4(vp, 1.0);"	// ADDING IN *ORTHO	BREAKS THE LEAVES FROM THE BRANCHES	// Tree position.
 		"}";
 
-	const char *geometry_shader = "#version 410\n"
-		"layout(lines) in;"
-		"layout(lines, max_vertices = 1) out;"
-
+	const char *geometry_shader = "#version 410\n"					// Trying to add in geo shader
+		"in vec4 v_frag_colour;"
+		"layout(points) in;"
+		"layout(lines, max_vertices = 2) out;"
+		"out vec4 v_frag_colour;"
+		// "out vec4 frag_color;"
 		"void main() {"
-		"	gl_Position = gl_in[0].gl_Position;"
-		"	EmitVertex();"
+		" int i;"
+		" for ( i=0; i < gl_in.length(); i++) {"
+		"  vFragColor = vFragColorVs[i];"
+		"  gl_Position = gl_in[i].gl_Position;"
+		"  EmitVertex();"
+		" }"
 		"	EndPrimitive();"
 		"}";
 
 	/* the fragment shader colours each fragment */
 	const char *fragment_shader = "#version 410\n"												// Fragment Shader for tree.
+		"in vec4 v_frag_colour"
 		"out vec4 frag_colour;"
 		"void main () {"
-		"  frag_colour = vec4 (0.545, 0.27, 0.074, 1.0);"    									//Makes tree brown.
+		"  frag_colour = v_frag_colour"    									//Makes tree brown.
 		"}";
 	/* GL shader objects for vertex and fragment shader [components] */
 	GLuint vert_shader, frag_shader, geometryShader;
