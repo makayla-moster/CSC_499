@@ -1028,12 +1028,39 @@ int main() {
 	vert_shader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vert_shader, 1, &vertex_shader, NULL);
 	glCompileShader(vert_shader);
+
+	int params = -1;
+		glGetShaderiv( vert_shader, GL_COMPILE_STATUS, &params );
+		if ( GL_TRUE != params ) {
+			fprintf( stderr, "ERROR: vert GL shader index %i did not compile\n", vert_shader );
+			// print_shader_info_log( vert_shader );
+			return 1; // or exit or something
+		}
+
 	geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
 	glShaderSource(geometryShader, 1, &geometry_shader, NULL);
 	glCompileShader(geometryShader);
+
+	// check for compile errors
+		glGetShaderiv( geometryShader, GL_COMPILE_STATUS, &params );
+		if ( GL_TRUE != params ) {
+			fprintf( stderr, "ERROR: geom GL shader index %i did not compile\n", geometryShader );
+			// print_shader_info_log( geometryShader );
+			return 1; // or exit or something
+		}
+
 	frag_shader = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(frag_shader, 1, &fragment_shader, NULL);
 	glCompileShader(frag_shader);
+
+	// check for compile errors
+		glGetShaderiv( frag_shader, GL_COMPILE_STATUS, &params );
+		if ( GL_TRUE != params ) {
+			fprintf( stderr, "ERROR: frag GL shader index %i did not compile\n", frag_shader );
+			// print_shader_info_log( frag_shader );
+			return 1; // or exit or something
+		}
+
 	shader_programme = glCreateProgram();
 	glAttachShader(shader_programme, frag_shader);
 	glAttachShader(shader_programme, geometryShader);
@@ -1041,17 +1068,54 @@ int main() {
 	glLinkProgram(shader_programme);
 	glPointSize(5.0);
 
+	glGetProgramiv( shader_programme, GL_LINK_STATUS, &params );
+	if ( GL_TRUE != params ) {
+		fprintf( stderr, "ERROR: could not link shader_programme GL index %i\n",
+						 shader_programme );
+		// print_programme_info_log( shader_programme );
+		return false;
+	}
+	( is_programme_valid( shader_programme ) );
+
 	//------------------------------------------------------------------------------------  Leaf stuff
 	vert_shader2 = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vert_shader2, 1, &vertex_shader2, NULL);
 	glCompileShader(vert_shader2);
+
+	// int params = -1;
+		glGetShaderiv( vert_shader2, GL_COMPILE_STATUS, &params );
+		if ( GL_TRUE != params ) {
+			fprintf( stderr, "ERROR: vert GL shader index %i did not compile\n", vert_shader2 );
+			// print_shader_info_log( vert_shader2 );
+			return 1; // or exit or something
+		}
+
 	frag_shader2 = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(frag_shader2, 1, &fragment_shader2, NULL);
 	glCompileShader(frag_shader2);
+
+	// check for compile errors
+		glGetShaderiv( frag_shader2, GL_COMPILE_STATUS, &params );
+		if ( GL_TRUE != params ) {
+			fprintf( stderr, "ERROR: frag GL shader index %i did not compile\n", frag_shader2 );
+			// print_shader_info_log( frag_shader2 );
+			return 1; // or exit or something
+		}
+
+
 	shader_programme2 = glCreateProgram();
 	glAttachShader(shader_programme2, frag_shader2);
 	glAttachShader(shader_programme2, vert_shader2);
 	glLinkProgram(shader_programme2);
+
+	glGetProgramiv( shader_programme2, GL_LINK_STATUS, &params );
+	if ( GL_TRUE != params ) {
+		fprintf( stderr, "ERROR: could not link shader_programme GL index %i\n",
+						 shader_programme2 );
+		// print_programme_info_log( shader_programme );
+		return false;
+	}
+	( is_programme_valid( shader_programme2 ) );
 	//------------------------------------------------------------------------------------
 	/* this loop clears the drawing surface, then draws the geometry described
 			by the VAO onto the drawing surface. we 'poll events' to see if the window
