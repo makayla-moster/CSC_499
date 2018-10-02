@@ -795,41 +795,83 @@ int main() {
 	/* these are the strings of code for the shaders
 		the vertex shader positions each vertex point */
 		const char *vertex_shader = "#version 410\n"												// Vertex Shader for tree.
+			"out vec3 colour;"													//Added this line in
 			"attribute vec3 vp;"
 			"uniform mat4 ortho, model, view, proj;"
 			"void main () {"
 			"  gl_Position = proj * view * model * vec4(vp, 1.0);"	// ADDING IN *ORTHO	BREAKS THE LEAVES FROM THE BRANCHES	// Tree position.
+			"  colour = vec3 (255, 0, 0, 1.0);"
 			"}";
 
+
 		const char *geometry_shader = "#version 410\n"
-			"layout(point) in;"
-			"layout (line_strip, max_vertices=2) out;"
+			// extension should be core -- commented out
+			// replaced gl_VerticesIn with gl_in.length ()
+			//#extension GL_EXT_geometry_shader4 : enable
 
-			"in VertexData {"
-				"vec2 texCoord;"
-				"vec3 normal;"
-		"	} VertexIn[3];"
+			"layout (points) in;"
+			// convert to points, line_strip, or triangle_strip
+			"layout (lines, max_vertices = 2) out;"
 
-		"	out VertexData {"
-		"		vec2 texCoord;"
-		"		vec3 normal;"
-		"	} VertexOut;"
 
-		"	void main()			{"
-			"for(int i = 0; i < gl_in.length(); i++){"
-			"	 // copy attributes"
-			"	gl_Position = gl_in[i].gl_Position;"
-			"	VertexOut.normal = VertexIn[i].normal;"
-			"	VertexOut.texCoord = VertexIn[i].texCoord;"
+		  // NB: in and out pass-through vertex->fragment variables must go here if used
+		"	in vec3 colour[];"
+		"	out vec3 f_colour;"
 
-				// done with the vertex
-			"	EmitVertex();"
-		"	}"
-		"	}";
+		"	void main () {"
+		"		for(int i = 0; i < gl_in.length (); i++) {"
+					// use original point as first point in triangle strip
+		"			gl_Position = gl_in[i].gl_Position;"
+					// output pass-through data to go to fragment-shader (colour)
+		"			f_colour = colour[0];"
+					// finalise first vertex
+		"			EmitVertex();"
+					// create another point relative to the previous
+		// "			gl_Position.y += 0.4;"
+		// 	"		f_colour = colour[0];"
+		// 		"	EmitVertex();"
+		// 			// create another point relative to the previous
+		// 			"gl_Position.x += 0.2;"
+		// 			"gl_Position.y -= 0.4;"
+		// 			"f_colour = colour[0];"
+		// 			"EmitVertex();"
+		// 			// create another point relative to the previous
+		// 			"gl_Position.y += 0.4;"
+		// 			"f_colour = colour[0];"
+		// 			"EmitVertex();"
+				"}"
+			"}";
+
+		// const char *geometry_shader = "#version 410\n"
+			// "layout(lines) in;"
+			// "layout (line_strip, max_vertices=2) out;"
+		//
+		// 	"in VertexData {"
+		// 		"vec2 texCoord;"
+		// 		"vec3 normal;"
+		// "	} VertexIn[3];"
+		//
+		// "	out VertexData {"
+		// "		vec2 texCoord;"
+		// "		vec3 normal;"
+		// "	} VertexOut;"
+		//
+		// "	void main()			{"
+		// 	"for(int i = 0; i < gl_in.length(); i++){"
+		// 	// copy attributes
+		// 	"	gl_Position = gl_in[i].gl_Position;"
+		// 	"	VertexOut.normal = VertexIn[i].normal;"
+		// 	"	VertexOut.texCoord = VertexIn[i].texCoord;"
+		//
+		// 	// done with the vertex
+		// 	"	EmitVertex();"
+		// "	}"
+		// "	}";
 
 		/* the fragment shader colours each fragment (pixel-sized area of the
 		triangle) */
 		const char *fragment_shader = "#version 410\n"												// Fragment Shader for tree.
+			"in vec3 f_colour;"
 			"out vec4 frag_colour;"
 			"void main () {"
 			//"  frag_colour = vec4 (0.545, 0.27, 0.074, 1.0);"    									//Makes tree brown.
@@ -837,7 +879,7 @@ int main() {
 			"}";
 
 	/* GL shader objects for vertex and fragment shader [components] */
-	GLuint vert_shader, frag_shader; //, geometryShader;
+	GLuint vert_shader, frag_shader, geometryShader;
 	/* GL shader program object [combined, to link] */
 	GLuint shader_programme;
 
@@ -986,15 +1028,15 @@ int main() {
 	vert_shader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vert_shader, 1, &vertex_shader, NULL);
 	glCompileShader(vert_shader);
-	// geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
-	// glShaderSource(geometryShader, 1, &geometry_shader, NULL);
-	// glCompileShader(geometryShader);
+	geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
+	glShaderSource(geometryShader, 1, &geometry_shader, NULL);
+	glCompileShader(geometryShader);
 	frag_shader = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(frag_shader, 1, &fragment_shader, NULL);
 	glCompileShader(frag_shader);
 	shader_programme = glCreateProgram();
 	glAttachShader(shader_programme, frag_shader);
-	// glAttachShader(shader_programme, geometryShader);
+	glAttachShader(shader_programme, geometryShader);
 	glAttachShader(shader_programme, vert_shader);
 	glLinkProgram(shader_programme);
 	glPointSize(5.0);
