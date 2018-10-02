@@ -1,0 +1,11 @@
+program 3 GL_VALIDATE_STATUS = GL_TRUE
+program 6 GL_VALIDATE_STATUS = GL_TRUE
+creating shader from test_vs.glsl...
+creating shader from test_vs.glsl...
+creating shader from test_vs.glsl...
+program 3 GL_VALIDATE_STATUS = GL_TRUE
+program 6 GL_VALIDATE_STATUS = GL_TRUE
+program 3 GL_VALIDATE_STATUS = GL_TRUE
+program 6 GL_VALIDATE_STATUS = GL_TRUE
+program 3 GL_VALIDATE_STATUS = GL_TRUE
+program 6 GL_VALIDATE_STATUS = GL_TRUE
