@@ -811,7 +811,7 @@ int main() {
 
 		//	MAKE SURE 'in' are arrays
 
-		"layout (points) in;" // what about lines_adjacency?
+		"layout (lines) in;" // lines, line_Strip is output, not input.
 		// convert to points, line_strip, or triangle_strip
 		"layout (line_strip, max_vertices = 2) out;"
 		// NB: in and out pass-through vertex->fragment variables must go here if used
@@ -819,7 +819,7 @@ int main() {
 		"out vec3 f_colour;"
 
 		"void main () {"
-			"for(int i = 0; i < gl_in.length (); i++) {"
+			"for(int i = 0; i < gl_in.length (); i+=2) {"
 					// use original point as first point in triangle strip
 					"gl_Position = gl_in[i].gl_Position;"
 					// output pass-through data to go to fragment-shader (colour)
@@ -827,18 +827,9 @@ int main() {
 					// finalise first vertex
 					"EmitVertex();"
 				// create another point relative to the previous
-	// "			gl_Position.y += 0.4;"
-	// 	"		f_colour = colour[0];"
-	// 		"	EmitVertex();"
-	// // 			// create another point relative to the previous
-	// 			"gl_Position.x += 0.2;"
-	// 			"gl_Position.y -= 0.4;"
-	// 			"f_colour = colour[0];"
-	// 			"EmitVertex();"
-	// // 			// create another point relative to the previous
-	// 			"gl_Position.y += 0.4;"
-	// 			"f_colour = colour[0];"
-	// 			"EmitVertex();"
+					"gl_Position = gl_in[i+1].gl_Position;"
+					"f_colour = colour[0];"
+					"EmitVertex();"
 			"}"
 		"}";
 
@@ -848,8 +839,8 @@ int main() {
 		"in vec3 f_colour;"
 		"out vec4 frag_colour;"
 		"void main () {"
-		//"  frag_colour = vec4 (0.545, 0.27, 0.074, 1.0);"    									//Makes tree brown.
-		"  frag_colour = vec4 (255, 0, 0, 1.0);"
+		"  frag_colour = vec4 (0.545, 0.27, 0.074, 1.0);"    									//Makes tree brown.
+		//"  frag_colour = vec4 (255, 0, 0, 1.0);"
 		"}";
 	//
 	// /* these are the strings of code for the shaders
@@ -872,7 +863,7 @@ int main() {
 
 
 	/* GL shader objects for vertex and fragment shader [components] */
-	GLuint vert_shader, frag_shader, geometryShader;
+	GLuint vert_shader, frag_shader, geoShader;
 	/* GL shader program object [combined, to link] */
 	GLuint shader_programme;
 
@@ -1030,14 +1021,14 @@ int main() {
 			return 1; // or exit or something
 		}
 
-	geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
-	glShaderSource(geometryShader, 1, &geometry_shader, NULL);
-	glCompileShader(geometryShader);
+	geoShader = glCreateShader(GL_GEOMETRY_SHADER);
+	glShaderSource(geoShader, 1, &geometry_shader, NULL);
+	glCompileShader(geoShader);
 
 	// check for compile errors
-		glGetShaderiv( geometryShader, GL_COMPILE_STATUS, &params );
+		glGetShaderiv( geoShader, GL_COMPILE_STATUS, &params );
 		if ( GL_TRUE != params ) {
-			fprintf( stderr, "ERROR: geom GL shader index %i did not compile\n", geometryShader );
+			fprintf( stderr, "ERROR: geom GL shader index %i did not compile\n", geoShader );
 			// print_shader_info_log( geometryShader );
 			return 1; // or exit or something
 		}
@@ -1056,7 +1047,7 @@ int main() {
 
 	shader_programme = glCreateProgram();
 	glAttachShader(shader_programme, frag_shader);
-	glAttachShader(shader_programme, geometryShader);
+	glAttachShader(shader_programme, geoShader);
 	glAttachShader(shader_programme, vert_shader);
 	glLinkProgram(shader_programme);
 	glPointSize(5.0);
@@ -1149,7 +1140,7 @@ int main() {
 		glBindVertexArray(vao);
 		glLineWidth(1.5);
 		/* draw points 0-3 from the currently bound VAO with current in-use shader */
-		glDrawArrays(GL_LINES, 0, totalCount);
+		glDrawArrays(GL_LINE_STRIP, 0, totalCount);
 	//------------------------------------------------------------------------------------	Leaf stuff
 
 		//View matrix info
