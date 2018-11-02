@@ -63,7 +63,7 @@ GLfloat* multiplyAgain(GLfloat matrix1[], GLfloat matrix2[], GLfloat result1[]){
 }
 
 string generatePattern(){												//Generates a pattern to create a tree.
-    int numIts = 2; 														// Number of iterations
+    int numIts = 1; 														// Number of iterations
     string pattern = "F"; //"[X]";    					// Using F for the pattern
 
     for (int i = 0; i < numIts; i++){
@@ -92,6 +92,12 @@ int countF(string pattern){
 	}
 	return count;
 }
+
+int pointLocation(int coord1, int coord2, float percent1, float percent2){
+	int newCoord = (percent1*coord1) + (percent2*coord2);
+	return newCoord;
+}
+
 
 int countbracket(string pattern) {
 	int countBracket = 0;
@@ -435,6 +441,9 @@ int main() {
 	const GLubyte *version;
 	GLuint vao;
 	GLuint vbo;
+
+	int returnVal = pointLocation(10, 20, .9, .1);
+	cout << returnVal << endl;
 
 	GLfloat* resultAgain = new float[16];
 
@@ -808,7 +817,6 @@ int main() {
 		// extension should be core -- commented out
 		// replaced gl_VerticesIn with gl_in.length ()
 		//#extension GL_EXT_geometry_shader4 : enable
-
 		//	MAKE SURE 'in' are arrays
 
 		"layout (lines) in;" // lines, line_Strip is output, not input.
@@ -825,6 +833,7 @@ int main() {
 					// output pass-through data to go to fragment-shader (colour)
 					"f_colour = colour[0];"
 					// finalise first vertex
+					//"glLineWidth(1);"
 					"EmitVertex();"
 				// create another point relative to the previous
 					"gl_Position = gl_in[i+1].gl_Position;"
@@ -842,25 +851,6 @@ int main() {
 		"  frag_colour = vec4 (0.545, 0.27, 0.074, 1.0);"    									//Makes tree brown.
 		//"  frag_colour = vec4 (255, 0, 0, 1.0);"
 		"}";
-	//
-	// /* these are the strings of code for the shaders
-	// the vertex shader positions each vertex point */
-	// const char *vertex_shader = "#version 410\n"												// Vertex Shader for tree.
-	// 	"attribute vec3 vp;"
-	// 	"uniform mat4 ortho, model, view, proj;"
-	// 	"void main () {"
-	// 	"  gl_Position = proj * view * model * vec4(vp, 1.0);"	// ADDING IN *ORTHO	BREAKS THE LEAVES FROM THE BRANCHES	// Tree position.
-	// 	"}";
-	// /* the fragment shader colours each fragment (pixel-sized area of the
-	// triangle) */
-	// const char *fragment_shader = "#version 410\n"												// Fragment Shader for tree.
-	// 	"out vec4 frag_colour;"
-	// 	"void main () {"
-	// 	"  frag_colour = vec4 (0.545, 0.27, 0.074, 1.0);"    									//Makes tree brown.
-	// 	"}";
-
-	// GLuint shader_programme = create_programme_from_files("test_vs.glsl", "test_fs.glsl");
-
 
 	/* GL shader objects for vertex and fragment shader [components] */
 	GLuint vert_shader, frag_shader, geoShader;
