@@ -821,24 +821,26 @@ int main() {
 
 		"layout (lines) in;" // lines, line_Strip is output, not input.
 		// convert to points, line_strip, or triangle_strip
-		"layout (line_strip, max_vertices = 2) out;"
+		"layout (line_strip, max_vertices = 10) out;"
 		// NB: in and out pass-through vertex->fragment variables must go here if used
 		"in vec3 colour[];"
 		"out vec3 f_colour;"
 
 		"void main () {"
-			"for(int i = 0; i < gl_in.length (); i+=2) {"
-					// use original point as first point in triangle strip
-					"gl_Position = gl_in[i].gl_Position;"
-					// output pass-through data to go to fragment-shader (colour)
-					"f_colour = colour[0];"
-					// finalise first vertex
-					//"glLineWidth(1);"
-					"EmitVertex();"
-				// create another point relative to the previous
-					"gl_Position = gl_in[i+1].gl_Position;"
-					"f_colour = colour[0];"
-					"EmitVertex();"
+		//(percent1*coord1) + (percent2*coord2)
+			"for(int i = 0; i < gl_in.length (); i+=1) {"
+				"int q = 90;"
+				"int r = 10;"
+				"for(int j = 0; j < 10; j+=1) {"
+							"gl_Position = gl_in[i].gl_Position;"
+
+							"f_colour = colour[0];"
+							// create another point relative to the previous
+					//"}"
+							"r += 10;"
+							"q -= 10;"
+							"EmitVertex();"
+				"}"
 			"}"
 		"}";
 
