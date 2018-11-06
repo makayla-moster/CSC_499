@@ -819,28 +819,38 @@ int main() {
 		//#extension GL_EXT_geometry_shader4 : enable
 		//	MAKE SURE 'in' are arrays
 
-		"layout (lines) in;" // lines, line_Strip is output, not input.
+		"layout (points) in;" // lines, line_Strip is output, not input.
 		// convert to points, line_strip, or triangle_strip
-		"layout (line_strip, max_vertices = 10) out;"
+		"layout (triangle_strip, max_vertices = 4) out;"
 		// NB: in and out pass-through vertex->fragment variables must go here if used
 		"in vec3 colour[];"
 		"out vec3 f_colour;"
 
-		"void main () {"
-		//(percent1*coord1) + (percent2*coord2)
-			"for(int i = 0; i < gl_in.length (); i+=1) {"
-				"int q = 90;"
-				"int r = 10;"
-				"for(int j = 0; j < 10; j+=1) {"
-							"gl_Position = gl_in[i].gl_Position;"
+		"void thickLine(vec4 position){"
+			"gl_Position = position + vec4(-0.02, -0.02, 0.0, 0.0);" //bottom left
+			"EmitVertex();"
+			"gl_Position = position + vec4(0.02, -0.02, 0.0, 0.0);" //bottom right
+			"EmitVertex();"
+			"gl_Position = position + vec4(-0.02, 0.02, 0.0, 0.0);" //top left
+			"EmitVertex();"
+			"gl_Position = position + vec4(0.02, 0.02, 0.0, 0.0);" //top right
+			"EmitVertex();"
+			"EndPrimitive();"
+		"}"
 
-							"f_colour = colour[0];"
-							// create another point relative to the previous
-					//"}"
-							"r += 10;"
-							"q -= 10;"
-							"EmitVertex();"
-				"}"
+		"void main () {"
+			"for(int i = 0; i < gl_in.length (); i+=1) {"
+					"vec4 position = gl_in[i].gl_Position;"
+					"thickLine(gl_in[i].gl_Position);"
+					// "gl_Position = position + vec4(-0.5, -0.5, 0.0, 0.0);" //bottom left
+					// "EmitVertex();"
+					// "gl_Position = position + vec4(0.5, -0.5, 0.0, 0.0);" //bottom right
+					// "EmitVertex();"
+					// "gl_Position = position + vec4(-0.5, 0.5, 0.0, 0.0);" //top left
+					// "EmitVertex();"
+					// "gl_Position = position + vec4(0.5, 0.5, 0.0, 0.0);" //top right
+					// "EmitVertex();"
+					// "EndPrimitive();"
 			"}"
 		"}";
 
@@ -851,7 +861,7 @@ int main() {
 		"out vec4 frag_colour;"
 		"void main () {"
 		"  frag_colour = vec4 (0.545, 0.27, 0.074, 1.0);"    									//Makes tree brown.
-		//"  frag_colour = vec4 (255, 0, 0, 1.0);"
+		// "  frag_colour = vec4 (255, 0, 0, 1.0);"
 		"}";
 
 	/* GL shader objects for vertex and fragment shader [components] */
@@ -1130,9 +1140,9 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glUseProgram(shader_programme);
 		glBindVertexArray(vao);
-		glLineWidth(1.5);
+		// glLineWidth(1.5);
 		/* draw points 0-3 from the currently bound VAO with current in-use shader */
-		glDrawArrays(GL_LINE_STRIP, 0, totalCount);
+		glDrawArrays(GL_POINTS, 0, totalCount); //GL_LINE_STRIP
 	//------------------------------------------------------------------------------------	Leaf stuff
 
 		//View matrix info
