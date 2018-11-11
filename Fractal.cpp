@@ -63,7 +63,7 @@ GLfloat* multiplyAgain(GLfloat matrix1[], GLfloat matrix2[], GLfloat result1[]){
 }
 
 string generatePattern(){												//Generates a pattern to create a tree.
-    int numIts = 2; 														// Number of iterations
+    int numIts = 4; 														// Number of iterations
     string pattern = "F"; //"[X]";    					// Using F for the pattern
 
     for (int i = 0; i < numIts; i++){
@@ -93,6 +93,7 @@ int countF(string pattern){
 	return count;
 }
 
+
 int countbracket(string pattern) {
 	int countBracket = 0;
 	for (int idx = 0; idx < pattern.length(); idx++){					// Loops through string pattern to find number of ']' within the pattern.
@@ -102,6 +103,17 @@ int countbracket(string pattern) {
 	}
 
 	return countBracket;
+}
+
+int countLbracket(string pattern) {
+	int countLBracket = 0;
+	for (int idx = 0; idx < pattern.length(); idx++){					// Loops through string pattern to find number of ']' within the pattern.
+		if (pattern.substr(idx, 1).compare("[]") == 0){
+			countLBracket ++;
+		}
+	}
+
+	return countLBracket;
 }
 
 int countLabel(string modelName, char label[]){
@@ -441,15 +453,18 @@ int main() {
 	int rotation;													// Rotation of branches.
 	int count;														// Counts number of 'F' in string.
 	int countBracket;												// Counts number of ']' in string.
+	int countLBracket;
 
 	string pattern = generatePattern();								// Generates string pattern to make tree from.
 	//cout << pattern << endl << endl;
 	count = countF(pattern);										// Function to count the number of 'F' in the string.
 	countBracket = countbracket(pattern);							// Function to count the number of ']' in the string.
-	int totalCount = count + countBracket;							//Total amount of points, including the backtracking points that are added for the lines.
+	int totalCount = count*3 + countBracket;							//Total amount of points, including the backtracking points that are added for the lines.
+	//int totalBCount = countBracket + countLbracket(pattern);
+	cout << totalCount << endl;
 
 	GLfloat branchPoints[totalCount*3]; 							//List of points to make the branches. Includes extra points for lines.
-	GLfloat leafPoints[countBracket*3];								//List of points to place the leaves - only on the ends of branches though.
+	GLfloat leafPoints[totalCount*3];								//List of points to place the leaves - only on the ends of branches though.
 	GLfloat* result1 = new float[4];									//This is a new 4x1 matrix to acquire the new heading.
 	stack<float> PositionStack;										//Stack to put branch point positions on.
 	stack<float> HeadingStack;										//Stack to put branch headings on.
@@ -589,10 +604,10 @@ int main() {
 			leafPoints[leafCount + 2] = currentPosition[2];
 			leafCount += 3;
 
-			cout << endl << "After:" << endl;
+			/*cout << endl << "After:" << endl;
 			cout << "Position X: " << currentPosition[0] << endl;
 			cout << "Position Y: " << currentPosition[1] << endl;
-			cout << "Position Z: " << currentPosition[2] << endl << endl;
+			cout << "Position Z: " << currentPosition[2] << endl << endl;*/
 
 			currentPosition[0] = PositionStack.top();											//Sets the current position back to the top of the stack.
 			PositionStack.pop();																//Pops the current position from the top of the stack.
@@ -620,20 +635,33 @@ int main() {
 
 		else if (pattern.substr(idx, 1).compare("F") == 0){
 
-			cout << endl << "Before:" << endl;
+			/*cout << endl << "Before:" << endl;
 			cout << "Position X: " << currentPosition[0] << endl;
 			cout << "Position Y: " << currentPosition[1] << endl;
-			cout << "Position Z: " << currentPosition[2] << endl << endl;
+			cout << "Position Z: " << currentPosition[2] << endl << endl;*/
+			GLfloat lastPosX = currentPosition[0];
+			GLfloat lastPosY = currentPosition[1];
+			GLfloat lastPosZ = currentPosition[2];
 
-			currentPosition[0] += currentHeading[0]*.2;											//Changes the height of the tree, I like .2.
+			currentPosition[0] += currentHeading[0]*.2;													//Changes the height of the tree, I like .2.
 			currentPosition[1] += currentHeading[1]*.2;
 			currentPosition[2] += currentHeading[2]*.2;
 			currentPosition[3] += currentHeading[3];
+
+			GLfloat midX = (lastPosX + currentPosition[0]) / 2;
+			GLfloat midY = (lastPosY + currentPosition[1]) / 2;
+			GLfloat midZ = (lastPosZ + currentPosition[2]) / 2;
+
+			leafPoints[leafCount + 0] = midX;											//Adds the point to the array which will be where I put my leaf OBJ.
+			leafPoints[leafCount + 1] = midY;
+			leafPoints[leafCount + 2] = midZ;
+			leafCount += 3;
 
 			branchPoints[pointsCount + 0] = currentPosition[0];									//Adds the currentPosition to the list of points.
 			branchPoints[pointsCount + 1] = currentPosition[1];
 			branchPoints[pointsCount + 2] = currentPosition[2];
 			pointsCount += 3;
+
 		}
 
 		else if (pattern.substr(idx, 1).compare("+") == 0){				// Rotates tree branch left
@@ -669,13 +697,13 @@ int main() {
 		}
 	}
 
-	string modelName = "Leaf.obj";																//Name of the OBJ to load.
+	string modelName = "Leaf.obj";															//Name of the OBJ to load.
 
-	int numVert = countLabel(modelName, "v");													// Counts the number of vertices.
+	int numVert = countLabel(modelName, "v");										// Counts the number of vertices.
 	GLfloat* verts = new GLfloat[3*numVert];
-	loadVertices(modelName, verts);																// Loads vertices.
+	loadVertices(modelName, verts);															// Loads vertices.
 
-	int numFaces = countLabel(modelName, "f");													// Counts the number of faces.
+	int numFaces = countLabel(modelName, "f");									// Counts the number of faces.
 	GLint* faces = new GLint[3*numFaces];
 	loadFaces(modelName, faces);																// Loads faces.
 
@@ -716,10 +744,10 @@ int main() {
 	}
 	int numPoints = 3*numFaces;
 
-	/*cout << "Leaf Count: " << leafCount << endl;
+	cout << "Leaf Count: " << leafCount << endl;
 	cout << "numFaces: " << numFaces << endl << "numFaces-1: " << numFaces - 1 << endl;
 	cout << "Total leaf array num: " << leavesWanted*9*numFaces << endl;
-	cout << "Total XYZ for leaf points: " << leafCount << endl << "Total leaves: " << leafCount / 3 << endl << endl;*/
+	cout << "Total XYZ for leaf points: " << leafCount << endl << "Total leaves: " << leafCount / 3 << endl << endl;
 
 	cout << "\nCreating " << leafCount/3 << " leaves" << endl;									// Shows the user that it is creating leaves.
 	for (int beginLeaf = 0; beginLeaf < leavesWanted; beginLeaf++) {							// Begins making multiple leaves.
@@ -781,7 +809,7 @@ int main() {
 
 			float currentLeafPoint[] = {points[i], points[i + 1], points[i + 2], 1};			// Gets the x, y, z values from points (leaf) to multiply by.
 
-			multiply(newest4x4, currentLeafPoint, new4x1);										// Multiplies a 4x4 and a 4x1 matrix together and makes a new 4x1 matrix.
+			multiply(newest4x4, currentLeafPoint, new4x1);					// Multiplies a 4x4 and a 4x1 matrix together and makes a new 4x1 matrix.
 			points[i + 0] = new4x1[0];															// Sets current points x-val to be the x-val of the new	4x1 matrix.
 			points[i + 1] = new4x1[1];															// Sets current points y-val to be the y-val of the new	4x1 matrix.
 			points[i + 2] = new4x1[2];															// Sets current points z-val to be the z-val of the new	4x1 matrix.
@@ -805,31 +833,32 @@ int main() {
 
 
 	const char *geometry_shader = "#version 410\n"
-		// extension should be core -- commented out
-		// replaced gl_VerticesIn with gl_in.length ()
-		//#extension GL_EXT_geometry_shader4 : enable
-
 		//	MAKE SURE 'in' are arrays
-
 		"layout (lines) in;" // lines, line_Strip is output, not input.
 		// convert to points, line_strip, or triangle_strip
-		"layout (line_strip, max_vertices = 2) out;"
+		"layout (triangle_strip, max_vertices = 6) out;"
 		// NB: in and out pass-through vertex->fragment variables must go here if used
 		"in vec3 colour[];"
 		"out vec3 f_colour;"
 
+		"void thickLine(vec4 position, vec4 position2, float top, float bottom){"
+			"gl_Position = position + vec4(-bottom, -bottom, 0.0, 0.0);" //bottom left
+			"EmitVertex();"
+			"gl_Position = position + vec4(bottom, -bottom, 0.0, 0.0);" //bottom right
+			"EmitVertex();"
+			"gl_Position = position2 + vec4(-top, top, 0.0, 0.0);" //top left
+			"EmitVertex();"
+			"gl_Position = position2 + vec4(top, top, 0.0, 0.0);" //top right
+			"EmitVertex();"
+			"EndPrimitive();"
+		"}"
+
 		"void main () {"
-			"for(int i = 0; i < gl_in.length (); i+=2) {"
-					// use original point as first point in triangle strip
-					"gl_Position = gl_in[i].gl_Position;"
-					// output pass-through data to go to fragment-shader (colour)
-					"f_colour = colour[0];"
-					// finalise first vertex
-					"EmitVertex();"
-				// create another point relative to the previous
-					"gl_Position = gl_in[i+1].gl_Position;"
-					"f_colour = colour[0];"
-					"EmitVertex();"
+			"vec4 startingVec = {0.0f, -0.25f, 0.25f, 1.0f};"
+			"float bottom = 0.01;"
+			"float top = 0.009;"
+			"for(int i = 0; i < gl_in.length(); i++) {"
+						"thickLine(gl_in[0].gl_Position, gl_in[1].gl_Position, top, bottom);"
 			"}"
 		"}";
 
@@ -840,27 +869,8 @@ int main() {
 		"out vec4 frag_colour;"
 		"void main () {"
 		"  frag_colour = vec4 (0.545, 0.27, 0.074, 1.0);"    									//Makes tree brown.
-		//"  frag_colour = vec4 (255, 0, 0, 1.0);"
+		// "  frag_colour = vec4 (255, 0, 0, 1.0);"
 		"}";
-	//
-	// /* these are the strings of code for the shaders
-	// the vertex shader positions each vertex point */
-	// const char *vertex_shader = "#version 410\n"												// Vertex Shader for tree.
-	// 	"attribute vec3 vp;"
-	// 	"uniform mat4 ortho, model, view, proj;"
-	// 	"void main () {"
-	// 	"  gl_Position = proj * view * model * vec4(vp, 1.0);"	// ADDING IN *ORTHO	BREAKS THE LEAVES FROM THE BRANCHES	// Tree position.
-	// 	"}";
-	// /* the fragment shader colours each fragment (pixel-sized area of the
-	// triangle) */
-	// const char *fragment_shader = "#version 410\n"												// Fragment Shader for tree.
-	// 	"out vec4 frag_colour;"
-	// 	"void main () {"
-	// 	"  frag_colour = vec4 (0.545, 0.27, 0.074, 1.0);"    									//Makes tree brown.
-	// 	"}";
-
-	// GLuint shader_programme = create_programme_from_files("test_vs.glsl", "test_fs.glsl");
-
 
 	/* GL shader objects for vertex and fragment shader [components] */
 	GLuint vert_shader, frag_shader, geoShader;
@@ -1138,9 +1148,9 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glUseProgram(shader_programme);
 		glBindVertexArray(vao);
-		glLineWidth(1.5);
+		// glLineWidth(1.5);
 		/* draw points 0-3 from the currently bound VAO with current in-use shader */
-		glDrawArrays(GL_LINE_STRIP, 0, totalCount);
+		//glDrawArrays(GL_LINE_STRIP, 0, totalCount); //GL_LINE_STRIP
 	//------------------------------------------------------------------------------------	Leaf stuff
 
 		//View matrix info
