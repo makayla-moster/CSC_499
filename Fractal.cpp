@@ -266,6 +266,12 @@ void loadFaces(string modelName, GLint faces[]){    					//To read in Maya OBJ f
     cout << "Done loading faces\n";
 }
 
+float RandomFloat(float a, float b) {
+    float random = ((float) rand()) / (float) RAND_MAX;
+    float diff = b - a;
+    float r = random * diff;
+    return a + r;
+}
 
 /* Begin Code for User Interaction feature */
 
@@ -476,7 +482,7 @@ int main() {
 	float numRotateZ = (90 * 3.14159) / 180;								//For the first rotation, so the trunk is 90 degrees from the bottom of the screen. Converts degrees to radians.
 	float numRotateZ2 = 0; //(30 * 3.14159) / 180;								//For rotation of leaf.
 	float leafRotation = 0;
-	float leafRotationRad = 0;
+	// float leafRotationRad = 0;
 	float numRotateX = -(90 * 3.14159) / 180;								//Rotates the leaf OBJ to be upright in radians.
 	float numRotateY = (0 * 3.14159) / 180;									//Rotates the leaf along the y-axis.
 	GLfloat dx = 0;													//For leaf translation along the x-axis.
@@ -611,10 +617,10 @@ int main() {
 			leafPoints[leafCount + 2] = currentPosition[2];
 			leafCount += 3;
 
-			/*cout << endl << "After:" << endl;
+			cout << endl << "After:" << endl;
 			cout << "Position X: " << currentPosition[0] << endl;
 			cout << "Position Y: " << currentPosition[1] << endl;
-			cout << "Position Z: " << currentPosition[2] << endl << endl;*/
+			cout << "Position Z: " << currentPosition[2] << endl << endl;
 
 			currentPosition[0] = PositionStack.top();											//Sets the current position back to the top of the stack.
 			PositionStack.pop();																//Pops the current position from the top of the stack.
@@ -642,10 +648,11 @@ int main() {
 
 		else if (pattern.substr(idx, 1).compare("F") == 0){
 
-			/*cout << endl << "Before:" << endl;
+			cout << endl << "Before:" << endl;
 			cout << "Position X: " << currentPosition[0] << endl;
 			cout << "Position Y: " << currentPosition[1] << endl;
-			cout << "Position Z: " << currentPosition[2] << endl << endl;*/
+			cout << "Position Z: " << currentPosition[2] << endl << endl;
+
 			GLfloat lastPosX = currentPosition[0];
 			GLfloat lastPosY = currentPosition[1];
 			GLfloat lastPosZ = currentPosition[2];
@@ -659,7 +666,7 @@ int main() {
 			GLfloat midY = (lastPosY + currentPosition[1]) / 2;
 			GLfloat midZ = (lastPosZ + currentPosition[2]) / 2;
 
-			leafPoints[leafCount + 0] = midX;											//Adds the point to the array which will be where I put my leaf OBJ.
+			leafPoints[leafCount + 0] = midX;																		//Adds the point to the array which will be where I put my leaf OBJ.
 			leafPoints[leafCount + 1] = midY;
 			leafPoints[leafCount + 2] = midZ;
 			leafCount += 3;
@@ -668,6 +675,7 @@ int main() {
 			branchPoints[pointsCount + 1] = currentPosition[1];
 			branchPoints[pointsCount + 2] = currentPosition[2];
 			pointsCount += 3;
+
 
 		}
 
@@ -772,9 +780,6 @@ int main() {
 			float leafRotationRadZP;
 			float leafRotationRadZN;
 			int index;
-			// float numList = [0.0, .1, .2, .3, .4, .5, .6];
-
-			index = rand() % 6 + 1;
 
 
 			int zRotationLeafPos;
@@ -804,19 +809,18 @@ int main() {
 			dy = leafPoints[beginLeaf*3 + 1];													// Gets the y value of the end of the current branch.
 			dz = leafPoints[beginLeaf*3 + 2];													// Gets the z value of the end of the current branch.
 
-			//cout << "DX " << dx << endl;
-			leafRotation = 90*(1 - ((dx - 0)/(1-0)) + 180*((dx - 0)/(1-0)));
-			leafRotationRad = -(leafRotation * 3.14159) / 180;
-			//cout << "Rotation Amount " << leafRotationRad << endl;
+			float leafRot;
+			leafRot = RandomFloat(.1, .5);
+			// cout << leafRot << endl;
 
-			// rotationZ = rand() % 50 + 1;
-			// double rZ = rotationZ / 100;
-			// cout << double(rZ / 100) << endl;
+			float negLeafRot;
+			negLeafRot = RandomFloat(-.1, -.5);
+			// cout << negLeafRot << endl;
 
-			leafRotationZP = .5*(1 - ((dz - 0)/(1-0)) + 180*((dz - 0)/(1-0)));
+			leafRotationZP = leafRot*(1 - ((dz - 0)/(1-0)) + 180*((dz - 0)/(1-0)));
 			leafRotationRadZP = -(leafRotationZP * 3.14159) / 180;
 
-			leafRotationZN = -.5*(1 - ((dz - 0)/(1-0)) + 180*((dz - 0)/(1-0)));
+			leafRotationZN = negLeafRot*(1 - ((dz - 0)/(1-0)) + 180*((dz - 0)/(1-0)));
 			leafRotationRadZN = -(leafRotationZN * 3.14159) / 180;
 
 			if (dx > 0) {
@@ -1159,7 +1163,7 @@ int main() {
 	glAttachShader(shader_programme, geoShader);
 	glAttachShader(shader_programme, vert_shader);
 	glLinkProgram(shader_programme);
-	glPointSize(5.0);
+	// glPointSize(5.0);
 
 	glGetProgramiv( shader_programme, GL_LINK_STATUS, &params );
 	if ( GL_TRUE != params ) {
@@ -1300,7 +1304,7 @@ int main() {
 		proMat[5] = near/range;
 		proMat[10] = -(far+near)/(far-near);
 		proMat[14] = -(2*far*near)/(far-near);
-		viewMat = proMat;
+		viewMat = ortho;
 		multiplyNew(view, viewMat, viewResult);
 
 		/* put the stuff we've been drawing onto the display */
