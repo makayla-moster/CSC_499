@@ -266,6 +266,12 @@ void loadFaces(string modelName, GLint faces[]){    					//To read in Maya OBJ f
     cout << "Done loading faces\n";
 }
 
+float RandomFloat(float a, float b) {
+    float random = ((float) rand()) / (float) RAND_MAX;
+    float diff = b - a;
+    float r = random * diff;
+    return a + r;
+}
 
 /* Begin Code for User Interaction feature */
 
@@ -425,10 +431,10 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		aspect -= 0.1;
 		//cout<<d<<"\n";
 	}
-	if(key == GLFW_KEY_Q && action == GLFW_PRESS){
-		cout << "Q pressed - change to orthogonal\n";
-		viewMat = ortho;
-	}
+	// if(key == GLFW_KEY_Q && action == GLFW_PRESS){
+	// 	cout << "Q pressed - change to orthogonal\n";
+	// 	viewMat = ortho;
+	// }
 	if(key == GLFW_KEY_H && action == GLFW_PRESS){
 		cout << "H pressed - changed to promat\n";
 		viewMat = proMat;
@@ -459,22 +465,24 @@ int main() {
 	//cout << pattern << endl << endl;
 	count = countF(pattern);										// Function to count the number of 'F' in the string.
 	countBracket = countbracket(pattern);							// Function to count the number of ']' in the string.
-	int totalCount = count*3 + countBracket;							//Total amount of points, including the backtracking points that are added for the lines.
+	int totalCount = count + countBracket;							//Total amount of points, including the backtracking points that are added for the lines.
+	int totalLeafCount = count*3 + countBracket;
 	//int totalBCount = countBracket + countLbracket(pattern);
-	cout << totalCount << endl;
+	// cout << totalCount << endl;
 
 	GLfloat branchPoints[totalCount*3]; 							//List of points to make the branches. Includes extra points for lines.
-	GLfloat leafPoints[totalCount*3];								//List of points to place the leaves - only on the ends of branches though.
+	GLfloat leafPoints[totalLeafCount*3];								//List of points to place the leaves - only on the ends of branches though.
 	GLfloat* result1 = new float[4];									//This is a new 4x1 matrix to acquire the new heading.
 	stack<float> PositionStack;										//Stack to put branch point positions on.
 	stack<float> HeadingStack;										//Stack to put branch headings on.
 	int pointsCount = 0;											//Counts number of points needed to make a matrix of points.
 	int leafCount = 0;												//Counts number of points needed to make a matrix for leaves.
 
+	float z3;
 	float numRotateZ = (90 * 3.14159) / 180;								//For the first rotation, so the trunk is 90 degrees from the bottom of the screen. Converts degrees to radians.
 	float numRotateZ2 = 0; //(30 * 3.14159) / 180;								//For rotation of leaf.
 	float leafRotation = 0;
-	float leafRotationRad = 0;
+	// float leafRotationRad = 0;
 	float numRotateX = -(90 * 3.14159) / 180;								//Rotates the leaf OBJ to be upright in radians.
 	float numRotateY = (0 * 3.14159) / 180;									//Rotates the leaf along the y-axis.
 	GLfloat dx = 0;													//For leaf translation along the x-axis.
@@ -493,6 +501,11 @@ int main() {
 	GLfloat rotateZ2[] = 																		//Rotation matrix for the z-axis.
 		{cos(numRotateZ2),sin(numRotateZ2),0,0,
 		-sin(numRotateZ2),cos(numRotateZ2),0,0,
+		0,0,1,0,
+		0,0,0,1};
+	GLfloat rotateZ3[] = 																		//Rotation matrix for the z-axis.
+		{cos(z3),sin(z3),0,0,
+		-sin(z3),cos(z3),0,0,
 		0,0,1,0,
 		0,0,0,1};
 	GLfloat scale1[] =																				//Scale matrix.
@@ -604,10 +617,10 @@ int main() {
 			leafPoints[leafCount + 2] = currentPosition[2];
 			leafCount += 3;
 
-			/*cout << endl << "After:" << endl;
+			cout << endl << "After:" << endl;
 			cout << "Position X: " << currentPosition[0] << endl;
 			cout << "Position Y: " << currentPosition[1] << endl;
-			cout << "Position Z: " << currentPosition[2] << endl << endl;*/
+			cout << "Position Z: " << currentPosition[2] << endl << endl;
 
 			currentPosition[0] = PositionStack.top();											//Sets the current position back to the top of the stack.
 			PositionStack.pop();																//Pops the current position from the top of the stack.
@@ -635,10 +648,11 @@ int main() {
 
 		else if (pattern.substr(idx, 1).compare("F") == 0){
 
-			/*cout << endl << "Before:" << endl;
+			cout << endl << "Before:" << endl;
 			cout << "Position X: " << currentPosition[0] << endl;
 			cout << "Position Y: " << currentPosition[1] << endl;
-			cout << "Position Z: " << currentPosition[2] << endl << endl;*/
+			cout << "Position Z: " << currentPosition[2] << endl << endl;
+
 			GLfloat lastPosX = currentPosition[0];
 			GLfloat lastPosY = currentPosition[1];
 			GLfloat lastPosZ = currentPosition[2];
@@ -652,7 +666,7 @@ int main() {
 			GLfloat midY = (lastPosY + currentPosition[1]) / 2;
 			GLfloat midZ = (lastPosZ + currentPosition[2]) / 2;
 
-			leafPoints[leafCount + 0] = midX;											//Adds the point to the array which will be where I put my leaf OBJ.
+			leafPoints[leafCount + 0] = midX;																		//Adds the point to the array which will be where I put my leaf OBJ.
 			leafPoints[leafCount + 1] = midY;
 			leafPoints[leafCount + 2] = midZ;
 			leafCount += 3;
@@ -661,6 +675,7 @@ int main() {
 			branchPoints[pointsCount + 1] = currentPosition[1];
 			branchPoints[pointsCount + 2] = currentPosition[2];
 			pointsCount += 3;
+
 
 		}
 
@@ -744,10 +759,10 @@ int main() {
 	}
 	int numPoints = 3*numFaces;
 
-	cout << "Leaf Count: " << leafCount << endl;
+	/*cout << "Leaf Count: " << leafCount << endl;
 	cout << "numFaces: " << numFaces << endl << "numFaces-1: " << numFaces - 1 << endl;
 	cout << "Total leaf array num: " << leavesWanted*9*numFaces << endl;
-	cout << "Total XYZ for leaf points: " << leafCount << endl << "Total leaves: " << leafCount / 3 << endl << endl;
+	cout << "Total XYZ for leaf points: " << leafCount << endl << "Total leaves: " << leafCount / 3 << endl << endl;*/
 
 	cout << "\nCreating " << leafCount/3 << " leaves" << endl;									// Shows the user that it is creating leaves.
 	for (int beginLeaf = 0; beginLeaf < leavesWanted; beginLeaf++) {							// Begins making multiple leaves.
@@ -759,6 +774,17 @@ int main() {
 		for (int i = beginLeaf*9*numFaces; i < endLeaf*9*numFaces - 1; i += 3){					// Starts loop to multiply each point by my matrices.
 			int j;
 			int k;
+
+			float leafRotationZP;
+			float leafRotationZN;
+			float leafRotationRadZP;
+			float leafRotationRadZN;
+			int index;
+
+
+			int zRotationLeafPos;
+			int zRotationLeafNeg;
+
 			GLfloat* new4x4 = new float[16];													// Creates a new array to hold a 4x4 matrix.
 			for (j = 0, k = 0; j < 16; j++){													// Sets all values of 4x4 to 0.
 				new4x4[j] = k;
@@ -769,6 +795,10 @@ int main() {
 				newest4x4[j] = k;
 			}
 
+			GLfloat* newest4x4H = new float[16];													// Creates a new array to hold a 4x4 matrix.
+			for (j = 0, k = 0; j < 16; j++){													// Sets all values of 4x4 to 0.
+				newest4x4H[j] = k;
+			}
 
 			GLfloat* new4x1 = new float[4];														// Creates a new array to hold a 4x1 vector.
 			for (j = 0, k = 0; j < 4; j++){														// Sets all values of 4x1 to 0.
@@ -779,10 +809,36 @@ int main() {
 			dy = leafPoints[beginLeaf*3 + 1];													// Gets the y value of the end of the current branch.
 			dz = leafPoints[beginLeaf*3 + 2];													// Gets the z value of the end of the current branch.
 
-			//cout << "DX " << dx << endl;
-			leafRotation = 90*(1 - ((dx - 0)/(1-0)) + 180*((dx - 0)/(1-0)));
-			leafRotationRad = -(leafRotation * 3.14159) / 180;
-			//cout << "Rotation Amount " << leafRotationRad << endl;
+			float leafRot;
+			leafRot = RandomFloat(.1, .5);
+			// cout << leafRot << endl;
+
+			float negLeafRot;
+			negLeafRot = RandomFloat(-.1, -.5);
+			// cout << negLeafRot << endl;
+
+			leafRotationZP = leafRot*(1 - ((dz - 0)/(1-0)) + 180*((dz - 0)/(1-0)));
+			leafRotationRadZP = -(leafRotationZP * 3.14159) / 180;
+
+			leafRotationZN = negLeafRot*(1 - ((dz - 0)/(1-0)) + 180*((dz - 0)/(1-0)));
+			leafRotationRadZN = -(leafRotationZN * 3.14159) / 180;
+
+			if (dx > 0) {
+				rotateZ3[0] = cos(leafRotationRadZP);
+				rotateZ3[1] = sin(leafRotationRadZP);
+				rotateZ3[4] = -sin(leafRotationRadZP);
+				rotateZ3[5] = cos(leafRotationRadZP);
+			} else if (dx == 0){
+				rotateZ3[0] = cos(0);
+				rotateZ3[1] = sin(0);
+				rotateZ3[4] = -sin(0);
+				rotateZ3[5] = cos(0);
+			} else {
+				rotateZ3[0] = cos(leafRotationRadZN);
+				rotateZ3[1] = sin(leafRotationRadZN);
+				rotateZ3[4] = -sin(leafRotationRadZN);
+				rotateZ3[5] = cos(leafRotationRadZN);
+			}
 
 			translateMat[12] = dx;																	// Sets the dx value of translateMat to be the x-val of the current branch.
 			translateMat[13] = dy;																	// Sets the dy value of translateMat to be the y-val of the current branch.
@@ -805,11 +861,15 @@ int main() {
 
 			new4x4 = multiplyAgain(rotateX1, scale1, new4x4);										// Multiplies two 4x4 matrices together and makes a new matrix.
 			//newest4x4 = multiplyAgain(rotateZ2, new4x4, newest4x4);
-			newest4x4 = multiplyAgain(translateMat, new4x4, newest4x4);							// Multiplies two 4x4 matrices together and makes a new matrix.
+			newest4x4H = multiplyAgain(rotateZ3, new4x4, newest4x4H);
+			newest4x4 = multiplyAgain(translateMat, newest4x4H, newest4x4);							// Multiplies two 4x4 matrices together and makes a new matrix.
+
+
 
 			float currentLeafPoint[] = {points[i], points[i + 1], points[i + 2], 1};			// Gets the x, y, z values from points (leaf) to multiply by.
 
 			multiply(newest4x4, currentLeafPoint, new4x1);					// Multiplies a 4x4 and a 4x1 matrix together and makes a new 4x1 matrix.
+
 			points[i + 0] = new4x1[0];															// Sets current points x-val to be the x-val of the new	4x1 matrix.
 			points[i + 1] = new4x1[1];															// Sets current points y-val to be the y-val of the new	4x1 matrix.
 			points[i + 2] = new4x1[2];															// Sets current points z-val to be the z-val of the new	4x1 matrix.
@@ -824,9 +884,14 @@ int main() {
 	the vertex shader positions each vertex point */
 	const char *vertex_shader = "#version 410\n"												// Vertex Shader for tree.
 		"out vec3 colour;"													//Added this line in
-		"attribute vec3 vp;"
-		"uniform mat4 ortho, model, view, proj;"
+		// "attribute vec3 vp;"
+		"layout (location = 0) in vec3 vp;"
+		"layout (location = 1) in vec3 vertex_normal;"
+		"uniform mat4 model, view, proj;"
+		"out vec3 position_eye, normal_eye;"
 		"void main () {"
+		"	position_eye = vp;"
+		"	normal_eye = vertex_normal, 1.0;"
 		"  gl_Position = proj * view * model * vec4(vp, 1.0);"	// ADDING IN *ORTHO	BREAKS THE LEAVES FROM THE BRANCHES	// Tree position.
 		"  colour = vec3 (255, 0, 0);"
 		"}";
@@ -840,6 +905,8 @@ int main() {
 		// NB: in and out pass-through vertex->fragment variables must go here if used
 		"in vec3 colour[];"
 		"out vec3 f_colour;"
+		"out vec3 position_eye;"
+		"out vec3 normal_eye;"
 
 		"void thickLine(vec4 position, vec4 position2, float top, float bottom){"
 			"gl_Position = position + vec4(-bottom, -bottom, 0.0, 0.0);" //bottom left
@@ -855,8 +922,8 @@ int main() {
 
 		"void main () {"
 			"vec4 startingVec = {0.0f, -0.25f, 0.25f, 1.0f};"
-			"float bottom = 0.01;"
-			"float top = 0.009;"
+			"float bottom = 0.009;"
+			"float top = 0.007;"
 			"for(int i = 0; i < gl_in.length(); i++) {"
 						"thickLine(gl_in[0].gl_Position, gl_in[1].gl_Position, top, bottom);"
 			"}"
@@ -865,9 +932,45 @@ int main() {
 	/* the fragment shader colours each fragment (pixel-sized area of the
 	triangle) */
 	const char *fragment_shader = "#version 410\n"												// Fragment Shader for tree.
+		"in vec3 position_eye, normal_eye;"
+		// fixed point light properties
+		"vec3 light_position_world  = vec3 (2.0, 1.0, 0.0);"
+		"vec3 Ls = vec3 (1.0, 0.0, 0.0);" // white specular colour
+		"vec3 Ld = vec3 (0.7, 0.7, 0.7);" // dull white diffuse light colour
+		"vec3 La = vec3 (0.2, 0.2, 0.2);" // grey ambient colour
+
+		// surface reflectance
+		"vec3 Ks = vec3 (1.0, 0.0, 0.0);" // fully reflect specular light
+		"vec3 Kd = vec3 (0.0, 1.0, 0.0);" // green diffuse surface reflectance
+		"vec3 Ka = vec3 (1.0, 1.0, 1.0);" // fully reflect ambient light
+		"float specular_exponent = 100.0;" // specular 'power'
+
 		"in vec3 f_colour;"
 		"out vec4 frag_colour;"
 		"void main () {"
+		// ambient intensity
+		"vec3 Ia = La * Ka;"
+
+		// diffuse intensity
+		// raise light position to eye space
+		"vec3 light_position_eye = vec3 (vec4 (light_position_world, 1.0));"
+		"vec3 distance_to_light_eye = light_position_eye - position_eye;"
+		"vec3 direction_to_light_eye = normalize (distance_to_light_eye);"
+		"float dot_prod = dot (direction_to_light_eye, normal_eye);"
+		"dot_prod = max (dot_prod, 0.0);"
+		"vec3 Id = Ld * Kd * dot_prod;" // final diffuse intensity
+
+		// specular intensity
+		"vec3 surface_to_viewer_eye = normalize (-position_eye);"
+
+		// blinn
+		"vec3 half_way_eye = normalize (surface_to_viewer_eye + direction_to_light_eye);"
+		"float dot_prod_specular = max (dot (half_way_eye, normal_eye), 0.0);"
+		"float specular_factor = pow (dot_prod_specular, specular_exponent);"
+
+		"vec3 Is = Ls * Ks * specular_factor;" // final specular intensity
+
+		"  frag_colour = vec4 (Ia + Id + Is, 1.0);" //vec4 (0.1333, 0.545, 0.5, 1.0);"
 		"  frag_colour = vec4 (0.545, 0.27, 0.074, 1.0);"    									//Makes tree brown.
 		// "  frag_colour = vec4 (255, 0, 0, 1.0);"
 		"}";
@@ -1060,7 +1163,7 @@ int main() {
 	glAttachShader(shader_programme, geoShader);
 	glAttachShader(shader_programme, vert_shader);
 	glLinkProgram(shader_programme);
-	glPointSize(5.0);
+	// glPointSize(5.0);
 
 	glGetProgramiv( shader_programme, GL_LINK_STATUS, &params );
 	if ( GL_TRUE != params ) {
@@ -1110,6 +1213,8 @@ int main() {
 		return false;
 	}
 	( is_programme_valid( shader_programme2 ) );
+
+
 	//------------------------------------------------------------------------------------
 	/* this loop clears the drawing surface, then draws the geometry described
 			by the VAO onto the drawing surface. we 'poll events' to see if the window
@@ -1120,38 +1225,13 @@ int main() {
 			stuff being drawn one-after-the-other */
   multiplyNew(view, proMat, viewResult);
 	while ( !glfwWindowShouldClose( g_window ) ) {
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		multiplyNew(trans, translate, result);
 		multiplyNew(result, scale, result);
 		multiplyNew(result, rotateX, result);
 		multiplyNew(result, rotateY, result);
 		multiplyNew(result, rotateZ, result);
 		multiplyNew(result, skew, result);
-
-		//View matrix info
-
-		int ortho_mat_location = glGetUniformLocation (shader_programme, "ortho");
-		glUseProgram( shader_programme );
-		glUniformMatrix4fv (ortho_mat_location, 1, GL_FALSE, result);
-
-		int trans_mat_location = glGetUniformLocation (shader_programme, "model");
-		glUseProgram( shader_programme );
-		glUniformMatrix4fv (trans_mat_location, 1, GL_FALSE, result);
-		int view_mat_location = glGetUniformLocation (shader_programme, "view");
-		glUseProgram( shader_programme );
-		glUniformMatrix4fv (view_mat_location, 1, GL_FALSE, lookAt);
-		int proj_mat_location = glGetUniformLocation (shader_programme, "proj");
-		glUseProgram( shader_programme );
-		glUniformMatrix4fv (proj_mat_location, 1, GL_FALSE, viewResult);
-		//glUniformMatrix4fv (proj_mat_location, 1, GL_FALSE, proMat);
-
-		/* wipe the drawing surface clear */
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glUseProgram(shader_programme);
-		glBindVertexArray(vao);
-		// glLineWidth(1.5);
-		/* draw points 0-3 from the currently bound VAO with current in-use shader */
-		//glDrawArrays(GL_LINE_STRIP, 0, totalCount); //GL_LINE_STRIP
-	//------------------------------------------------------------------------------------	Leaf stuff
 
 		//View matrix info
 		int trans_mat_location2 = glGetUniformLocation (shader_programme2, "model");
@@ -1168,7 +1248,32 @@ int main() {
 		glUseProgram(shader_programme2);
 		glBindVertexArray(vao2);
 		glDrawArrays(GL_TRIANGLES, 0, leavesWanted * numPoints);
-	//------------------------------------------------------------------------------------
+
+		//View matrix info
+
+		// int ortho_mat_location = glGetUniformLocation (shader_programme, "ortho");
+		// glUseProgram( shader_programme );
+		// glUniformMatrix4fv (ortho_mat_location, 1, GL_FALSE, result);
+
+		int trans_mat_location = glGetUniformLocation (shader_programme, "model");
+		glUseProgram( shader_programme );
+		glUniformMatrix4fv (trans_mat_location, 1, GL_FALSE, result);
+		int view_mat_location = glGetUniformLocation (shader_programme, "view");
+		glUseProgram( shader_programme );
+		glUniformMatrix4fv (view_mat_location, 1, GL_FALSE, lookAt);
+		int proj_mat_location = glGetUniformLocation (shader_programme, "proj");
+		glUseProgram( shader_programme );
+		glUniformMatrix4fv (proj_mat_location, 1, GL_FALSE, viewResult);
+		//glUniformMatrix4fv (proj_mat_location, 1, GL_FALSE, proMat);
+
+		/* wipe the drawing surface clear */
+		// glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glUseProgram(shader_programme);
+		glBindVertexArray(vao);
+		// glLineWidth(1.5);
+		/* draw points 0-3 from the currently bound VAO with current in-use shader */
+		glDrawArrays(GL_LINE_STRIP, 0, totalCount); //GL_LINE_STRIP
+
 
 		/* update other events like input handling */
 		glfwPollEvents();
