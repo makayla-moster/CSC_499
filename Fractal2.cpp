@@ -3,7 +3,7 @@
 //g++ -w -o Makayla.exe gl_utils.cpp maths_funcs.cpp Fractal.cpp libglfw3dll.a libglew32.dll.a -I include -lglfw3 -lgdi32 -lopengl32												// Not using
 // g++ -w -o Makayla.exe gl_utils.cpp maths_funcs.cpp Fractal.cpp libglfw3dll.a libglew32.dll.a -I include -lgdi32 -lopengl32 -L ./ -lglew32 -lglfw3				// Not using
 
-// g++ -w -o monkm.exe gl_utils.cpp maths_funcs.cpp Fractal.cpp libglfw3dll.a libglew32.dll.a -I include -lgdi32 -lopengl32 -L ./ -lglew32 -lglfw3
+// g++ -w -o monkm.exe gl_utils.cpp maths_funcs.cpp Fractal2.cpp libglfw3dll.a libglew32.dll.a -I include -lgdi32 -lopengl32 -L ./ -lglew32 -lglfw3
 
 #include "gl_utils.h"
 #include "maths_funcs.h"
@@ -478,20 +478,6 @@ int main() {
 	int pointsCount = 0;											//Counts number of points needed to make a matrix of points.
 	int leafCount = 0;												//Counts number of points needed to make a matrix for leaves.
 
-	// NEGATIVE TREE Stuff
-	GLfloat negBranchPoints[totalCount*3]; 							//List of points to make the branches. Includes extra points for lines.
-	GLfloat negLeafPoints[totalLeafCount*3];								//List of points to place the leaves - only on the ends of branches though.
-	GLfloat* negResult1 = new float[4];									//This is a new 4x1 matrix to acquire the new heading.
-	stack<float> NegPositionStack;										//Stack to put branch point positions on.
-	stack<float> NegHeadingStack;										//Stack to put branch headings on.
-	int negPointsCount = 0;											//Counts number of points needed to make a matrix of points.
-	int negLeafCount = 0;												//Counts number of points needed to make a matrix for leaves.
-	GLfloat currentNegPosition[] = {0.0f, -0.25f, 0.25f, 1.0f};			//Beginning current position of the tree.
-	GLfloat currentNegHeading[] = {0.0f, 0.5f, -0.5f, 0.0f};				//Beginning current heading of the tree.
-	GLfloat dxNeg = 0;													//For leaf translation along the x-axis.
-	GLfloat dyNeg = 0;													//For leaf translation along the y-axis.
-	GLfloat dzNeg = 0;													//For leaf translation along the z-axis
-
 	float z3;
 	float numRotateZ = (90 * 3.14159) / 180;								//For the first rotation, so the trunk is 90 degrees from the bottom of the screen. Converts degrees to radians.
 	float numRotateZ2 = 0; //(30 * 3.14159) / 180;								//For rotation of leaf.
@@ -610,11 +596,6 @@ int main() {
 	branchPoints[pointsCount + 2] = currentPosition[2];
 	pointsCount += 3;
 
-	negBranchPoints[negPointsCount + 0] = currentNegPosition[0];											//These lines add the first set of points to the list of points.
-	negBranchPoints[negPointsCount + 1] = currentNegPosition[1];
-	negBranchPoints[negPointsCount + 2] = currentNegPosition[2];
-	negPointsCount += 3;
-
 
 	for (int idx = 0; idx < pattern.length(); idx++){											//Parser to parse through the Tree String pattern.
 		if (pattern.substr(idx,1).compare("[") == 0){
@@ -627,17 +608,6 @@ int main() {
 			HeadingStack.push(currentHeading[2]);
 			HeadingStack.push(currentHeading[1]);
 			HeadingStack.push(currentHeading[0]);
-
-			//Negative TREE
-			NegPositionStack.push(currentNegPosition[3]);												//Pushes the currentPosition onto the PositionStack.
-			NegPositionStack.push(currentNegPosition[2]);
-			NegPositionStack.push(currentNegPosition[1]);
-			NegPositionStack.push(currentNegPosition[0]);
-
-			NegHeadingStack.push(currentNegHeading[3]);												//Pushes the currentHeading onto the HeadingStack.
-			NegHeadingStack.push(currentNegHeading[2]);
-			NegHeadingStack.push(currentNegHeading[1]);
-			NegHeadingStack.push(currentNegHeading[0]);
 		}
 
 		else if (pattern.substr(idx, 1).compare("]") == 0){
@@ -674,35 +644,6 @@ int main() {
 			HeadingStack.pop();
 			currentHeading[3] = HeadingStack.top();
 			HeadingStack.pop();
-
-			// Negative Tree
-			negLeafPoints[negLeafCount + 0] = currentNegPosition[0];										//Adds the point to the array which will be where I put my leaf OBJ.
-			negLeafPoints[negLeafCount + 1] = currentNegPosition[1];
-			negLeafPoints[negLeafCount + 2] = currentNegPosition[2];
-			negLeafCount += 3;
-
-			currentNegPosition[0] = NegPositionStack.top();											//Sets the current position back to the top of the stack.
-			NegPositionStack.pop();																//Pops the current position from the top of the stack.
-			currentNegPosition[1] = NegPositionStack.top();
-			NegPositionStack.pop();
-			currentNegPosition[2] = NegPositionStack.top();
-			NegPositionStack.pop();
-			currentNegPosition[3] = NegPositionStack.top();
-			NegPositionStack.pop();
-
-			negBranchPoints[negPointsCount + 0] = currentNegPosition[0];									//Adds the currentPosition to the list of points.
-			negBranchPoints[negPointsCount + 1] = currentNegPosition[1];
-			negBranchPoints[negPointsCount + 2] = currentNegPosition[2];
-			negPointsCount += 3;
-
-			currentNegHeading[0] = NegHeadingStack.top();												//Sets the currentHeading to the top of the HeadingStack.
-			NegHeadingStack.pop();																	//Pops the currentHeading from the top of the stack.
-			currentNegHeading[1] = NegHeadingStack.top();
-			NegHeadingStack.pop();
-			currentNegHeading[2] = NegHeadingStack.top();
-			NegHeadingStack.pop();
-			currentNegHeading[3] = NegHeadingStack.top();
-			NegHeadingStack.pop();
 		}
 
 		else if (pattern.substr(idx, 1).compare("F") == 0){
@@ -735,30 +676,6 @@ int main() {
 			branchPoints[pointsCount + 2] = currentPosition[2];
 			pointsCount += 3;
 
-			//Negative TREE
-			GLfloat lastNegPosX = currentNegPosition[0];
-			GLfloat lastNegPosY = currentNegPosition[1];
-			GLfloat lastNegPosZ = currentNegPosition[2];
-
-			currentNegPosition[0] += currentNegHeading[0]*.2;													//Changes the height of the tree, I like .2.
-			currentNegPosition[1] += currentNegHeading[1]*.2;
-			currentNegPosition[2] += currentNegHeading[2]*.2;
-			currentNegPosition[3] += currentNegHeading[3];
-
-			GLfloat midNegX = (lastNegPosX + currentNegPosition[0]) / 2;
-			GLfloat midNegY = (lastNegPosY + currentNegPosition[1]) / 2;
-			GLfloat midNegZ = (lastNegPosZ + currentNegPosition[2]) / 2;
-
-			negLeafPoints[negLeafCount + 0] = midNegX;																		//Adds the point to the array which will be where I put my leaf OBJ.
-			negLeafPoints[negLeafCount + 1] = midNegY;
-			negLeafPoints[negLeafCount + 2] = midNegZ;
-			negLeafCount += 3;
-
-			negBranchPoints[negPointsCount + 0] = currentNegPosition[0];									//Adds the currentPosition to the list of points.
-			negBranchPoints[negPointsCount + 1] = currentNegPosition[1];
-			negBranchPoints[negPointsCount + 2] = currentNegPosition[2];
-			negPointsCount += 3;
-
 
 		}
 
@@ -776,13 +693,6 @@ int main() {
 			currentHeading[1] = result1[1] / magnitude;
 			currentHeading[2] = result1[2] / magnitude;
 			currentHeading[3] = result1[3] / magnitude;
-
-			multiply(rotateZ1, currentNegHeading, negResult1);											//Multiplies the rotateZ1 matrix by the currentHeading to get the new currentHeading.
-			float negMagnitude = sqrt((negResult1[0]*negResult1[0]) + (negResult1[1]*negResult1[1]) + (negResult1[2]*negResult1[2]) + (negResult1[3]*negResult1[3]));	//Finds magnitude for normalization of heading.
-			currentNegHeading[0] = negResult1[0] / negMagnitude;											//Normalizes the currentHeading vector.
-			currentNegHeading[1] = negResult1[1] / negMagnitude;
-			currentNegHeading[2] = negResult1[2] / negMagnitude;
-			currentNegHeading[3] = negResult1[3] / negMagnitude;
 		}
 
 		else if (pattern.substr(idx, 1).compare("-") == 0){				// Rotates a tree branch right
@@ -799,13 +709,6 @@ int main() {
 			currentHeading[1] = result1[1] / magnitude;
 			currentHeading[2] = result1[2] / magnitude;
 			currentHeading[3] = result1[3] / magnitude;
-
-			multiply(rotateZ1, currentNegHeading, negResult1);											//Multiplies the rotateZ1 matrix by the currentHeading to get the new currentHeading.
-			float negMagnitude = sqrt((negResult1[0]*negResult1[0]) + (negResult1[1]*negResult1[1]) + (negResult1[2]*negResult1[2]) + (negResult1[3]*negResult1[3]));	//Finds magnitude for normalization of heading.
-			currentNegHeading[0] = negResult1[0] / negMagnitude;											//Normalizes the currentHeading vector.
-			currentNegHeading[1] = negResult1[1] / negMagnitude;
-			currentNegHeading[2] = negResult1[2] / negMagnitude;
-			currentNegHeading[3] = negResult1[3] / negMagnitude;
 		}
 	}
 
@@ -861,14 +764,14 @@ int main() {
 	cout << "Total leaf array num: " << leavesWanted*9*numFaces << endl;
 	cout << "Total XYZ for leaf points: " << leafCount << endl << "Total leaves: " << leafCount / 3 << endl << endl;*/
 
-	cout << "\nCreating " << leafCount/3 << " positive leaves" << endl;										// Shows the user that it is creating leaves.
+	cout << "\nCreating " << leafCount/3 << " leaves" << endl;									// Shows the user that it is creating leaves.
 	for (int beginLeaf = 0; beginLeaf < leavesWanted; beginLeaf++) {							// Begins making multiple leaves.
-																	 																							// Sets beginLeaf to 0 and counts up to the number of leaves needed.
-		int endLeaf = beginLeaf + 1;																								// Sets endLeaf to be one greater than beginLeaf.
+																	 							// Sets beginLeaf to 0 and counts up to the number of leaves needed.
+		int endLeaf = beginLeaf + 1;															// Sets endLeaf to be one greater than beginLeaf.
 		//cout << "leaf " << endLeaf << endl;
-		//cout << beginLeaf << " " << endLeaf << endl;															// Creates a "leaf" from beginLeaf to endLeaf.
+		//cout << beginLeaf << " " << endLeaf << endl;											// Creates a "leaf" from beginLeaf to endLeaf.
 
-		for (int i = beginLeaf*9*numFaces; i < endLeaf*9*numFaces - 1; i += 3){			// Starts loop to multiply each point by my matrices.
+		for (int i = beginLeaf*9*numFaces; i < endLeaf*9*numFaces - 1; i += 3){					// Starts loop to multiply each point by my matrices.
 			int j;
 			int k;
 
@@ -876,11 +779,8 @@ int main() {
 			float leafRotationZN;
 			float leafRotationRadZP;
 			float leafRotationRadZN;
+			int index;
 
-			float negLeafRotationZP;
-			float negLeafRotationZN;
-			float negLeafRotationRadZP;
-			float negLeafRotationRadZN;
 
 			int zRotationLeafPos;
 			int zRotationLeafNeg;
@@ -923,7 +823,6 @@ int main() {
 			leafRotationZN = negLeafRot*(1 - ((dz - 0)/(1-0)) + 180*((dz - 0)/(1-0)));
 			leafRotationRadZN = -(leafRotationZN * 3.14159) / 180;
 
-
 			if (dx > 0) {
 				rotateZ3[0] = cos(leafRotationRadZP);
 				rotateZ3[1] = sin(leafRotationRadZP);
@@ -964,155 +863,22 @@ int main() {
 			//newest4x4 = multiplyAgain(rotateZ2, new4x4, newest4x4);
 			newest4x4H = multiplyAgain(rotateZ3, new4x4, newest4x4H);
 			newest4x4 = multiplyAgain(translateMat, newest4x4H, newest4x4);							// Multiplies two 4x4 matrices together and makes a new matrix.
+
+
+
+			float currentLeafPoint[] = {points[i], points[i + 1], points[i + 2], 1};			// Gets the x, y, z values from points (leaf) to multiply by.
+
+			multiply(newest4x4, currentLeafPoint, new4x1);					// Multiplies a 4x4 and a 4x1 matrix together and makes a new 4x1 matrix.
+
+			points[i + 0] = new4x1[0];															// Sets current points x-val to be the x-val of the new	4x1 matrix.
+			points[i + 1] = new4x1[1];															// Sets current points y-val to be the y-val of the new	4x1 matrix.
+			points[i + 2] = new4x1[2];															// Sets current points z-val to be the z-val of the new	4x1 matrix.
 		}
 		//cout << "Rotation Amount " << leafRotationRad << endl;
 		//cout << dx << " " << dy << " " << dz << endl;
 		//cout << beginLeaf*9*numFaces << " " << endLeaf*9*numFaces - 1 << endl << endl;
 	}
-	cout << "Done creating " << leafCount / 3 << " positive leaves\n" << endl;							// Prints out the number of leaves that are being created.
-
-	int negLeavesWanted = negLeafCount / 3;
-	GLfloat* negPoints = new GLfloat[negLeavesWanted*9*numFaces];
-	GLfloat* negNormals = new GLfloat[negLeavesWanted*9*numFaces];
-
-	for (int l = 0; l < negLeavesWanted; l++){														// Makes multiple leaves based on leavesWanted
-		for (int i = 0; i < numFaces; i++){
-			int idx1 = faces[3*i + 0];
-			int idx2 = faces[3*i + 1];
-			int idx3 = faces[3*i + 2];
-			negPoints[i*9 + 0 + l*29952] = verts[3*idx1+0];										// Continually adds the same numFaces values to fill points
-			negPoints[i*9 + 1 + l*29952] = verts[3*idx1+1];
-			negPoints[i*9 + 2 + l*29952] = verts[3*idx1+2];
-			negPoints[i*9 + 3 + l*29952] = verts[3*idx2+0];
-			negPoints[i*9 + 4 + l*29952] = verts[3*idx2+1];
-			negPoints[i*9 + 5 + l*29952] = verts[3*idx2+2];
-			negPoints[i*9 + 6 + l*29952] = verts[3*idx3+0];
-			negPoints[i*9 + 7 + l*29952] = verts[3*idx3+1];
-			negPoints[i*9 + 8 + l*29952] = verts[3*idx3+2];
-			negNormals[i*9 + 0 + l*29952] = vertNormals[3*idx1+0];									// Continually adds the same numFaces values to fill normals
-			negNormals[i*9 + 1 + l*29952] = vertNormals[3*idx1+1];
-			negNormals[i*9 + 2 + l*29952] = vertNormals[3*idx1+2];
-			negNormals[i*9 + 3 + l*29952] = vertNormals[3*idx2+0];
-			negNormals[i*9 + 4 + l*29952] = vertNormals[3*idx2+1];
-			negNormals[i*9 + 5 + l*29952] = vertNormals[3*idx2+2];
-			negNormals[i*9 + 6 + l*29952] = vertNormals[3*idx3+0];
-			negNormals[i*9 + 7 + l*29952] = vertNormals[3*idx3+1];
-			negNormals[i*9 + 8 + l*29952] = vertNormals[3*idx3+2];
-		}
-	}
-
-	cout << "\nCreating " << negLeafCount/3 << " negative leaves" << endl;										// Shows the user that it is creating leaves.
-	for (int beginLeaf = 0; beginLeaf < negLeavesWanted; beginLeaf++) {							// Begins making multiple leaves.
-																																								// Sets beginLeaf to 0 and counts up to the number of leaves needed.
-		int endLeaf = beginLeaf + 1;																								// Sets endLeaf to be one greater than beginLeaf.
-		//cout << "leaf " << endLeaf << endl;
-		//cout << beginLeaf << " " << endLeaf << endl;															// Creates a "leaf" from beginLeaf to endLeaf.
-
-		for (int i = beginLeaf*9*numFaces; i < endLeaf*9*numFaces - 1; i += 3){			// Starts loop to multiply each point by my matrices.
-			int j;
-			int k;
-
-			float negLeafRotationZP;
-			float negLeafRotationZN;
-			float negLeafRotationRadZP;
-			float negLeafRotationRadZN;
-
-			int zRotationLeafPos;
-			int zRotationLeafNeg;
-
-			GLfloat* new4x4 = new float[16];													// Creates a new array to hold a 4x4 matrix.
-			for (j = 0, k = 0; j < 16; j++){													// Sets all values of 4x4 to 0.
-				new4x4[j] = k;
-			}
-
-			GLfloat* newest4x4 = new float[16];													// Creates a new array to hold a 4x4 matrix.
-			for (j = 0, k = 0; j < 16; j++){													// Sets all values of 4x4 to 0.
-				newest4x4[j] = k;
-			}
-
-			GLfloat* newest4x4H = new float[16];													// Creates a new array to hold a 4x4 matrix.
-			for (j = 0, k = 0; j < 16; j++){													// Sets all values of 4x4 to 0.
-				newest4x4H[j] = k;
-			}
-
-			GLfloat* new4x1 = new float[4];														// Creates a new array to hold a 4x1 vector.
-			for (j = 0, k = 0; j < 4; j++){														// Sets all values of 4x1 to 0.
-				new4x1[j] = k;
-			}
-
-			dxNeg = negLeafPoints[beginLeaf*3 + 0];													// Gets the x value of the end of the current branch.
-			dyNeg = negLeafPoints[beginLeaf*3 + 1];													// Gets the y value of the end of the current branch.
-			dzNeg = negLeafPoints[beginLeaf*3 + 2];													// Gets the z value of the end of the current branch.
-
-			float leafRot;
-			leafRot = RandomFloat(.1, .5);
-			// cout << leafRot << endl;
-
-			float negLeafRot;
-			negLeafRot = RandomFloat(-.1, -.5);
-			// cout << negLeafRot << endl;
-
-			negLeafRotationZP = leafRot*(1 - ((dzNeg - 0)/(1-0)) + 180*((dzNeg - 0)/(1-0)));
-			negLeafRotationRadZP = -(negLeafRotationZP * 3.14159) / 180;
-
-			negLeafRotationZN = negLeafRot*(1 - ((dzNeg - 0)/(1-0)) + 180*((dzNeg - 0)/(1-0)));
-			negLeafRotationRadZN = -(negLeafRotationZN * 3.14159) / 180;
-
-			//Negative Tree
-			if (dxNeg > 0) {
-				rotateZ3[0] = cos(negLeafRotationRadZP);
-				rotateZ3[1] = sin(negLeafRotationRadZP);
-				rotateZ3[4] = -sin(negLeafRotationRadZP);
-				rotateZ3[5] = cos(negLeafRotationRadZP);
-			} else if (dxNeg == 0){
-				rotateZ3[0] = cos(0);
-				rotateZ3[1] = sin(0);
-				rotateZ3[4] = -sin(0);
-				rotateZ3[5] = cos(0);
-			} else {
-				rotateZ3[0] = cos(negLeafRotationRadZN);
-				rotateZ3[1] = sin(negLeafRotationRadZN);
-				rotateZ3[4] = -sin(negLeafRotationRadZN);
-				rotateZ3[5] = cos(negLeafRotationRadZN);
-			}
-
-			translateMat[12] = dxNeg;																	// Sets the dx value of translateMat to be the x-val of the current branch.
-			translateMat[13] = dyNeg;																	// Sets the dy value of translateMat to be the y-val of the current branch.
-			translateMat[14] = dzNeg;																	// Sets the dz value of translateMat to be the z-val of the current branch.
-
-			scaleXNum = .0389;
-			scaleYNum = .0389;
-			scaleZNum = .0389;
-
-			scale1[0] = scaleXNum;
-			scale1[5] = scaleYNum;
-			scale1[10] = scaleZNum;
-
-			numRotateZ2 = (25 * 3.14159) / -180;
-
-			rotateZ2[0] = cos(numRotateZ2);
-			rotateZ2[1] = sin(numRotateZ2);
-			rotateZ2[5] = -sin(numRotateZ2);
-			rotateZ2[6] = cos(numRotateZ2);
-
-			new4x4 = multiplyAgain(rotateX1, scale1, new4x4);										// Multiplies two 4x4 matrices together and makes a new matrix.
-			//newest4x4 = multiplyAgain(rotateZ2, new4x4, newest4x4);
-			newest4x4H = multiplyAgain(rotateZ3, new4x4, newest4x4H);
-			newest4x4 = multiplyAgain(translateMat, newest4x4H, newest4x4);							// Multiplies two 4x4 matrices together and makes a new matrix.
-
-			float currentNegLeafPoint[] = {negPoints[i], negPoints[i + 1], negPoints[i + 2], 1};			// Gets the x, y, z values from points (leaf) to multiply by.
-
-			multiply(newest4x4, currentNegLeafPoint, new4x1);					// Multiplies a 4x4 and a 4x1 matrix together and makes a new 4x1 matrix.
-
-			negPoints[i + 0] = new4x1[0];															// Sets current points x-val to be the x-val of the new	4x1 matrix.
-			negPoints[i + 1] = new4x1[1];															// Sets current points y-val to be the y-val of the new	4x1 matrix.
-			negPoints[i + 2] = new4x1[2];															// Sets current points z-val to be the z-val of the new	4x1 matrix.
-		}
-		//cout << "Rotation Amount " << leafRotationRad << endl;
-		//cout << dx << " " << dy << " " << dz << endl;
-		//cout << beginLeaf*9*numFaces << " " << endLeaf*9*numFaces - 1 << endl << endl;
-	}
-	cout << "Done creating " << negLeafCount / 3 << " negative leaves\n" << endl;
+	cout << "Done creating " << leafCount / 3 << " leaves\n" << endl;							// Prints out the number of leaves that are being created.
 
 	/* these are the strings of code for the shaders
 	the vertex shader positions each vertex point */
@@ -1350,52 +1116,6 @@ int main() {
 	glEnableVertexAttribArray (0);
 	glEnableVertexAttribArray (1);
 
-	//---------------------------------------------------------------------------------------------------- NegativeBranch Stuff
-	GLuint vbo_negBranch;
-	GLuint vao_negBranch;
-	/* a vertex buffer object (VBO) is created here. this stores an array of
-	data on the graphics adapter's memory. in our case - the vertex points */
-	glGenBuffers( 1, &vbo_negBranch );
-	glBindBuffer( GL_ARRAY_BUFFER, vbo_negBranch );
-	glBufferData( GL_ARRAY_BUFFER, (totalCount*3) * sizeof( GLfloat ), negBranchPoints, GL_STATIC_DRAW ); // count*3 to not lose points
-
-	/* the vertex array object (VAO) is a little descriptor that defines which
-	data from vertex buffer objects should be used as input variables to vertex
-	shaders. in our case - use our only VBO, and say 'every three floats is a
-	variable' */
-	glGenVertexArrays( 1, &vao_negBranch );
-	glBindVertexArray(vao_negBranch);
-	// "attribute #0 should be enabled when this vao is bound"
-	glEnableVertexAttribArray(0);
-	// this VBO is already bound, but it's a good habit to explicitly specify which
-	// VBO's data the following
-	// vertex attribute pointer refers to
-	glBindBuffer( GL_ARRAY_BUFFER, vbo_negBranch );
-	// "attribute #0 is created from every 3 variables in the above buffer, of type
-	// float (i.e. make me vec3s)"
-	glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, NULL );
-
-	//----------------------------------------------------------------------------------------------------  Negative Leaf Stuff
-	GLuint neg_points_vbo;
-	glGenBuffers (1, &neg_points_vbo);
-	glBindBuffer (GL_ARRAY_BUFFER, neg_points_vbo);
-	glBufferData (GL_ARRAY_BUFFER, negLeavesWanted * 3 * numPoints * sizeof (GLfloat), negPoints, GL_STATIC_DRAW);
-
-	GLuint neg_normals_vbo;
-	glGenBuffers (1, &neg_normals_vbo);
-	glBindBuffer (GL_ARRAY_BUFFER, neg_normals_vbo);
-	glBufferData (GL_ARRAY_BUFFER, negLeavesWanted * 3 * numPoints * sizeof (GLfloat), negNormals, GL_STATIC_DRAW);
-
-	GLuint neg_vao;
-	glGenVertexArrays (1, &neg_vao);
-	glBindVertexArray (neg_vao);
-	glBindBuffer (GL_ARRAY_BUFFER, neg_points_vbo);
-	glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-	glBindBuffer (GL_ARRAY_BUFFER, neg_normals_vbo);
-	glVertexAttribPointer (1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-	glEnableVertexAttribArray (0);
-	glEnableVertexAttribArray (1);
-
 	//----------------------------------------------------------------------------------------------------
 
 	/* here we copy the shader strings into GL shaders, and compile them. we
@@ -1527,11 +1247,7 @@ int main() {
 
 		glUseProgram(shader_programme2);
 		glBindVertexArray(vao2);
-		// glDrawArrays(GL_TRIANGLES, 0, leavesWanted * numPoints);
-
-		glUseProgram(shader_programme2);
-		glBindVertexArray(neg_vao);
-		// glDrawArrays(GL_TRIANGLES, 0, leavesWanted * numPoints);
+		glDrawArrays(GL_TRIANGLES, 0, leavesWanted * numPoints);
 
 		//View matrix info
 
@@ -1558,11 +1274,6 @@ int main() {
 		/* draw points 0-3 from the currently bound VAO with current in-use shader */
 		glDrawArrays(GL_LINE_STRIP, 0, totalCount); //GL_LINE_STRIP
 
-		glUseProgram(shader_programme);
-		glBindVertexArray(vao_negBranch);
-		// glLineWidth(1.5);
-		/* draw points 0-3 from the currently bound VAO with current in-use shader */
-		glDrawArrays(GL_LINE_STRIP, 0, totalCount);
 
 		/* update other events like input handling */
 		glfwPollEvents();
