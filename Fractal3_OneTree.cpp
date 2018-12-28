@@ -3,7 +3,7 @@
 //g++ -w -o Makayla.exe gl_utils.cpp maths_funcs.cpp Fractal.cpp libglfw3dll.a libglew32.dll.a -I include -lglfw3 -lgdi32 -lopengl32												// Not using
 // g++ -w -o Makayla.exe gl_utils.cpp maths_funcs.cpp Fractal.cpp libglfw3dll.a libglew32.dll.a -I include -lgdi32 -lopengl32 -L ./ -lglew32 -lglfw3				// Not using
 
-// g++ -w -o monkm.exe gl_utils.cpp maths_funcs.cpp Fractal.cpp libglfw3dll.a libglew32.dll.a -I include -lgdi32 -lopengl32 -L ./ -lglew32 -lglfw3
+// g++ -w -o monkm.exe gl_utils.cpp maths_funcs.cpp Fractal3_OneTree.cpp libglfw3dll.a libglew32.dll.a -I include -lgdi32 -lopengl32 -L ./ -lglew32 -lglfw3
 
 #include "gl_utils.h"
 #include "maths_funcs.h"
@@ -63,7 +63,7 @@ GLfloat* multiplyAgain(GLfloat matrix1[], GLfloat matrix2[], GLfloat result1[]){
 }
 
 string generatePattern(){												//Generates a pattern to create a tree.
-    int numIts = 4; 														// Number of iterations
+    int numIts = 2; 														// Number of iterations
     string pattern = "F"; //"[X]";    					// Using F for the pattern
 
     for (int i = 0; i < numIts; i++){
@@ -273,10 +273,6 @@ float RandomFloat(float a, float b) {
     return a + r;
 }
 
-float rand_FloatRange(float a, float b){
-			return ((b - a) * ((float)rand() / RAND_MAX)) + a;
-}
-
 /* Begin Code for User Interaction feature */
 
 
@@ -467,8 +463,8 @@ int main() {
 
 	string pattern = generatePattern();								// Generates string pattern to make tree from.
 	//cout << pattern << endl << endl;
-	count = countF(pattern);										// Function to count the number of 'F' in the string.
-	countBracket = countbracket(pattern);							// Function to count the number of ']' in the string.
+	count = countF(pattern)*3;										// Function to count the number of 'F' in the string.
+	countBracket = countbracket(pattern)*2;							// Function to count the number of ']' in the string.
 	int totalCount = count + countBracket;							//Total amount of points, including the backtracking points that are added for the lines.
 	int totalLeafCount = count*3 + countBracket;
 	//int totalBCount = countBracket + countLbracket(pattern);
@@ -479,6 +475,8 @@ int main() {
 	GLfloat* result1 = new float[4];									//This is a new 4x1 matrix to acquire the new heading.
 	stack<float> PositionStack;										//Stack to put branch point positions on.
 	stack<float> HeadingStack;										//Stack to put branch headings on.
+	stack<float> NegPositionStack;
+	stack<float> NegHeadingStack;
 	int pointsCount = 0;											//Counts number of points needed to make a matrix of points.
 	int leafCount = 0;												//Counts number of points needed to make a matrix for leaves.
 
@@ -496,7 +494,9 @@ int main() {
 	GLfloat scaleYNum = 1; //.1095;										//Scales the leaf.
 	GLfloat scaleZNum = 1; //.1095;										//Scales the leaf.
 	GLfloat currentPosition[] = {0.0f, -0.25f, 0.25f, 1.0f};			//Beginning current position of the tree.
-	GLfloat currentHeading[] = {0.0f, 0.5f, 0.0f, 0.0f};				//Beginning current heading of the tree.
+	GLfloat currentNegPosition[] = {0.0f, -0.25f, 0.25f, 1.0f};
+	GLfloat currentHeading[] = {0.0f, 0.5f, 0.25f, 0.0f};				//Beginning current heading of the tree.
+	GLfloat currentNegHeading[] = {0.0f, 0.5f, -0.25f, 0.0f};
 	GLfloat rotateZ1[] = 																				//Rotation matrix for the z-axis.
 		{cos(numRotateZ),sin(numRotateZ),0,0,
 		-sin(numRotateZ),cos(numRotateZ),0,0,
@@ -612,13 +612,28 @@ int main() {
 			HeadingStack.push(currentHeading[2]);
 			HeadingStack.push(currentHeading[1]);
 			HeadingStack.push(currentHeading[0]);
+
+			NegHeadingStack.push(currentNegHeading[3]);												//Pushes the currentHeading onto the HeadingStack.
+			NegHeadingStack.push(currentNegHeading[2]);
+			NegHeadingStack.push(currentNegHeading[1]);
+			NegHeadingStack.push(currentNegHeading[0]);
+
+			NegPositionStack.push(currentNegPosition[3]);												//Pushes the currentPosition onto the PositionStack.
+			NegPositionStack.push(currentNegPosition[2]);
+			NegPositionStack.push(currentNegPosition[1]);
+			NegPositionStack.push(currentNegPosition[0]);
 		}
 
 		else if (pattern.substr(idx, 1).compare("]") == 0){
 
-			leafPoints[leafCount + 0] = currentPosition[0];										//Adds the point to the array which will be where I put my leaf OBJ.
+			leafPoints[leafCount + 0] = currentPosition[0];														//Adds the point to the array which will be where I put my leaf OBJ.
 			leafPoints[leafCount + 1] = currentPosition[1];
 			leafPoints[leafCount + 2] = currentPosition[2];
+			leafCount += 3;
+
+			leafPoints[leafCount + 0] = currentNegPosition[0];												//Adds the point to the array which will be where I put my leaf OBJ.
+			leafPoints[leafCount + 1] = currentNegPosition[1];
+			leafPoints[leafCount + 2] = currentNegPosition[2];
 			leafCount += 3;
 
 			cout << endl << "After:" << endl;
@@ -626,8 +641,8 @@ int main() {
 			cout << "Position Y: " << currentPosition[1] << endl;
 			cout << "Position Z: " << currentPosition[2] << endl << endl;
 
-			currentPosition[0] = PositionStack.top();											//Sets the current position back to the top of the stack.
-			PositionStack.pop();																//Pops the current position from the top of the stack.
+			currentPosition[0] = PositionStack.top();																	//Sets the current position back to the top of the stack.
+			PositionStack.pop();																											//Pops the current position from the top of the stack.
 			currentPosition[1] = PositionStack.top();
 			PositionStack.pop();
 			currentPosition[2] = PositionStack.top();
@@ -635,19 +650,37 @@ int main() {
 			currentPosition[3] = PositionStack.top();
 			PositionStack.pop();
 
-			branchPoints[pointsCount + 0] = currentPosition[0];									//Adds the currentPosition to the list of points.
+			branchPoints[pointsCount + 0] = currentPosition[0];												//Adds the currentPosition to the list of points.
 			branchPoints[pointsCount + 1] = currentPosition[1];
 			branchPoints[pointsCount + 2] = currentPosition[2];
 			pointsCount += 3;
 
-			currentHeading[0] = HeadingStack.top();												//Sets the currentHeading to the top of the HeadingStack.
-			HeadingStack.pop();																	//Pops the currentHeading from the top of the stack.
+			currentHeading[0] = HeadingStack.top();																		//Sets the currentHeading to the top of the HeadingStack.
+			HeadingStack.pop();																												//Pops the currentHeading from the top of the stack.
 			currentHeading[1] = HeadingStack.top();
 			HeadingStack.pop();
 			currentHeading[2] = HeadingStack.top();
 			HeadingStack.pop();
 			currentHeading[3] = HeadingStack.top();
 			HeadingStack.pop();
+
+			currentNegPosition[0] = NegPositionStack.top();																	//Sets the current position back to the top of the stack.
+			NegPositionStack.pop();																											//Pops the current position from the top of the stack.
+			currentNegPosition[1] = NegPositionStack.top();
+			NegPositionStack.pop();
+			currentNegPosition[2] = NegPositionStack.top();
+			NegPositionStack.pop();
+			currentNegPosition[3] = NegPositionStack.top();
+			NegPositionStack.pop();
+
+			currentNegHeading[0] = NegHeadingStack.top();																		//Sets the currentHeading to the top of the HeadingStack.
+			NegHeadingStack.pop();																												//Pops the currentHeading from the top of the stack.
+			currentNegHeading[1] = NegHeadingStack.top();
+			NegHeadingStack.pop();
+			currentNegHeading[2] = NegHeadingStack.top();
+			NegHeadingStack.pop();
+			currentNegHeading[3] = NegHeadingStack.top();
+			NegHeadingStack.pop();
 		}
 
 		else if (pattern.substr(idx, 1).compare("F") == 0){
@@ -661,32 +694,60 @@ int main() {
 			GLfloat lastPosY = currentPosition[1];
 			GLfloat lastPosZ = currentPosition[2];
 
-			if (pointsCount > 6){
-				float currentZ = rand_FloatRange(-1.0, 1.0);
-
-				currentHeading[2] = currentZ;
-			}
+			GLfloat lastPosNegX = currentNegPosition[0];
+			GLfloat lastPosNegY = currentNegPosition[1];
+			GLfloat lastPosNegZ = currentNegPosition[2];
 
 			currentPosition[0] += currentHeading[0]*.2;													//Changes the height of the tree, I like .2.
 			currentPosition[1] += currentHeading[1]*.2;
 			currentPosition[2] += currentHeading[2]*.2;
 			currentPosition[3] += currentHeading[3];
 
+			currentNegPosition[0] += currentNegHeading[0]*.2;													//Changes the height of the tree, I like .2.
+			currentNegPosition[1] += currentNegHeading[1]*.2;
+			currentNegPosition[2] += currentNegHeading[2]*.2;
+			currentNegPosition[3] += currentNegHeading[3];
+
 			GLfloat midX = (lastPosX + currentPosition[0]) / 2;
 			GLfloat midY = (lastPosY + currentPosition[1]) / 2;
 			GLfloat midZ = (lastPosZ + currentPosition[2]) / 2;
 
-			leafPoints[leafCount + 0] = midX;																		//Adds the point to the array which will be where I put my leaf OBJ.
+			GLfloat midNegX = (lastPosNegX + currentNegPosition[0]) / 2;
+			GLfloat midNegY = (lastPosNegY + currentNegPosition[1]) / 2;
+			GLfloat midNegZ = (lastPosNegZ + currentNegPosition[2]) / 2;
+
+			leafPoints[leafCount + 0] = midX;																					//Adds the point to the array which will be where I put my leaf OBJ.
 			leafPoints[leafCount + 1] = midY;
 			leafPoints[leafCount + 2] = midZ;
 			leafCount += 3;
 
-			branchPoints[pointsCount + 0] = currentPosition[0];									//Adds the currentPosition to the list of points.
+			branchPoints[pointsCount + 0] = currentPosition[0];												//Adds the currentPosition to the list of points.
 			branchPoints[pointsCount + 1] = currentPosition[1];
 			branchPoints[pointsCount + 2] = currentPosition[2];
 			pointsCount += 3;
 
+			if (pointsCount > 6){																											// To keep the trunk together and keep unnecessary leaved from being added
 
+				leafPoints[leafCount + 0] = midNegX;																			//Adds the negative midpoint to the array which will be where I put my leaf OBJ.
+				leafPoints[leafCount + 1] = midNegY;
+				leafPoints[leafCount + 2] = midNegZ;
+				leafCount += 3;
+
+				branchPoints[pointsCount + 0] = lastPosX;																	//Adds the previous currentPosition to the list of points.
+				branchPoints[pointsCount + 1] = lastPosY;
+				branchPoints[pointsCount + 2] = lastPosZ;
+				pointsCount += 3;
+
+				branchPoints[pointsCount + 0] = currentNegPosition[0];										//Adds the currentNegPosition to the list of points.
+				branchPoints[pointsCount + 1] = currentNegPosition[1];
+				branchPoints[pointsCount + 2] = currentNegPosition[2];
+				pointsCount += 3;
+
+				branchPoints[pointsCount + 0] = lastPosX;																	//Adds the previous currentPosition to the list of points.
+				branchPoints[pointsCount + 1] = lastPosY;
+				branchPoints[pointsCount + 2] = lastPosZ;
+				pointsCount += 3;
+			}
 		}
 
 		else if (pattern.substr(idx, 1).compare("+") == 0){				// Rotates tree branch left
@@ -703,6 +764,13 @@ int main() {
 			currentHeading[1] = result1[1] / magnitude;
 			currentHeading[2] = result1[2] / magnitude;
 			currentHeading[3] = result1[3] / magnitude;
+
+			multiply(rotateZ1, currentNegHeading, result1);											//Multiplies the rotateZ1 matrix by the currentHeading to get the new currentHeading.
+			float negMagnitude = sqrt((result1[0]*result1[0]) + (result1[1]*result1[1]) + (result1[2]*result1[2]) + (result1[3]*result1[3]));	//Finds magnitude for normalization of heading.
+			currentNegHeading[0] = result1[0] / negMagnitude;											//Normalizes the currentHeading vector.
+			currentNegHeading[1] = result1[1] / negMagnitude;
+			currentNegHeading[2] = result1[2] / negMagnitude;
+			currentNegHeading[3] = result1[3] / negMagnitude;
 		}
 
 		else if (pattern.substr(idx, 1).compare("-") == 0){				// Rotates a tree branch right
@@ -719,6 +787,13 @@ int main() {
 			currentHeading[1] = result1[1] / magnitude;
 			currentHeading[2] = result1[2] / magnitude;
 			currentHeading[3] = result1[3] / magnitude;
+
+			multiply(rotateZ1, currentNegHeading, result1);											//Multiplies the rotateZ1 matrix by the currentHeading to get the new currentHeading.
+			float negMagnitude = sqrt((result1[0]*result1[0]) + (result1[1]*result1[1]) + (result1[2]*result1[2]) + (result1[3]*result1[3]));	//Finds magnitude for normalization of heading.
+			currentNegHeading[0] = result1[0] / negMagnitude;											//Normalizes the currentHeading vector.
+			currentNegHeading[1] = result1[1] / negMagnitude;
+			currentNegHeading[2] = result1[2] / negMagnitude;
+			currentNegHeading[3] = result1[3] / negMagnitude;
 		}
 	}
 
