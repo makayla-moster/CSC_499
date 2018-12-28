@@ -495,8 +495,8 @@ int main() {
 	GLfloat scaleZNum = 1; //.1095;										//Scales the leaf.
 	GLfloat currentPosition[] = {0.0f, -0.25f, 0.25f, 1.0f};			//Beginning current position of the tree.
 	GLfloat currentNegPosition[] = {0.0f, -0.25f, 0.25f, 1.0f};
-	GLfloat currentHeading[] = {0.0f, 0.5f, 0.5f, 0.0f};				//Beginning current heading of the tree.
-	GLfloat currentNegHeading[] = {0.0f, 0.5f, -0.5f, 0.0f};
+	GLfloat currentHeading[] = {0.0f, 0.5f, 0.25f, 0.0f};				//Beginning current heading of the tree.
+	GLfloat currentNegHeading[] = {0.0f, 0.5f, -0.25f, 0.0f};
 	GLfloat rotateZ1[] = 																				//Rotation matrix for the z-axis.
 		{cos(numRotateZ),sin(numRotateZ),0,0,
 		-sin(numRotateZ),cos(numRotateZ),0,0,
@@ -721,30 +721,33 @@ int main() {
 			leafPoints[leafCount + 2] = midZ;
 			leafCount += 3;
 
-			leafPoints[leafCount + 0] = midNegX;																			//Adds the negative midpoint to the array which will be where I put my leaf OBJ.
-			leafPoints[leafCount + 1] = midNegY;
-			leafPoints[leafCount + 2] = midNegZ;
-			leafCount += 3;
-
 			branchPoints[pointsCount + 0] = currentPosition[0];												//Adds the currentPosition to the list of points.
 			branchPoints[pointsCount + 1] = currentPosition[1];
 			branchPoints[pointsCount + 2] = currentPosition[2];
 			pointsCount += 3;
 
-			branchPoints[pointsCount + 0] = lastPosX;																	//Adds the previous currentPosition to the list of points.
-			branchPoints[pointsCount + 1] = lastPosY;
-			branchPoints[pointsCount + 2] = lastPosZ;
-			pointsCount += 3;
+			if (pointsCount > 6){																											// To keep the trunk together and keep unnecessary leaved from being added
 
-			branchPoints[pointsCount + 0] = currentNegPosition[0];										//Adds the currentNegPosition to the list of points.
-			branchPoints[pointsCount + 1] = currentNegPosition[1];
-			branchPoints[pointsCount + 2] = currentNegPosition[2];
-			pointsCount += 3;
+				leafPoints[leafCount + 0] = midNegX;																			//Adds the negative midpoint to the array which will be where I put my leaf OBJ.
+				leafPoints[leafCount + 1] = midNegY;
+				leafPoints[leafCount + 2] = midNegZ;
+				leafCount += 3;
 
-			branchPoints[pointsCount + 0] = lastPosX;																	//Adds the previous currentPosition to the list of points.
-			branchPoints[pointsCount + 1] = lastPosY;
-			branchPoints[pointsCount + 2] = lastPosZ;
-			pointsCount += 3;
+				branchPoints[pointsCount + 0] = lastPosX;																	//Adds the previous currentPosition to the list of points.
+				branchPoints[pointsCount + 1] = lastPosY;
+				branchPoints[pointsCount + 2] = lastPosZ;
+				pointsCount += 3;
+
+				branchPoints[pointsCount + 0] = currentNegPosition[0];										//Adds the currentNegPosition to the list of points.
+				branchPoints[pointsCount + 1] = currentNegPosition[1];
+				branchPoints[pointsCount + 2] = currentNegPosition[2];
+				pointsCount += 3;
+
+				branchPoints[pointsCount + 0] = lastPosX;																	//Adds the previous currentPosition to the list of points.
+				branchPoints[pointsCount + 1] = lastPosY;
+				branchPoints[pointsCount + 2] = lastPosZ;
+				pointsCount += 3;
+			}
 		}
 
 		else if (pattern.substr(idx, 1).compare("+") == 0){				// Rotates tree branch left
