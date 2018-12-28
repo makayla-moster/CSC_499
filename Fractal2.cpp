@@ -273,6 +273,10 @@ float RandomFloat(float a, float b) {
     return a + r;
 }
 
+float rand_FloatRange(float a, float b){
+			return ((b - a) * ((float)rand() / RAND_MAX)) + a;
+}
+
 /* Begin Code for User Interaction feature */
 
 
@@ -656,6 +660,12 @@ int main() {
 			GLfloat lastPosX = currentPosition[0];
 			GLfloat lastPosY = currentPosition[1];
 			GLfloat lastPosZ = currentPosition[2];
+
+			if (pointsCount > 6){
+				float currentZ = rand_FloatRange(-1.0, 1.0);
+
+				currentHeading[2] = currentZ;
+			}
 
 			currentPosition[0] += currentHeading[0]*.2;													//Changes the height of the tree, I like .2.
 			currentPosition[1] += currentHeading[1]*.2;
