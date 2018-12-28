@@ -63,7 +63,7 @@ GLfloat* multiplyAgain(GLfloat matrix1[], GLfloat matrix2[], GLfloat result1[]){
 }
 
 string generatePattern(){												//Generates a pattern to create a tree.
-    int numIts = 2; 														// Number of iterations
+    int numIts = 4; 														// Number of iterations
     string pattern = "F"; //"[X]";    					// Using F for the pattern
 
     for (int i = 0; i < numIts; i++){
@@ -496,7 +496,7 @@ int main() {
 	GLfloat scaleYNum = 1; //.1095;										//Scales the leaf.
 	GLfloat scaleZNum = 1; //.1095;										//Scales the leaf.
 	GLfloat currentPosition[] = {0.0f, -0.25f, 0.25f, 1.0f};			//Beginning current position of the tree.
-	GLfloat currentHeading[] = {0.0f, 0.5f, 0.5f, 0.0f};				//Beginning current heading of the tree.
+	GLfloat currentHeading[] = {0.0f, 0.5f, 0.0f, 0.0f};				//Beginning current heading of the tree.
 	GLfloat rotateZ1[] = 																				//Rotation matrix for the z-axis.
 		{cos(numRotateZ),sin(numRotateZ),0,0,
 		-sin(numRotateZ),cos(numRotateZ),0,0,
