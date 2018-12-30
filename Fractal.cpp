@@ -481,7 +481,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	GLfloat scaleXNum = 1; //.0095;																								// Variable - Scales the leaf.
 	GLfloat scaleYNum = 1; //.1095;																								// Variable - Scales the leaf.
 	GLfloat scaleZNum = 1; //.1095;																								// Variable - Scales the leaf.
-	GLfloat currentPosition[] = {0.0f, -0.25f, 0.25f, 1.0f};											// Vector - Beginning current position of the tree.
+	GLfloat currentPosition[] = {0.0f, -0.25f, 0.0f, 1.0f};											// Vector - Beginning current position of the tree.
 	GLfloat currentHeading[] = {0.0f, 0.5f, 0.0f, 0.0f};													// Vector - Beginning current heading of the tree.
 	GLfloat rotateZ1[] = 																													// Matrix - Rotation matrix 1 for the z-axis.
 		{cos(numRotateZ),sin(numRotateZ),0,0,
@@ -742,10 +742,10 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	loadFaces(modelName, faces);																									// Loads faces into array
 
 	GLfloat* faceNormals = new GLfloat[3*numFaces];																// Variable - Creates array for face normals
-	computeFaceNormals(faceNormals, verts, faces, numFaces);											// Computes the number of face normals in OBJ.
+	computeFaceNormals(faceNormals, verts, faces, numFaces);											// Computes the face normals in OBJ and adds them to the array
 
 	GLfloat* vertNormals = new GLfloat[3*numVert];																// Variable - Creates array for vertex normals
-	computeVertNormals(vertNormals, verts, numVert, faces, numFaces, faceNormals);// Computes the number of vertex normals in OBJ.
+	computeVertNormals(vertNormals, verts, numVert, faces, numFaces, faceNormals);// Computes the vertex normals in OBJ and adds them to the array
 
 	int leavesWanted = leafCount / 3;																							// Variable - Number of leaves wanted for the tree
 	GLfloat* points = new GLfloat[leavesWanted*9*numFaces];												// Variable - Creates array for the points of the OBJ
@@ -1259,7 +1259,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 		glUniformMatrix4fv (proj_mat_location2, 1, GL_FALSE, viewResult);
 		//glUniformMatrix4fv (proj_mat_location, 1, GL_FALSE, proMat);
 
-		float numRotateX2 = (50 * 3.14159) / 180;
+		float numRotateX2 = (90 * 3.14159) / 180;
 
 		GLfloat rotateY2[] =																												// Rotation matrix for the y-axis.
 			{cos(numRotateX2),0,-sin(numRotateX2),0,
@@ -1273,11 +1273,11 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 			 0,-sin(numRotateX2),cos(numRotateX2),0,
 			 0,0,0,1};
 
-		// multiply(rotateY2, rotateX2, resultAgain);
+		// multiplyNew(rotateY2, rotateX2, resultAgain);
 
 		int passing_matrix2 = glGetUniformLocation (shader_programme2, "pass");
 		glUseProgram( shader_programme2 );
-		glUniformMatrix4fv (passing_matrix2, 1, GL_FALSE, rotateX2);
+		glUniformMatrix4fv (passing_matrix2, 1, GL_FALSE, rotateY2);
 
 		glUseProgram(shader_programme2);
 		glBindVertexArray(vao2);
@@ -1302,7 +1302,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 
 		int passing_matrix = glGetUniformLocation (shader_programme, "pass");
 		glUseProgram( shader_programme );
-		glUniformMatrix4fv (passing_matrix, 1, GL_FALSE, rotateX2);
+		glUniformMatrix4fv (passing_matrix, 1, GL_FALSE, rotateY2);
 
 		/* wipe the drawing surface clear */
 		// glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
