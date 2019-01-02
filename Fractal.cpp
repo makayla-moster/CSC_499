@@ -393,16 +393,16 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		rz += 0.1;
 		//cout<<"rz - :"<<rz<<"\n";
 	}
-	if(key == GLFW_KEY_P && action == GLFW_PRESS){
-		cout<<"P pressed\n";																												// Skews the tree positively
-		d += 0.1;
-		//cout<<d<<"\n";
-	}
-	if(key == GLFW_KEY_O && action == GLFW_PRESS){
-		cout<<"O pressed\n";																												// Skews the tree negatively
-		d -= 0.1;
-		//cout<<d<<"\n";
-	}
+	// if(key == GLFW_KEY_P && action == GLFW_PRESS){
+	// 	cout<<"P pressed\n";																												// Skews the tree positively
+	// 	d += 0.1;
+	// 	//cout<<d<<"\n";
+	// }
+	// if(key == GLFW_KEY_O && action == GLFW_PRESS){
+	// 	cout<<"O pressed\n";																												// Skews the tree negatively
+	// 	d -= 0.1;
+	// 	//cout<<d<<"\n";
+	// }
 	if(key == GLFW_KEY_Y && action == GLFW_PRESS){
 		cout<<"Y pressed\n";																												// Changes the field of view positively
 		fov += 0.1;
@@ -538,11 +538,11 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 			0,0,sz,0,
 			0,0,0,1};
 
-	GLfloat skew[] =																															// Matrix - skewing matrix
-		{1,0,0,0,
-		 (1/tan(d)),1,0,0,
-		 0,0,1,0,
-		 0,0,0,1};
+	// GLfloat skew[] =																															// Matrix - skewing matrix
+	// 	{1,0,0,0,
+	// 	 (1/tan(d)),1,0,0,
+	// 	 0,0,1,0,
+	// 	 0,0,0,1};
 
 	GLfloat rotateX[] = 																													// Matrix - X Rotation Matrix
 		{1,0,0,0,
@@ -587,6 +587,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 		 0,0,0,1};
 
 	GLfloat* result = new float[16];																							// Variable - New 4x4 matrix
+	GLfloat* resultRotation = new float[16];
 
 		/* End code for user interaction feature */
 
@@ -904,8 +905,8 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 		"void main () {"
 		"	position_eye = vp;"
 		"	normal_eye = vertex_normal, 1.0;"
-		"  gl_Position = proj * view * model * vec4(vp, 1.0);"											// ADDING IN *ORTHO	BREAKS THE LEAVES FROM THE BRANCHES	// Tree position.
-		// "  gl_Position = pass * vec4(vp, 1.0);"
+		// "  gl_Position = proj * view * model * vec4(vp, 1.0);"											// ADDING IN *ORTHO	BREAKS THE LEAVES FROM THE BRANCHES	// Tree position.
+		"  gl_Position = model * vec4(vp, 1.0);"
 		"  colour = vec3 (255, 0, 0);"
 		"}";
 
@@ -934,7 +935,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 		"}"
 
 		"void main () {"
-			"vec4 startingVec = {0.0f, -0.25f, 0.25f, 1.0f};"
+			// "vec4 startingVec = {0.0f, -0.25f, 0.25f, 1.0f};"
 			"float bottom = 0.009;"
 			"float top = 0.007;"
 			"for(int i = 0; i < gl_in.length(); i++) {"
@@ -1004,8 +1005,8 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 		"void main () {"
 		"	position_eye = vp;"
 		"	normal_eye = vertex_normal, 1.0;"
-		"  gl_Position = proj * view * model * vec4(vp, 1.0);"											// Multiplies vec4 by matrices.
-		// "  gl_Position = pass * vec4(vp, 1.0);"
+		// "  gl_Position = proj * view * model * vec4(vp, 1.0);"											// Multiplies vec4 by matrices.
+		"  gl_Position = model * vec4(vp, 1.0);"
 		"}";
 
 	/* the fragment shader colours each fragment (pixel-sized area of the
@@ -1240,16 +1241,27 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
   multiplyNew(view, proMat, viewResult);
 	while ( !glfwWindowShouldClose( g_window ) ) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		multiplyNew(trans, translate, result);
-		multiplyNew(result, scale, result);
-		multiplyNew(result, rotateX, result);
-		multiplyNew(result, rotateY, result);
-		multiplyNew(result, rotateZ, result);
-		multiplyNew(result, skew, result);
+		// multiplyNew(trans, translate, result);
+		// multiplyNew(result, scale, result);
+		// multiplyNew(result, rotateX, result);
+		// multiplyNew(result, rotateY, result);
+		// multiplyNew(result, rotateZ, result);
+		// multiplyNew(result, skew, result);
+
+		// multiplyNew(trans, rotateY, result);
+		// multiplyNew(result, rotateZ, result);
+		// multiplyNew(result, rotateX, result);
+		// multiplyNew(result, translate, result);
+
+		multiplyNew(rotateY, rotateX, resultRotation);
+		multiplyNew(rotateZ, resultRotation, result);
+		multiplyNew(result, trans, result);
+		multiplyNew(result, translate, result);
 
 		//View matrix info
 		int trans_mat_location2 = glGetUniformLocation (shader_programme2, "model");
 		glUseProgram( shader_programme2 );
+		// glUniformMatrix4fv (trans_mat_location2, 1, GL_FALSE, rotateY);
 		glUniformMatrix4fv (trans_mat_location2, 1, GL_FALSE, result);
 		int view_mat_location2 = glGetUniformLocation (shader_programme2, "view");
 		glUseProgram( shader_programme2 );
@@ -1292,6 +1304,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 		int trans_mat_location = glGetUniformLocation (shader_programme, "model");
 		glUseProgram( shader_programme );
 		glUniformMatrix4fv (trans_mat_location, 1, GL_FALSE, result);
+		// glUniformMatrix4fv (trans_mat_location, 1, GL_FALSE, rotateY);
 		int view_mat_location = glGetUniformLocation (shader_programme, "view");
 		glUseProgram( shader_programme );
 		glUniformMatrix4fv (view_mat_location, 1, GL_FALSE, lookAt);
@@ -1329,14 +1342,14 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 		rotateX[9]=-sin(rx);
 		rotateX[10]=cos(rx);
 		rotateY[0]=cos(ry);
-		rotateY[2]=sin(ry);
-		rotateY[8]=-sin(ry);
+		rotateY[2]=-sin(ry);
+		rotateY[8]=sin(ry);
 		rotateY[10]=cos(ry);
 		rotateZ[0]=cos(rz);
 		rotateZ[1]=sin(rz);
 		rotateZ[4]=-sin(rz);
 		rotateZ[5]=cos(rz);
-		skew[4]=(1/tan(d));
+		// skew[4]=(1/tan(d));
 		float range = tan(fov*0.5)*near;
 		proMat[0] = (2*near)/((range*aspect)+(range*aspect));
 		proMat[5] = near/range;
