@@ -563,6 +563,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 
 	GLfloat* result = new float[16];																							// Variable - New 4x4 matrix
 	GLfloat* resultRotation = new float[16];
+	GLfloat* resultRotation2 = new float[16];
 
 	/* End code for user interaction feature */
 
@@ -793,10 +794,10 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 			negLeafRot = RandomFloat(-.1, -.5);																				// Generates negative random number for leaf rotation
 			// cout << negLeafRot << endl;
 
-			leafRotationZP = leafRot*(1 - ((dz - 0)/(1-0)) + 180*((dz - 0)/(1-0)));		// ??
+			leafRotationZP = leafRot*(1 - ((.5 - 0)/(1-0)) + 180*((.5 - 0)/(1-0)));		// ??
 			leafRotationRadZP = -(leafRotationZP * 3.14159) / 180;										// Converts number to radians
 
-			leafRotationZN = negLeafRot*(1 - ((dz - 0)/(1-0)) + 180*((dz - 0)/(1-0)));// ??
+			leafRotationZN = negLeafRot*(1 - ((.5 - 0)/(1-0)) + 180*((.5 - 0)/(1-0)));// ??
 			leafRotationRadZN = -(leafRotationZN * 3.14159) / 180;										// Converts number to radians
 
 			if (dx > 0) {																															// IF dx is greater than 0
@@ -804,16 +805,19 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 				rotateZ3[1] = sin(leafRotationRadZP);
 				rotateZ3[4] = -sin(leafRotationRadZP);
 				rotateZ3[5] = cos(leafRotationRadZP);
+				// cout << "IF" << endl;
 			} else if (dx == 0){																											// ELSE IF dx is equal to 0
 				rotateZ3[0] = cos(0);																										// Set the third Z rotation matrix to be 0
 				rotateZ3[1] = sin(0);
 				rotateZ3[4] = -sin(0);
 				rotateZ3[5] = cos(0);
+				// cout << "else IF" << endl;
 			} else {																																	// ELSE
 				rotateZ3[0] = cos(leafRotationRadZN);																		// Set the third Z rotation matrix to be the negative rotation number
 				rotateZ3[1] = sin(leafRotationRadZN);
 				rotateZ3[4] = -sin(leafRotationRadZN);
 				rotateZ3[5] = cos(leafRotationRadZN);
+				// cout << "ELSE" <<endl;
 			}
 
 			translateMat[12] = dx;																										// Sets the dx value of translateMat to be the x-val of the current branch.
