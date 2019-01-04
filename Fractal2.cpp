@@ -3,7 +3,9 @@
 //g++ -w -o Makayla.exe gl_utils.cpp maths_funcs.cpp Fractal.cpp libglfw3dll.a libglew32.dll.a -I include -lglfw3 -lgdi32 -lopengl32												// Not using
 // g++ -w -o Makayla.exe gl_utils.cpp maths_funcs.cpp Fractal.cpp libglfw3dll.a libglew32.dll.a -I include -lgdi32 -lopengl32 -L ./ -lglew32 -lglfw3				// Not using
 
-// g++ -w -o monkm.exe gl_utils.cpp maths_funcs.cpp Fractal2.cpp libglfw3dll.a libglew32.dll.a -I include -lgdi32 -lopengl32 -L ./ -lglew32 -lglfw3
+// g++ -w -o monkm.exe gl_utils.cpp maths_funcs.cpp Fractal.cpp libglfw3dll.a libglew32.dll.a -I include -lgdi32 -lopengl32 -L ./ -lglew32 -lglfw3
+
+/*TESTING CODE PURPOSES ONLY*/
 
 #include "gl_utils.h"
 #include "maths_funcs.h"
@@ -271,10 +273,6 @@ float RandomFloat(float a, float b) {
     float diff = b - a;
     float r = random * diff;
     return a + r;
-}
-
-float rand_FloatRange(float a, float b){
-			return ((b - a) * ((float)rand() / RAND_MAX)) + a;
 }
 
 /* Begin Code for User Interaction feature */
@@ -591,6 +589,7 @@ int main() {
 	 						0,0,0,1};
 
 	 	GLfloat* result = new float[16];
+		GLfloat* resultRotation = new float[16];
 
 		/* End code for user interaction feature */
 
@@ -661,10 +660,9 @@ int main() {
 			GLfloat lastPosY = currentPosition[1];
 			GLfloat lastPosZ = currentPosition[2];
 
-			if (pointsCount > 6){
-				float currentZ = rand_FloatRange(-1.0, 1.0);
-
-				currentHeading[2] = currentZ;
+			if (pointsCount > 6){																											// IF pointsCount is greater than 6
+				float currentZ = RandomFloat(-1.0, 1.0);																// Generate a random float in between -1 and 1
+				currentHeading[2] = currentZ;																						// Set that float to be the z value of the current heading
 			}
 
 			currentPosition[0] += currentHeading[0]*.2;													//Changes the height of the tree, I like .2.
@@ -1236,12 +1234,17 @@ int main() {
   multiplyNew(view, proMat, viewResult);
 	while ( !glfwWindowShouldClose( g_window ) ) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		multiplyNew(trans, translate, result);
-		multiplyNew(result, scale, result);
-		multiplyNew(result, rotateX, result);
-		multiplyNew(result, rotateY, result);
-		multiplyNew(result, rotateZ, result);
-		multiplyNew(result, skew, result);
+		// multiplyNew(trans, translate, result);
+		// multiplyNew(result, scale, result);
+		// multiplyNew(result, rotateX, result);
+		// multiplyNew(result, rotateY, result);
+		// multiplyNew(result, rotateZ, result);
+		// multiplyNew(result, skew, result);
+
+		multiplyNew(rotateY, rotateX, resultRotation);
+		multiplyNew(rotateZ, resultRotation, result);
+		multiplyNew(result, trans, result);
+		multiplyNew(result, translate, result);
 
 		//View matrix info
 		int trans_mat_location2 = glGetUniformLocation (shader_programme2, "model");
