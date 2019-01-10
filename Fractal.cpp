@@ -335,36 +335,36 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		cout<<"Z pressed\n";																												// Moves the tree negatively along the Z axis
 		z -= 0.1;
 	}
-	if(key == GLFW_KEY_I && action == GLFW_PRESS){
-		cout<<"I pressed\n";																												// Scales the tree's x value negatively
-		sx -= 0.1;
-		//cout<<"-sx :"<<sx<<"\n";
-	}
-	if(key == GLFW_KEY_K && action == GLFW_PRESS){
-		cout<<"K pressed\n";																												// Scales the tree's x value positively
-		sx += 0.1;
-		//cout<<"+sx :"<<sx<<"\n";
-	}
-	if(key == GLFW_KEY_L && action == GLFW_PRESS){
-		cout<<"L pressed\n";																												// Scales the tree's y value positively
-		sy += 0.1;
-		//cout<<"+sy :"<<sy<<"\n";
-	}
-	if(key == GLFW_KEY_J && action == GLFW_PRESS){
-		cout<<"J pressed\n";																												// Scales the tree's y value negatively
-		sy -= 0.1;
-		//cout<<"-sy :"<<sy<<"\n";
-	}
-	if(key == GLFW_KEY_M && action == GLFW_PRESS){
-		cout<<"M pressed\n";																												// Scales the tree's z value positively
-		sz += 0.1;
-		//cout<<"+sz :"<<sz<<"\n";
-	}
-	if(key == GLFW_KEY_N && action == GLFW_PRESS){
-		cout<<"N pressed\n";																												// Scales the tree's z value negatively
-		sz -= 0.1;
-		//cout<<"-sz :"<<sz<<"\n";
-	}
+	// if(key == GLFW_KEY_I && action == GLFW_PRESS){
+	// 	cout<<"I pressed\n";																												// Scales the tree's x value negatively
+	// 	sx -= 0.1;
+	// 	//cout<<"-sx :"<<sx<<"\n";
+	// }
+	// if(key == GLFW_KEY_K && action == GLFW_PRESS){
+	// 	cout<<"K pressed\n";																												// Scales the tree's x value positively
+	// 	sx += 0.1;
+	// 	//cout<<"+sx :"<<sx<<"\n";
+	// }
+	// if(key == GLFW_KEY_L && action == GLFW_PRESS){
+	// 	cout<<"L pressed\n";																												// Scales the tree's y value positively
+	// 	sy += 0.1;
+	// 	//cout<<"+sy :"<<sy<<"\n";
+	// }
+	// if(key == GLFW_KEY_J && action == GLFW_PRESS){
+	// 	cout<<"J pressed\n";																												// Scales the tree's y value negatively
+	// 	sy -= 0.1;
+	// 	//cout<<"-sy :"<<sy<<"\n";
+	// }
+	// if(key == GLFW_KEY_M && action == GLFW_PRESS){
+	// 	cout<<"M pressed\n";																												// Scales the tree's z value positively
+	// 	sz += 0.1;
+	// 	//cout<<"+sz :"<<sz<<"\n";
+	// }
+	// if(key == GLFW_KEY_N && action == GLFW_PRESS){
+	// 	cout<<"N pressed\n";																												// Scales the tree's z value negatively
+	// 	sz -= 0.1;
+	// 	//cout<<"-sz :"<<sz<<"\n";
+	// }
 	if(key == GLFW_KEY_R && action == GLFW_PRESS){
 		cout<<"R pressed\n";																												// Rotates the tree negatively along the X axis
 		rx -= 0.1;
@@ -513,11 +513,11 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 		 0,0,1,0,
 		 x,y,z,1};
 
-	GLfloat scale[] =  																														// Matrix - scaling matrix
-		{sx,0,0,0,
-			0,sy,0,0,
-			0,0,sz,0,
-			0,0,0,1};
+	// GLfloat scale[] =  																														// Matrix - scaling matrix
+	// 	{sx,0,0,0,
+	// 		0,sy,0,0,
+	// 		0,0,sz,0,
+	// 		0,0,0,1};
 
 	GLfloat rotateX[] = 																													// Matrix - X Rotation Matrix
 		{1,0,0,0,
