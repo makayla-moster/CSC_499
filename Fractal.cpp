@@ -335,36 +335,36 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		cout<<"Z pressed\n";																												// Moves the tree negatively along the Z axis
 		z -= 0.1;
 	}
-	if(key == GLFW_KEY_I && action == GLFW_PRESS){
-		cout<<"I pressed\n";																												// Scales the tree's x value negatively
-		sx -= 0.1;
-		//cout<<"-sx :"<<sx<<"\n";
-	}
-	if(key == GLFW_KEY_K && action == GLFW_PRESS){
-		cout<<"K pressed\n";																												// Scales the tree's x value positively
-		sx += 0.1;
-		//cout<<"+sx :"<<sx<<"\n";
-	}
-	if(key == GLFW_KEY_L && action == GLFW_PRESS){
-		cout<<"L pressed\n";																												// Scales the tree's y value positively
-		sy += 0.1;
-		//cout<<"+sy :"<<sy<<"\n";
-	}
-	if(key == GLFW_KEY_J && action == GLFW_PRESS){
-		cout<<"J pressed\n";																												// Scales the tree's y value negatively
-		sy -= 0.1;
-		//cout<<"-sy :"<<sy<<"\n";
-	}
-	if(key == GLFW_KEY_M && action == GLFW_PRESS){
-		cout<<"M pressed\n";																												// Scales the tree's z value positively
-		sz += 0.1;
-		//cout<<"+sz :"<<sz<<"\n";
-	}
-	if(key == GLFW_KEY_N && action == GLFW_PRESS){
-		cout<<"N pressed\n";																												// Scales the tree's z value negatively
-		sz -= 0.1;
-		//cout<<"-sz :"<<sz<<"\n";
-	}
+	// if(key == GLFW_KEY_I && action == GLFW_PRESS){
+	// 	cout<<"I pressed\n";																												// Scales the tree's x value negatively
+	// 	sx -= 0.1;
+	// 	//cout<<"-sx :"<<sx<<"\n";
+	// }
+	// if(key == GLFW_KEY_K && action == GLFW_PRESS){
+	// 	cout<<"K pressed\n";																												// Scales the tree's x value positively
+	// 	sx += 0.1;
+	// 	//cout<<"+sx :"<<sx<<"\n";
+	// }
+	// if(key == GLFW_KEY_L && action == GLFW_PRESS){
+	// 	cout<<"L pressed\n";																												// Scales the tree's y value positively
+	// 	sy += 0.1;
+	// 	//cout<<"+sy :"<<sy<<"\n";
+	// }
+	// if(key == GLFW_KEY_J && action == GLFW_PRESS){
+	// 	cout<<"J pressed\n";																												// Scales the tree's y value negatively
+	// 	sy -= 0.1;
+	// 	//cout<<"-sy :"<<sy<<"\n";
+	// }
+	// if(key == GLFW_KEY_M && action == GLFW_PRESS){
+	// 	cout<<"M pressed\n";																												// Scales the tree's z value positively
+	// 	sz += 0.1;
+	// 	//cout<<"+sz :"<<sz<<"\n";
+	// }
+	// if(key == GLFW_KEY_N && action == GLFW_PRESS){
+	// 	cout<<"N pressed\n";																												// Scales the tree's z value negatively
+	// 	sz -= 0.1;
+	// 	//cout<<"-sz :"<<sz<<"\n";
+	// }
 	if(key == GLFW_KEY_R && action == GLFW_PRESS){
 		cout<<"R pressed\n";																												// Rotates the tree negatively along the X axis
 		rx -= 0.1;
@@ -435,7 +435,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	int countLBracket;
 
 	string pattern = generatePattern();																						// Variable - Generates string pattern to make tree from.
-	cout << pattern << endl << endl;
+	// cout << pattern << endl << endl;
 	count = countF(pattern);																											// Variable - Function to count the number of 'F' in the string.
 	countBracket = countbracket(pattern);																					// Variable - Function to count the number of ']' in the string.
 	int totalCount = count + countBracket;																				// Variable - Total amount of points, including the backtracking points that are added for the lines.
@@ -565,6 +565,9 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	GLfloat* resultRotation = new float[16];
 	GLfloat* resultRotation2 = new float[16];
 
+	int counterF = 0;
+	bool b1 = false;
+
 	/* End code for user interaction feature */
 
 
@@ -574,125 +577,232 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	pointsCount += 3;																															// Increments pointsCount by 3
 
 	for (int idx = 0; idx < pattern.length(); idx++){															// Parser - begins by going through each character of the pattern
-		if (pattern.substr(idx,1).compare("[") == 0){																// IF the character matches [
-			PositionStack.push(currentPosition[3]);																		// Then push the currentPosition onto the PositionStack.
-			PositionStack.push(currentPosition[2]);
-			PositionStack.push(currentPosition[1]);
-			PositionStack.push(currentPosition[0]);
+		// b1 = false;
+		if ((currentPosition[0] <= 0.5 && currentPosition[1] <= 0.5 && currentPosition[2] <= 0.5) && (currentPosition[0] >= -0.5 && currentPosition[1] >= -0.5 && currentPosition[2] >= -0.5)){
+			// b1 = false;
+			if (pattern.substr(idx,1).compare("[") == 0){																// IF the character matches [
+				// if ((currentPosition[0] <= 0.5 && currentPosition[1] <= 0.5 && currentPosition[2] <= 0.5) && (currentPosition[0] >= -0.5 && currentPosition[1] >= -0.5 && currentPosition[2] >= -0.5)){
+					PositionStack.push(currentPosition[3]);																		// Then push the currentPosition onto the PositionStack.
+					PositionStack.push(currentPosition[2]);
+					PositionStack.push(currentPosition[1]);
+					PositionStack.push(currentPosition[0]);
 
-			HeadingStack.push(currentHeading[3]);																			// And push the currentHeading onto the HeadingStack.
-			HeadingStack.push(currentHeading[2]);
-			HeadingStack.push(currentHeading[1]);
-			HeadingStack.push(currentHeading[0]);
-		}
+					HeadingStack.push(currentHeading[3]);																			// And push the currentHeading onto the HeadingStack.
+					HeadingStack.push(currentHeading[2]);
+					HeadingStack.push(currentHeading[1]);
+					HeadingStack.push(currentHeading[0]);
 
-		else if (pattern.substr(idx, 1).compare("]") == 0){													// ELSE IF the character matches ]
+					counterF++;
+					// cout << counterF << endl;
+				}
 
-			leafPoints[leafCount + 0] = currentPosition[0];														// Add the point to the leaf array (where leaves will be placed)
-			leafPoints[leafCount + 1] = currentPosition[1];
-			leafPoints[leafCount + 2] = currentPosition[2];
-			leafCount += 3;																														// Increment leafCount by 3
 
-			// cout << endl << "After:" << endl;
-			// cout << "Position X: " << currentPosition[0] << endl;
-			// cout << "Position Y: " << currentPosition[1] << endl;
-			// cout << "Position Z: " << currentPosition[2] << endl << endl;
+			else if (pattern.substr(idx, 1).compare("]") == 0){													// ELSE IF the character matches ]
+				if ((currentPosition[0] <= 0.5 && currentPosition[1] <= 0.5 && currentPosition[2] <= 0.5) && (currentPosition[0] >= -0.5 && currentPosition[1] >= -0.5 && currentPosition[2] >= -0.5)){
 
-			currentPosition[0] = PositionStack.top();																	// Sets the current position back to the top of the stack.
-			PositionStack.pop();																											// Pops the current position from the top of the stack.
-			currentPosition[1] = PositionStack.top();
-			PositionStack.pop();
-			currentPosition[2] = PositionStack.top();
-			PositionStack.pop();
-			currentPosition[3] = PositionStack.top();
-			PositionStack.pop();
+					leafPoints[leafCount + 0] = currentPosition[0];														// Add the point to the leaf array (where leaves will be placed)
+					leafPoints[leafCount + 1] = currentPosition[1];
+					leafPoints[leafCount + 2] = currentPosition[2];
+					leafCount += 3;																														// Increment leafCount by 3
 
-			branchPoints[pointsCount + 0] = currentPosition[0];												// Adds the currentPosition to the list of branching points.
-			branchPoints[pointsCount + 1] = currentPosition[1];
-			branchPoints[pointsCount + 2] = currentPosition[2];
-			pointsCount += 3;																													// Increments pointsCount by 3
 
-			currentHeading[0] = HeadingStack.top();																		// Sets the currentHeading to the top of the HeadingStack.
-			HeadingStack.pop();																												// Pops the currentHeading from the top of the stack.
-			currentHeading[1] = HeadingStack.top();
-			HeadingStack.pop();
-			currentHeading[2] = HeadingStack.top();
-			HeadingStack.pop();
-			currentHeading[3] = HeadingStack.top();
-			HeadingStack.pop();
-		}
+					// cout << endl << "After:" << endl;
+					// cout << "Position X: " << currentPosition[0] << endl;
+					// cout << "Position Y: " << currentPosition[1] << endl;
+					// cout << "Position Z: " << currentPosition[2] << endl << endl;
+					// cout << "Heading X: " << currentHeading[0] << endl;
+					// cout << "Heading Y: " << currentHeading[1] << endl;
+					// cout << "Heading Z: " << currentHeading[2] << endl << endl;
 
-		else if (pattern.substr(idx, 1).compare("F") == 0){													// ELSE IF the character matches F
+					currentPosition[0] = PositionStack.top();																	// Sets the current position back to the top of the stack.
+					PositionStack.pop();																											// Pops the current position from the top of the stack.
+					currentPosition[1] = PositionStack.top();
+					PositionStack.pop();
+					currentPosition[2] = PositionStack.top();
+					PositionStack.pop();
+					currentPosition[3] = PositionStack.top();
+					PositionStack.pop();
 
-			// cout << endl << "Before:" << endl;
-			// cout << "Position X: " << currentPosition[0] << endl;
-			// cout << "Position Y: " << currentPosition[1] << endl;
-			// cout << "Position Z: " << currentPosition[2] << endl << endl;
-			// cout << "Heading X: " << currentHeading[0] << endl;
-			// cout << "Heading Y: " << currentHeading[1] << endl;
-			// cout << "Heading Z: " << currentHeading[2] << endl << endl;
 
-			GLfloat lastPosX = currentPosition[0];																		// Save the last current Position
-			GLfloat lastPosY = currentPosition[1];
-			GLfloat lastPosZ = currentPosition[2];
+					branchPoints[pointsCount + 0] = currentPosition[0];												// Adds the currentPosition to the list of branching points.
+					branchPoints[pointsCount + 1] = currentPosition[1];
+					branchPoints[pointsCount + 2] = currentPosition[2];
+					pointsCount += 3;																													// Increments pointsCount by 3
 
-			if (pointsCount > 6){																											// IF pointsCount is greater than 6
-				float currentZ = RandomFloat(-1.0, 1.0);																// Generate a random float in between -1 and 1
-				currentHeading[2] = currentZ;																						// Set that float to be the z value of the current heading
+					currentHeading[0] = HeadingStack.top();																		// Sets the currentHeading to the top of the HeadingStack.
+					HeadingStack.pop();																												// Pops the currentHeading from the top of the stack.
+					currentHeading[1] = HeadingStack.top();
+					HeadingStack.pop();
+					currentHeading[2] = HeadingStack.top();
+					HeadingStack.pop();
+					currentHeading[3] = HeadingStack.top();
+					HeadingStack.pop();
+
+					counterF --;
+				}
 			}
 
-			currentPosition[0] += currentHeading[0]*.2;																// Add the currentPosition and the currentHeading together
-			currentPosition[1] += currentHeading[1]*.2;																// Multiply by .2 to change the height of the tree
-			currentPosition[2] += currentHeading[2]*.2;
-			currentPosition[3] += currentHeading[3];																	// This never changes - determines whether it is a point or a line
+			else if (pattern.substr(idx, 1).compare("F") == 0){													// ELSE IF the character matches F
 
-			GLfloat midX = (lastPosX + currentPosition[0]) / 2;												// Get the midPoint between the currentPosition and the last saved position
-			GLfloat midY = (lastPosY + currentPosition[1]) / 2;
-			GLfloat midZ = (lastPosZ + currentPosition[2]) / 2;
+				// if ((currentPosition[0] <= 0.5 && currentPosition[1] <= 0.5 && currentPosition[2] <= 0.5) && (currentPosition[0] >= -0.5 && currentPosition[1] >= -0.5 && currentPosition[2] >= -0.5)){
 
-			leafPoints[leafCount + 0] = midX;																					// Adds the midpoint to the leaf array
-			leafPoints[leafCount + 1] = midY;
-			leafPoints[leafCount + 2] = midZ;
-			leafCount += 3;																														// Increments leafCount by 3
+					// cout << endl << "Before:" << endl;
+					// cout << "Position X: " << currentPosition[0] << endl;
+					// cout << "Position Y: " << currentPosition[1] << endl;
+					// cout << "Position Z: " << currentPosition[2] << endl << endl;
+					// cout << "Heading X: " << currentHeading[0] << endl;
+					// cout << "Heading Y: " << currentHeading[1] << endl;
+					// cout << "Heading Z: " << currentHeading[2] << endl << endl;
 
-			branchPoints[pointsCount + 0] = currentPosition[0];												//Adds the currentPosition to the list of branching points
-			branchPoints[pointsCount + 1] = currentPosition[1];
-			branchPoints[pointsCount + 2] = currentPosition[2];
-			pointsCount += 3;																													// Increments pointsCount by 3
+					GLfloat lastPosX = currentPosition[0];																		// Save the last current Position
+					GLfloat lastPosY = currentPosition[1];
+					GLfloat lastPosZ = currentPosition[2];
+
+					if (pointsCount > 6){																											// IF pointsCount is greater than 6
+						float currentZ = RandomFloat(-1.0, 1.0);																// Generate a random float in between -1 and 1
+						currentHeading[2] = currentZ;																						// Set that float to be the z value of the current heading
+					}
+
+					currentPosition[0] += currentHeading[0]*.2;																// Add the currentPosition and the currentHeading together
+					currentPosition[1] += currentHeading[1]*.2;																// Multiply by .2 to change the height of the tree
+					currentPosition[2] += currentHeading[2]*.2;
+					currentPosition[3] += currentHeading[3];																	// This never changes - determines whether it is a point or a line
+
+					GLfloat midX = (lastPosX + currentPosition[0]) / 2;												// Get the midPoint between the currentPosition and the last saved position
+					GLfloat midY = (lastPosY + currentPosition[1]) / 2;
+					GLfloat midZ = (lastPosZ + currentPosition[2]) / 2;
+
+					if ((currentPosition[0] <= 0.5 && currentPosition[1] <= 0.5 && currentPosition[2] <= 0.5) && (currentPosition[0] >= -0.5 && currentPosition[1] >= -0.5 && currentPosition[2] >= -0.5)){
+
+						leafPoints[leafCount + 0] = midX;																					// Adds the midpoint to the leaf array
+						leafPoints[leafCount + 1] = midY;
+						leafPoints[leafCount + 2] = midZ;
+						leafCount += 3;																														// Increments leafCount by 3
+
+						branchPoints[pointsCount + 0] = currentPosition[0];												//Adds the currentPosition to the list of branching points
+						branchPoints[pointsCount + 1] = currentPosition[1];
+						branchPoints[pointsCount + 2] = currentPosition[2];
+						pointsCount += 3;																													// Increments pointsCount by 3
+					}
+					else {
+						// cout << "HERE" << endl;
+						b1 = true;
+						// break;
+					}
+			}
+
+			else if (pattern.substr(idx, 1).compare("+") == 0){													// ELSE IF the character matches +
+				rotation = rand() % 65 + 1;																								// Chooses a random number to rotate the position left from 0 to 65.
+				// rotation = 25;
+				float numRotateZ =-  ((rotation * 3.14159) / 180);												// Variable - Converts degrees of the rotation to radians.
+				rotateZ1[0] = cos(numRotateZ);																						// Updates the Z rotational matrix
+				rotateZ1[1] = sin(numRotateZ);
+				rotateZ1[4] = -sin(numRotateZ);
+				rotateZ1[5] = cos(numRotateZ);
+				multiply(rotateZ1, currentHeading, result1);															// Multiplies the rotateZ1 matrix by the currentHeading to get the new currentHeading.
+				float magnitude = sqrt((result1[0]*result1[0]) + (result1[1]*result1[1]) + (result1[2]*result1[2]) + (result1[3]*result1[3]));	//Finds magnitude for normalization of heading.
+				// if ((currentPosition[0] <= 0.5 && currentPosition[1] <= 0.5 && currentPosition[2] <= 0.5) && (currentPosition[0] >= -0.5 && currentPosition[1] >= -0.5 && currentPosition[2] >= -0.5)){
+					currentHeading[0] = result1[0] / magnitude;																// Normalizes the currentHeading vector.
+					currentHeading[1] = result1[1] / magnitude;
+					currentHeading[2] = result1[2] / magnitude;
+					currentHeading[3] = result1[3] / magnitude;
+				// }
+			}
+
+			else if (pattern.substr(idx, 1).compare("-") == 0){													// ELSE IF the character matches -
+				rotation = rand() % 65 + 1;																								// Chooses a random number to rotate the position right from 0 to 65.
+				// rotation = 25;
+				float numRotateZ =+ ((rotation * 3.14159) / 180);													// Variable - Converts degrees of the rotation to radians.
+				rotateZ1[0] = cos(numRotateZ);																						// Updates the Z rotational matrix
+				rotateZ1[1] = sin(numRotateZ);
+				rotateZ1[4] = -sin(numRotateZ);
+				rotateZ1[5] = cos(numRotateZ);
+				multiply(rotateZ1, currentHeading, result1);															// Multiplies the rotateZ1 matrix by the currentHeading to get the new currentHeading.
+				float magnitude = sqrt((result1[0]*result1[0]) + (result1[1]*result1[1]) + (result1[2]*result1[2]) + (result1[3]*result1[3]));	//Finds magnitude for normalization of heading.
+				// if ((currentPosition[0] <= 0.5 && currentPosition[1] <= 0.5 && currentPosition[2] <= 0.5) && (currentPosition[0] >= -0.5 && currentPosition[1] >= -0.5 && currentPosition[2] >= -0.5)){
+					currentHeading[0] = result1[0] / magnitude;																// Normalizes the currentHeading vector.
+					currentHeading[1] = result1[1] / magnitude;
+					currentHeading[2] = result1[2] / magnitude;
+					currentHeading[3] = result1[3] / magnitude;
+				// }
+			}
+		}
+		else{
+			b1 = true;
 		}
 
-		else if (pattern.substr(idx, 1).compare("+") == 0){													// ELSE IF the character matches +
-			rotation = rand() % 65 + 1;																								// Chooses a random number to rotate the position left from 0 to 65.
-			// rotation = 25;
-			float numRotateZ =-  ((rotation * 3.14159) / 180);												// Variable - Converts degrees of the rotation to radians.
-			rotateZ1[0] = cos(numRotateZ);																						// Updates the Z rotational matrix
-			rotateZ1[1] = sin(numRotateZ);
-			rotateZ1[4] = -sin(numRotateZ);
-			rotateZ1[5] = cos(numRotateZ);
-			multiply(rotateZ1, currentHeading, result1);															// Multiplies the rotateZ1 matrix by the currentHeading to get the new currentHeading.
-			float magnitude = sqrt((result1[0]*result1[0]) + (result1[1]*result1[1]) + (result1[2]*result1[2]) + (result1[3]*result1[3]));	//Finds magnitude for normalization of heading.
-			currentHeading[0] = result1[0] / magnitude;																// Normalizes the currentHeading vector.
-			currentHeading[1] = result1[1] / magnitude;
-			currentHeading[2] = result1[2] / magnitude;
-			currentHeading[3] = result1[3] / magnitude;
-		}
+		// else {
+		if (b1 == true){
+			cout << pattern[idx] << endl;
+			cout << counterF << endl;
+			if (pattern.substr(idx, 1).compare("]") == 0 && !PositionStack.empty()){
+				// cout << "HERE" << endl;
+				// if (!PositionStack.empty()){
+					for (int t = 0; t < counterF; t++){
 
-		else if (pattern.substr(idx, 1).compare("-") == 0){													// ELSE IF the character matches -
-			rotation = rand() % 65 + 1;																								// Chooses a random number to rotate the position right from 0 to 65.
-			// rotation = 25;
-			float numRotateZ =+ ((rotation * 3.14159) / 180);													// Variable - Converts degrees of the rotation to radians.
-			rotateZ1[0] = cos(numRotateZ);																						// Updates the Z rotational matrix
-			rotateZ1[1] = sin(numRotateZ);
-			rotateZ1[4] = -sin(numRotateZ);
-			rotateZ1[5] = cos(numRotateZ);
-			multiply(rotateZ1, currentHeading, result1);															// Multiplies the rotateZ1 matrix by the currentHeading to get the new currentHeading.
-			float magnitude = sqrt((result1[0]*result1[0]) + (result1[1]*result1[1]) + (result1[2]*result1[2]) + (result1[3]*result1[3]));	//Finds magnitude for normalization of heading.
-			currentHeading[0] = result1[0] / magnitude;																// Normalizes the currentHeading vector.
-			currentHeading[1] = result1[1] / magnitude;
-			currentHeading[2] = result1[2] / magnitude;
-			currentHeading[3] = result1[3] / magnitude;
+						cout << "T " << t << " counterF "<< counterF << endl;
+
+						currentPosition[0] = PositionStack.top();																	// Sets the current position back to the top of the stack.
+						PositionStack.pop();																											// Pops the current position from the top of the stack.
+						currentPosition[1] = PositionStack.top();
+						PositionStack.pop();
+						currentPosition[2] = PositionStack.top();
+						PositionStack.pop();
+						currentPosition[3] = PositionStack.top();
+						PositionStack.pop();
+
+						currentHeading[0] = HeadingStack.top();																		// Sets the currentHeading to the top of the HeadingStack.
+						HeadingStack.pop();																												// Pops the currentHeading from the top of the stack.
+						currentHeading[1] = HeadingStack.top();
+						HeadingStack.pop();
+						currentHeading[2] = HeadingStack.top();
+						HeadingStack.pop();
+						currentHeading[3] = HeadingStack.top();
+						HeadingStack.pop();
+					}
+					counterF = 0;
+				// }
+			}
+			else	if (pattern.substr((idx), 1).compare("[") == 0){
+				if (pattern.substr((idx + 1), 1).compare("+") == 0 || pattern.substr((idx + 1), 1).compare("-") == 0){
+					idx += 2;
+				}
+			}
+			else if (pattern.substr((idx + 1), 1).compare("+") == 0 || pattern.substr((idx + 1), 1).compare("-") == 0){
+				idx ++;
+			}
+			if (pattern.substr((idx), 1).compare("]") == 0){
+				cout << "Right Bracket" << endl;
+				while (pattern.substr((idx + 1), 1).compare("]") == 0){
+					idx ++;
+				}
+			}
+			// else if (pattern.substr((idx + 1), 1).compare("F") == 0){
+			// 	break;
+			// }
+			cout << "End of Else" << endl;
+
 		}
+		cout << "End of If" << endl;
 	}
+
+	// for (int y = 0; y < pointsCount; y += 3){
+	// 	if( branchPoints[y] > 0.5){
+	// 		cout << "Position X: " << branchPoints[y] << endl;
+	// 		cout << "Position X: " << branchPoints[y + 1] << endl;
+	// 		cout << "Position X: " << branchPoints[y + 2] << endl << endl;
+	// 	}
+	// 	else if (branchPoints[y + 1] > 0.5){
+	// 		cout << "Position X: " << branchPoints[y] << endl;
+	// 		cout << "Position X: " << branchPoints[y + 1] << endl;
+	// 		cout << "Position X: " << branchPoints[y + 2] << endl << endl;
+	// 	}
+	// 	else if (branchPoints[y + 2] > 0.5){
+	// 		cout << "Position X: " << branchPoints[y] << endl;
+	// 		cout << "Position X: " << branchPoints[y + 1] << endl;
+	// 		cout << "Position X: " << branchPoints[y + 2] << endl << endl;
+	// 	}
+	// }
 
 	string modelName = "Leaf.obj";																								// Variable - Name of the OBJ to load.
 
