@@ -566,6 +566,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	GLfloat* resultRotation2 = new float[16];
 
 	int counterF = 0;
+	bool b1 = false;
 
 	/* End code for user interaction feature */
 
@@ -576,7 +577,9 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	pointsCount += 3;																															// Increments pointsCount by 3
 
 	for (int idx = 0; idx < pattern.length(); idx++){															// Parser - begins by going through each character of the pattern
+		// b1 = false;
 		if ((currentPosition[0] <= 0.5 && currentPosition[1] <= 0.5 && currentPosition[2] <= 0.5) && (currentPosition[0] >= -0.5 && currentPosition[1] >= -0.5 && currentPosition[2] >= -0.5)){
+			// b1 = false;
 			if (pattern.substr(idx,1).compare("[") == 0){																// IF the character matches [
 				// if ((currentPosition[0] <= 0.5 && currentPosition[1] <= 0.5 && currentPosition[2] <= 0.5) && (currentPosition[0] >= -0.5 && currentPosition[1] >= -0.5 && currentPosition[2] >= -0.5)){
 					PositionStack.push(currentPosition[3]);																		// Then push the currentPosition onto the PositionStack.
@@ -681,10 +684,11 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 						branchPoints[pointsCount + 2] = currentPosition[2];
 						pointsCount += 3;																													// Increments pointsCount by 3
 					}
-					// else {
-					// 	// cout << "HERE" << endl;
-					// 	break;
-					// }
+					else {
+						// cout << "HERE" << endl;
+						b1 = true;
+						// break;
+					}
 			}
 
 			else if (pattern.substr(idx, 1).compare("+") == 0){													// ELSE IF the character matches +
@@ -723,17 +727,18 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 				// }
 			}
 		}
+		else{
+			b1 = true;
+		}
 
-		else {
+		// else {
+		if (b1 == true){
 			cout << pattern[idx] << endl;
 			cout << counterF << endl;
-			// if ((pattern.substr(idx, 1).compare("]") == 0 && pattern.substr((idx+1), 1).compare("]") == 0) || (pattern.substr(idx, 1).compare("]") == 0 && pattern.substr((idx+1), 1).compare("]") == 0 && pattern.substr((idx+2), 1).compare("]") == 0)){
-			// if (pattern.substr(idx, 1).compare("]") == 0 && pattern.substr(idx+1, 1).compare("]") == 0){
-			if (pattern.substr(idx, 1).compare("]") == 0){
+			if (pattern.substr(idx, 1).compare("]") == 0 && !PositionStack.empty()){
 				// cout << "HERE" << endl;
-				for (int t = 0; t < counterF; t++){
-
-					if (!PositionStack.empty()){
+				// if (!PositionStack.empty()){
+					for (int t = 0; t < counterF; t++){
 
 						cout << "T " << t << " counterF "<< counterF << endl;
 
@@ -756,7 +761,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 						HeadingStack.pop();
 					}
 					counterF = 0;
-				}
+				// }
 			}
 			else	if (pattern.substr((idx), 1).compare("[") == 0){
 				if (pattern.substr((idx + 1), 1).compare("+") == 0 || pattern.substr((idx + 1), 1).compare("-") == 0){
@@ -766,8 +771,8 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 			else if (pattern.substr((idx + 1), 1).compare("+") == 0 || pattern.substr((idx + 1), 1).compare("-") == 0){
 				idx ++;
 			}
-			else if (pattern.substr((idx + 1), 1).compare("]") == 0){
-				idx ++;
+			if (pattern.substr((idx), 1).compare("]") == 0){
+				cout << "Right Bracket" << endl;
 				while (pattern.substr((idx + 1), 1).compare("]") == 0){
 					idx ++;
 				}
@@ -775,9 +780,10 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 			// else if (pattern.substr((idx + 1), 1).compare("F") == 0){
 			// 	break;
 			// }
-			// cout << "End of Else" << endl;
+			cout << "End of Else" << endl;
+
 		}
-		// cout << "End of If" << endl;
+		cout << "End of If" << endl;
 	}
 
 	// for (int y = 0; y < pointsCount; y += 3){
