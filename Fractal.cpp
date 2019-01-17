@@ -565,6 +565,8 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	GLfloat* resultRotation = new float[16];
 	GLfloat* resultRotation2 = new float[16];
 
+	int counterF = 0;
+
 	/* End code for user interaction feature */
 
 
@@ -586,11 +588,14 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 					HeadingStack.push(currentHeading[2]);
 					HeadingStack.push(currentHeading[1]);
 					HeadingStack.push(currentHeading[0]);
+
+					counterF++;
+					cout << counterF << endl;
 				}
 
 
 			else if (pattern.substr(idx, 1).compare("]") == 0){													// ELSE IF the character matches ]
-				// if ((currentPosition[0] <= 0.5 && currentPosition[1] <= 0.5 && currentPosition[2] <= 0.5) && (currentPosition[0] >= -0.5 && currentPosition[1] >= -0.5 && currentPosition[2] >= -0.5)){
+				if ((currentPosition[0] <= 0.5 && currentPosition[1] <= 0.5 && currentPosition[2] <= 0.5) && (currentPosition[0] >= -0.5 && currentPosition[1] >= -0.5 && currentPosition[2] >= -0.5)){
 
 					leafPoints[leafCount + 0] = currentPosition[0];														// Add the point to the leaf array (where leaves will be placed)
 					leafPoints[leafCount + 1] = currentPosition[1];
@@ -629,7 +634,9 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 					HeadingStack.pop();
 					currentHeading[3] = HeadingStack.top();
 					HeadingStack.pop();
-				// }
+
+					counterF --;
+				}
 			}
 
 			else if (pattern.substr(idx, 1).compare("F") == 0){													// ELSE IF the character matches F
@@ -664,17 +671,20 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 
 					if ((currentPosition[0] <= 0.5 && currentPosition[1] <= 0.5 && currentPosition[2] <= 0.5) && (currentPosition[0] >= -0.5 && currentPosition[1] >= -0.5 && currentPosition[2] >= -0.5)){
 
-					leafPoints[leafCount + 0] = midX;																					// Adds the midpoint to the leaf array
-					leafPoints[leafCount + 1] = midY;
-					leafPoints[leafCount + 2] = midZ;
-					leafCount += 3;																														// Increments leafCount by 3
+						leafPoints[leafCount + 0] = midX;																					// Adds the midpoint to the leaf array
+						leafPoints[leafCount + 1] = midY;
+						leafPoints[leafCount + 2] = midZ;
+						leafCount += 3;																														// Increments leafCount by 3
 
-					branchPoints[pointsCount + 0] = currentPosition[0];												//Adds the currentPosition to the list of branching points
-					branchPoints[pointsCount + 1] = currentPosition[1];
-					branchPoints[pointsCount + 2] = currentPosition[2];
-					pointsCount += 3;																													// Increments pointsCount by 3
-				}
-				// }
+						branchPoints[pointsCount + 0] = currentPosition[0];												//Adds the currentPosition to the list of branching points
+						branchPoints[pointsCount + 1] = currentPosition[1];
+						branchPoints[pointsCount + 2] = currentPosition[2];
+						pointsCount += 3;																													// Increments pointsCount by 3
+					}
+					else {
+						cout << "HERE" << endl;
+						break;
+					}
 			}
 
 			else if (pattern.substr(idx, 1).compare("+") == 0){													// ELSE IF the character matches +
@@ -713,26 +723,62 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 				// }
 			}
 		}
+		else {
+			cout << pattern[idx] << endl;
+			// if ((pattern.substr(idx, 1).compare("]") == 0 && pattern.substr((idx+1), 1).compare("]") == 0) || (pattern.substr(idx, 1).compare("]") == 0 && pattern.substr((idx+1), 1).compare("]") == 0 && pattern.substr((idx+2), 1).compare("]") == 0)){
+			if (pattern.substr(idx, 1).compare("]") == 0){
+				for (int t = 0; t < counterF; t++){
+					currentPosition[0] = PositionStack.top();																	// Sets the current position back to the top of the stack.
+					PositionStack.pop();																											// Pops the current position from the top of the stack.
+					currentPosition[1] = PositionStack.top();
+					PositionStack.pop();
+					currentPosition[2] = PositionStack.top();
+					PositionStack.pop();
+					currentPosition[3] = PositionStack.top();
+					PositionStack.pop();
+
+					currentHeading[0] = HeadingStack.top();																		// Sets the currentHeading to the top of the HeadingStack.
+					HeadingStack.pop();																												// Pops the currentHeading from the top of the stack.
+					currentHeading[1] = HeadingStack.top();
+					HeadingStack.pop();
+					currentHeading[2] = HeadingStack.top();
+					HeadingStack.pop();
+					currentHeading[3] = HeadingStack.top();
+					HeadingStack.pop();
+					}
+					counterF = 0;
+				}
+			else	if (pattern.substr((idx), 1).compare("[") == 0){
+				if (pattern.substr((idx + 1), 1).compare("+") == 0 || pattern.substr((idx + 1), 1).compare("-") == 0){
+					idx += 2;
+				}
+			}
+			else if (pattern.substr((idx + 1), 1).compare("+") == 0 || pattern.substr((idx + 1), 1).compare("-") == 0){
+				idx ++;
+			}
+			else if (pattern.substr((idx + 1), 1).compare("F") == 0){
+				break;
+			}
+		}
 	}
 
-	for (int y = 0; y < pointsCount; y += 3){
-		if( branchPoints[y] > 0.5){
-			cout << "Position X: " << branchPoints[y] << endl;
-			cout << "Position X: " << branchPoints[y + 1] << endl;
-			cout << "Position X: " << branchPoints[y + 2] << endl << endl;
-		}
-		else if (branchPoints[y + 1] > 0.5){
-			cout << "Position X: " << branchPoints[y] << endl;
-			cout << "Position X: " << branchPoints[y + 1] << endl;
-			cout << "Position X: " << branchPoints[y + 2] << endl << endl;
-		}
-		else if (branchPoints[y + 2] > 0.5){
-			cout << "Position X: " << branchPoints[y] << endl;
-			cout << "Position X: " << branchPoints[y + 1] << endl;
-			cout << "Position X: " << branchPoints[y + 2] << endl << endl;
-		}
-
-	}
+	// for (int y = 0; y < pointsCount; y += 3){
+	// 	if( branchPoints[y] > 0.5){
+	// 		cout << "Position X: " << branchPoints[y] << endl;
+	// 		cout << "Position X: " << branchPoints[y + 1] << endl;
+	// 		cout << "Position X: " << branchPoints[y + 2] << endl << endl;
+	// 	}
+	// 	else if (branchPoints[y + 1] > 0.5){
+	// 		cout << "Position X: " << branchPoints[y] << endl;
+	// 		cout << "Position X: " << branchPoints[y + 1] << endl;
+	// 		cout << "Position X: " << branchPoints[y + 2] << endl << endl;
+	// 	}
+	// 	else if (branchPoints[y + 2] > 0.5){
+	// 		cout << "Position X: " << branchPoints[y] << endl;
+	// 		cout << "Position X: " << branchPoints[y + 1] << endl;
+	// 		cout << "Position X: " << branchPoints[y + 2] << endl << endl;
+	// 	}
+	// }
 
 	string modelName = "Leaf.obj";																								// Variable - Name of the OBJ to load.
 
