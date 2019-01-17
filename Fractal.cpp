@@ -590,7 +590,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 					HeadingStack.push(currentHeading[0]);
 
 					counterF++;
-					cout << counterF << endl;
+					// cout << counterF << endl;
 				}
 
 
@@ -681,10 +681,10 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 						branchPoints[pointsCount + 2] = currentPosition[2];
 						pointsCount += 3;																													// Increments pointsCount by 3
 					}
-					else {
-						cout << "HERE" << endl;
-						break;
-					}
+					// else {
+					// 	// cout << "HERE" << endl;
+					// 	break;
+					// }
 			}
 
 			else if (pattern.substr(idx, 1).compare("+") == 0){													// ELSE IF the character matches +
@@ -723,31 +723,41 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 				// }
 			}
 		}
+
 		else {
 			cout << pattern[idx] << endl;
+			cout << counterF << endl;
 			// if ((pattern.substr(idx, 1).compare("]") == 0 && pattern.substr((idx+1), 1).compare("]") == 0) || (pattern.substr(idx, 1).compare("]") == 0 && pattern.substr((idx+1), 1).compare("]") == 0 && pattern.substr((idx+2), 1).compare("]") == 0)){
+			// if (pattern.substr(idx, 1).compare("]") == 0 && pattern.substr(idx+1, 1).compare("]") == 0){
 			if (pattern.substr(idx, 1).compare("]") == 0){
+				// cout << "HERE" << endl;
 				for (int t = 0; t < counterF; t++){
-					currentPosition[0] = PositionStack.top();																	// Sets the current position back to the top of the stack.
-					PositionStack.pop();																											// Pops the current position from the top of the stack.
-					currentPosition[1] = PositionStack.top();
-					PositionStack.pop();
-					currentPosition[2] = PositionStack.top();
-					PositionStack.pop();
-					currentPosition[3] = PositionStack.top();
-					PositionStack.pop();
 
-					currentHeading[0] = HeadingStack.top();																		// Sets the currentHeading to the top of the HeadingStack.
-					HeadingStack.pop();																												// Pops the currentHeading from the top of the stack.
-					currentHeading[1] = HeadingStack.top();
-					HeadingStack.pop();
-					currentHeading[2] = HeadingStack.top();
-					HeadingStack.pop();
-					currentHeading[3] = HeadingStack.top();
-					HeadingStack.pop();
+					if (!PositionStack.empty()){
+
+						cout << "T " << t << " counterF "<< counterF << endl;
+
+						currentPosition[0] = PositionStack.top();																	// Sets the current position back to the top of the stack.
+						PositionStack.pop();																											// Pops the current position from the top of the stack.
+						currentPosition[1] = PositionStack.top();
+						PositionStack.pop();
+						currentPosition[2] = PositionStack.top();
+						PositionStack.pop();
+						currentPosition[3] = PositionStack.top();
+						PositionStack.pop();
+
+						currentHeading[0] = HeadingStack.top();																		// Sets the currentHeading to the top of the HeadingStack.
+						HeadingStack.pop();																												// Pops the currentHeading from the top of the stack.
+						currentHeading[1] = HeadingStack.top();
+						HeadingStack.pop();
+						currentHeading[2] = HeadingStack.top();
+						HeadingStack.pop();
+						currentHeading[3] = HeadingStack.top();
+						HeadingStack.pop();
 					}
 					counterF = 0;
 				}
+			}
 			else	if (pattern.substr((idx), 1).compare("[") == 0){
 				if (pattern.substr((idx + 1), 1).compare("+") == 0 || pattern.substr((idx + 1), 1).compare("-") == 0){
 					idx += 2;
@@ -756,10 +766,18 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 			else if (pattern.substr((idx + 1), 1).compare("+") == 0 || pattern.substr((idx + 1), 1).compare("-") == 0){
 				idx ++;
 			}
-			else if (pattern.substr((idx + 1), 1).compare("F") == 0){
-				break;
+			else if (pattern.substr((idx + 1), 1).compare("]") == 0){
+				idx ++;
+				while (pattern.substr((idx + 1), 1).compare("]") == 0){
+					idx ++;
+				}
 			}
+			// else if (pattern.substr((idx + 1), 1).compare("F") == 0){
+			// 	break;
+			// }
+			// cout << "End of Else" << endl;
 		}
+		// cout << "End of If" << endl;
 	}
 
 	// for (int y = 0; y < pointsCount; y += 3){
