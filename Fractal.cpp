@@ -567,9 +567,9 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 
 	int counterF = 0;
 	bool b1 = false;
+	float box = 0.3;
 
 	/* End code for user interaction feature */
-
 
 	branchPoints[pointsCount + 0] = currentPosition[0];														// These lines add the first set of points to the list of points.
 	branchPoints[pointsCount + 1] = currentPosition[1];
@@ -577,11 +577,11 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	pointsCount += 3;																															// Increments pointsCount by 3
 
 	for (int idx = 0; idx < pattern.length(); idx++){															// Parser - begins by going through each character of the pattern
-		// b1 = false;
-		if ((currentPosition[0] <= 0.5 && currentPosition[1] <= 0.5 && currentPosition[2] <= 0.5) && (currentPosition[0] >= -0.5 && currentPosition[1] >= -0.5 && currentPosition[2] >= -0.5)){
-			// b1 = false;
+
+		if (((currentPosition[0] <= box && currentPosition[1] <= box) && (currentPosition[1] <= box && currentPosition[2] <= box)) && ((currentPosition[0] >= -box && currentPosition[1] >= -box) && (currentPosition[1] >= -box && currentPosition[2] >= -box))){
+
 			if (pattern.substr(idx,1).compare("[") == 0){																// IF the character matches [
-				// if ((currentPosition[0] <= 0.5 && currentPosition[1] <= 0.5 && currentPosition[2] <= 0.5) && (currentPosition[0] >= -0.5 && currentPosition[1] >= -0.5 && currentPosition[2] >= -0.5)){
+
 					PositionStack.push(currentPosition[3]);																		// Then push the currentPosition onto the PositionStack.
 					PositionStack.push(currentPosition[2]);
 					PositionStack.push(currentPosition[1]);
@@ -598,7 +598,6 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 
 
 			else if (pattern.substr(idx, 1).compare("]") == 0){													// ELSE IF the character matches ]
-				if ((currentPosition[0] <= 0.5 && currentPosition[1] <= 0.5 && currentPosition[2] <= 0.5) && (currentPosition[0] >= -0.5 && currentPosition[1] >= -0.5 && currentPosition[2] >= -0.5)){
 
 					leafPoints[leafCount + 0] = currentPosition[0];														// Add the point to the leaf array (where leaves will be placed)
 					leafPoints[leafCount + 1] = currentPosition[1];
@@ -639,13 +638,10 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 					HeadingStack.pop();
 
 					counterF --;
-				}
+				// }
 			}
 
 			else if (pattern.substr(idx, 1).compare("F") == 0){													// ELSE IF the character matches F
-
-				// if ((currentPosition[0] <= 0.5 && currentPosition[1] <= 0.5 && currentPosition[2] <= 0.5) && (currentPosition[0] >= -0.5 && currentPosition[1] >= -0.5 && currentPosition[2] >= -0.5)){
-
 					// cout << endl << "Before:" << endl;
 					// cout << "Position X: " << currentPosition[0] << endl;
 					// cout << "Position Y: " << currentPosition[1] << endl;
@@ -663,16 +659,20 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 						currentHeading[2] = currentZ;																						// Set that float to be the z value of the current heading
 					}
 
-					currentPosition[0] += currentHeading[0]*.2;																// Add the currentPosition and the currentHeading together
-					currentPosition[1] += currentHeading[1]*.2;																// Multiply by .2 to change the height of the tree
-					currentPosition[2] += currentHeading[2]*.2;
+					currentPosition[0] += currentHeading[0]*.15;																// Add the currentPosition and the currentHeading together
+					currentPosition[1] += currentHeading[1]*.15;																// Multiply by .2 to change the height of the tree
+					currentPosition[2] += currentHeading[2]*.15;
 					currentPosition[3] += currentHeading[3];																	// This never changes - determines whether it is a point or a line
+
+					// cout << "Position X: " << currentPosition[0] << endl;
+					// cout << "Position Y: " << currentPosition[1] << endl;
+					// cout << "Position Z: " << currentPosition[2] << endl << endl;
 
 					GLfloat midX = (lastPosX + currentPosition[0]) / 2;												// Get the midPoint between the currentPosition and the last saved position
 					GLfloat midY = (lastPosY + currentPosition[1]) / 2;
 					GLfloat midZ = (lastPosZ + currentPosition[2]) / 2;
 
-					if ((currentPosition[0] <= 0.5 && currentPosition[1] <= 0.5 && currentPosition[2] <= 0.5) && (currentPosition[0] >= -0.5 && currentPosition[1] >= -0.5 && currentPosition[2] >= -0.5)){
+					if (((currentPosition[0] <= box && currentPosition[1] <= box) && (currentPosition[1] <= box && currentPosition[2] <= box)) && ((currentPosition[0] >= -box && currentPosition[1] >= -box) && (currentPosition[1] >= -box && currentPosition[2] >= -box))){
 
 						leafPoints[leafCount + 0] = midX;																					// Adds the midpoint to the leaf array
 						leafPoints[leafCount + 1] = midY;
@@ -701,7 +701,6 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 				rotateZ1[5] = cos(numRotateZ);
 				multiply(rotateZ1, currentHeading, result1);															// Multiplies the rotateZ1 matrix by the currentHeading to get the new currentHeading.
 				float magnitude = sqrt((result1[0]*result1[0]) + (result1[1]*result1[1]) + (result1[2]*result1[2]) + (result1[3]*result1[3]));	//Finds magnitude for normalization of heading.
-				// if ((currentPosition[0] <= 0.5 && currentPosition[1] <= 0.5 && currentPosition[2] <= 0.5) && (currentPosition[0] >= -0.5 && currentPosition[1] >= -0.5 && currentPosition[2] >= -0.5)){
 					currentHeading[0] = result1[0] / magnitude;																// Normalizes the currentHeading vector.
 					currentHeading[1] = result1[1] / magnitude;
 					currentHeading[2] = result1[2] / magnitude;
@@ -719,7 +718,6 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 				rotateZ1[5] = cos(numRotateZ);
 				multiply(rotateZ1, currentHeading, result1);															// Multiplies the rotateZ1 matrix by the currentHeading to get the new currentHeading.
 				float magnitude = sqrt((result1[0]*result1[0]) + (result1[1]*result1[1]) + (result1[2]*result1[2]) + (result1[3]*result1[3]));	//Finds magnitude for normalization of heading.
-				// if ((currentPosition[0] <= 0.5 && currentPosition[1] <= 0.5 && currentPosition[2] <= 0.5) && (currentPosition[0] >= -0.5 && currentPosition[1] >= -0.5 && currentPosition[2] >= -0.5)){
 					currentHeading[0] = result1[0] / magnitude;																// Normalizes the currentHeading vector.
 					currentHeading[1] = result1[1] / magnitude;
 					currentHeading[2] = result1[2] / magnitude;
@@ -733,6 +731,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 
 		// else {
 		if (b1 == true){
+			// cout << "HERE" << endl;
 			// cout << pattern[idx] << endl;
 			// cout << counterF << endl;
 			if (pattern.substr(idx, 1).compare("]") == 0 && !PositionStack.empty()){
@@ -740,7 +739,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 				// if (!PositionStack.empty()){
 					for (int t = 0; t < counterF; t++){
 
-						cout << "T " << t << " counterF "<< counterF << endl;
+						// cout << "T " << t << " counterF "<< counterF << endl;
 
 						currentPosition[0] = PositionStack.top();																	// Sets the current position back to the top of the stack.
 						PositionStack.pop();																											// Pops the current position from the top of the stack.
@@ -772,7 +771,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 				idx ++;
 			}
 			if (pattern.substr((idx), 1).compare("]") == 0){
-				cout << "Right Bracket" << endl;
+				// cout << "Right Bracket" << endl;
 				while (pattern.substr((idx + 1), 1).compare("]") == 0){
 					idx ++;
 				}
@@ -780,11 +779,26 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 			// else if (pattern.substr((idx + 1), 1).compare("F") == 0){
 			// 	break;
 			// }
-			cout << "End of Else" << endl;
+			// cout << "End of Else" << endl;
 
 		}
-		cout << "End of If" << endl;
+		// cout << "End of If" << endl;
 	}
+
+
+	// cout << pointsCount << endl;
+	// cout << totalCount << endl;
+	GLfloat newPoints[pointsCount];
+
+	for (int y = 0; y < pointsCount; y+=3){
+		newPoints[y + 0] = branchPoints[y + 0];
+		newPoints[y + 1] = branchPoints[y + 1];
+		newPoints[y + 2] = branchPoints[y + 2];
+		cout << newPoints[y] << endl;
+		cout << newPoints[y + 1] << endl;
+		cout << newPoints[y + 2] << endl << endl;
+	}
+
 
 	// for (int y = 0; y < pointsCount; y += 3){
 	// 	if( branchPoints[y] > 0.5){
@@ -1163,7 +1177,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	data on the graphics adapter's memory. in our case - the vertex points */
 	glGenBuffers( 1, &vbo );
 	glBindBuffer( GL_ARRAY_BUFFER, vbo );
-	glBufferData( GL_ARRAY_BUFFER, (totalCount*3) * sizeof( GLfloat ), branchPoints, GL_STATIC_DRAW ); // count*3 to not lose points
+	glBufferData( GL_ARRAY_BUFFER, (pointsCount) * sizeof( GLfloat ), newPoints, GL_STATIC_DRAW ); // count*3 to not lose points
 
 	/* the vertex array object (VAO) is a little descriptor that defines which
 	data from vertex buffer objects should be used as input variables to vertex

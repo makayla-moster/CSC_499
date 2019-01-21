@@ -513,11 +513,11 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 		 0,0,1,0,
 		 x,y,z,1};
 
-	// GLfloat scale[] =  																														// Matrix - scaling matrix
-	// 	{sx,0,0,0,
-	// 		0,sy,0,0,
-	// 		0,0,sz,0,
-	// 		0,0,0,1};
+	GLfloat scale[] =  																														// Matrix - scaling matrix
+		{sx,0,0,0,
+			0,sy,0,0,
+			0,0,sz,0,
+			0,0,0,1};
 
 	GLfloat rotateX[] = 																													// Matrix - X Rotation Matrix
 		{1,0,0,0,
