@@ -566,6 +566,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	GLfloat* resultRotation2 = new float[16];
 
 	int counterF = 0;
+	int counter12 = 0;
 	bool b1 = false;
 	float box = 0.3;
 
@@ -737,7 +738,56 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 			if (pattern.substr(idx, 1).compare("]") == 0 && !PositionStack.empty()){
 				// cout << "HERE" << endl;
 				// if (!PositionStack.empty()){
-					for (int t = 0; t < counterF; t++){
+
+				currentPosition[0] = PositionStack.top();																	// Sets the current position back to the top of the stack.
+				PositionStack.pop();																											// Pops the current position from the top of the stack.
+				currentPosition[1] = PositionStack.top();
+				PositionStack.pop();
+				currentPosition[2] = PositionStack.top();
+				PositionStack.pop();
+				currentPosition[3] = PositionStack.top();
+				PositionStack.pop();
+
+				currentHeading[0] = HeadingStack.top();																		// Sets the currentHeading to the top of the HeadingStack.
+				HeadingStack.pop();																												// Pops the currentHeading from the top of the stack.
+				currentHeading[1] = HeadingStack.top();
+				HeadingStack.pop();
+				currentHeading[2] = HeadingStack.top();
+				HeadingStack.pop();
+				currentHeading[3] = HeadingStack.top();
+				HeadingStack.pop();
+
+				branchPoints[pointsCount + 0] = currentPosition[0];												//Adds the currentPosition to the list of branching points
+				branchPoints[pointsCount + 1] = currentPosition[1];
+				branchPoints[pointsCount + 2] = currentPosition[2];
+				pointsCount += 3;
+
+				while (((currentPosition[0] <= box && currentPosition[1] <= box) && (currentPosition[1] <= box && currentPosition[2] <= box)) && ((currentPosition[0] >= -box && currentPosition[1] >= -box) && (currentPosition[1] >= -box && currentPosition[2] >= -box))){
+					currentPosition[0] += currentHeading[0]*.09;																// Add the currentPosition and the currentHeading together
+					currentPosition[1] += currentHeading[1]*.09;																// Multiply by .2 to change the height of the tree
+					currentPosition[2] += currentHeading[2]*.09;
+					currentPosition[3] += currentHeading[3];
+
+					if (((currentPosition[0] <= box && currentPosition[1] <= box) && (currentPosition[1] <= box && currentPosition[2] <= box)) && ((currentPosition[0] >= -box && currentPosition[1] >= -box) && (currentPosition[1] >= -box && currentPosition[2] >= -box))){
+						branchPoints[pointsCount + 0] = currentPosition[0];												//Adds the currentPosition to the list of branching points
+						branchPoints[pointsCount + 1] = currentPosition[1];
+						branchPoints[pointsCount + 2] = currentPosition[2];
+						pointsCount += 3;
+
+						leafPoints[leafCount + 0] = currentPosition[0];														// Add the point to the leaf array (where leaves will be placed)
+						leafPoints[leafCount + 1] = currentPosition[1];
+						leafPoints[leafCount + 2] = currentPosition[2];
+						leafCount += 3;
+
+						cout << "Updated position added" << endl;
+						cout << currentPosition[0] << endl;
+						cout << currentPosition[1] << endl;
+						cout << currentPosition[2] << endl;
+					}
+
+				}
+
+					for (int t = 1; t < counterF; t++){
 
 						// cout << "T " << t << " counterF "<< counterF << endl;
 
@@ -762,6 +812,11 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 					counterF = 0;
 				// }
 			}
+			// else	if (pattern.substr((idx), 1).compare("F") == 0){
+			// 	cout << "HERE" << endl;
+			//
+			//
+			// }
 			else	if (pattern.substr((idx), 1).compare("[") == 0){
 				if (pattern.substr((idx + 1), 1).compare("+") == 0 || pattern.substr((idx + 1), 1).compare("-") == 0){
 					idx += 2;
@@ -782,7 +837,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 			// cout << "End of Else" << endl;
 
 		}
-		// cout << "End of If" << endl;
+		cout << ""<< endl;
 	}
 
 
@@ -794,9 +849,9 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 		newPoints[y + 0] = branchPoints[y + 0];
 		newPoints[y + 1] = branchPoints[y + 1];
 		newPoints[y + 2] = branchPoints[y + 2];
-		cout << newPoints[y] << endl;
-		cout << newPoints[y + 1] << endl;
-		cout << newPoints[y + 2] << endl << endl;
+		// cout << newPoints[y] << endl;
+		// cout << newPoints[y + 1] << endl;
+		// cout << newPoints[y + 2] << endl << endl;
 	}
 
 
