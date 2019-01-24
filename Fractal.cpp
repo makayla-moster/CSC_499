@@ -728,17 +728,15 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 		}
 		else{
 			b1 = true;
-		}
 
-		// else {
-		if (b1 == true){
-			// cout << "HERE" << endl;
-			// cout << pattern[idx] << endl;
-			// cout << counterF << endl;
-			if (pattern.substr(idx, 1).compare("]") == 0 && !PositionStack.empty()){
-				// cout << "HERE" << endl;
-				// if (!PositionStack.empty()){
+			GLfloat lastPosition[] = {0.0f, 0.0f, 0.0f, 0.0f};
 
+			lastPosition[0] = currentPosition[0];
+			lastPosition[1] = currentPosition[1];
+			lastPosition[2] = currentPosition[2];
+			lastPosition[3] = currentPosition[3];
+
+			if (!PositionStack.empty()){
 				currentPosition[0] = PositionStack.top();																	// Sets the current position back to the top of the stack.
 				PositionStack.pop();																											// Pops the current position from the top of the stack.
 				currentPosition[1] = PositionStack.top();
@@ -757,15 +755,17 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 				currentHeading[3] = HeadingStack.top();
 				HeadingStack.pop();
 
-				branchPoints[pointsCount + 0] = currentPosition[0];												//Adds the currentPosition to the list of branching points
-				branchPoints[pointsCount + 1] = currentPosition[1];
-				branchPoints[pointsCount + 2] = currentPosition[2];
-				pointsCount += 3;
 
 				while (((currentPosition[0] <= box && currentPosition[1] <= box) && (currentPosition[1] <= box && currentPosition[2] <= box)) && ((currentPosition[0] >= -box && currentPosition[1] >= -box) && (currentPosition[1] >= -box && currentPosition[2] >= -box))){
-					currentPosition[0] += currentHeading[0]*.09;																// Add the currentPosition and the currentHeading together
-					currentPosition[1] += currentHeading[1]*.09;																// Multiply by .2 to change the height of the tree
-					currentPosition[2] += currentHeading[2]*.09;
+
+					branchPoints[pointsCount + 0] = currentPosition[0];												//Adds the currentPosition to the list of branching points
+					branchPoints[pointsCount + 1] = currentPosition[1];
+					branchPoints[pointsCount + 2] = currentPosition[2];
+					pointsCount += 3;
+
+					currentPosition[0] += currentHeading[0]*.2;																// Add the currentPosition and the currentHeading together
+					currentPosition[1] += currentHeading[1]*.2;																// Multiply by .2 to change the height of the tree
+					currentPosition[2] += currentHeading[2]*.2;
 					currentPosition[3] += currentHeading[3];
 
 					if (((currentPosition[0] <= box && currentPosition[1] <= box) && (currentPosition[1] <= box && currentPosition[2] <= box)) && ((currentPosition[0] >= -box && currentPosition[1] >= -box) && (currentPosition[1] >= -box && currentPosition[2] >= -box))){
@@ -786,6 +786,69 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 					}
 
 				}
+			}
+			currentPosition[0] = lastPosition[0];
+			currentPosition[1] = lastPosition[1];
+			currentPosition[2] = lastPosition[2];
+			currentPosition[3] = lastPosition[3];
+		}
+
+		// else {
+		if (b1 == true){
+			// cout << "HERE" << endl;
+			// cout << pattern[idx] << endl;
+			// cout << counterF << endl;
+			if (pattern.substr(idx, 1).compare("]") == 0 && !PositionStack.empty()){
+				// cout << "HERE" << endl;
+				// if (!PositionStack.empty()){
+
+				// currentPosition[0] = PositionStack.top();																	// Sets the current position back to the top of the stack.
+				// PositionStack.pop();																											// Pops the current position from the top of the stack.
+				// currentPosition[1] = PositionStack.top();
+				// PositionStack.pop();
+				// currentPosition[2] = PositionStack.top();
+				// PositionStack.pop();
+				// currentPosition[3] = PositionStack.top();
+				// PositionStack.pop();
+				//
+				// currentHeading[0] = HeadingStack.top();																		// Sets the currentHeading to the top of the HeadingStack.
+				// HeadingStack.pop();																												// Pops the currentHeading from the top of the stack.
+				// currentHeading[1] = HeadingStack.top();
+				// HeadingStack.pop();
+				// currentHeading[2] = HeadingStack.top();
+				// HeadingStack.pop();
+				// currentHeading[3] = HeadingStack.top();
+				// HeadingStack.pop();
+				//
+				// branchPoints[pointsCount + 0] = currentPosition[0];												//Adds the currentPosition to the list of branching points
+				// branchPoints[pointsCount + 1] = currentPosition[1];
+				// branchPoints[pointsCount + 2] = currentPosition[2];
+				// pointsCount += 3;
+				//
+				// while (((currentPosition[0] <= box && currentPosition[1] <= box) && (currentPosition[1] <= box && currentPosition[2] <= box)) && ((currentPosition[0] >= -box && currentPosition[1] >= -box) && (currentPosition[1] >= -box && currentPosition[2] >= -box))){
+				// 	currentPosition[0] += currentHeading[0]*.09;																// Add the currentPosition and the currentHeading together
+				// 	currentPosition[1] += currentHeading[1]*.09;																// Multiply by .2 to change the height of the tree
+				// 	currentPosition[2] += currentHeading[2]*.09;
+				// 	currentPosition[3] += currentHeading[3];
+				//
+				// 	if (((currentPosition[0] <= box && currentPosition[1] <= box) && (currentPosition[1] <= box && currentPosition[2] <= box)) && ((currentPosition[0] >= -box && currentPosition[1] >= -box) && (currentPosition[1] >= -box && currentPosition[2] >= -box))){
+				// 		branchPoints[pointsCount + 0] = currentPosition[0];												//Adds the currentPosition to the list of branching points
+				// 		branchPoints[pointsCount + 1] = currentPosition[1];
+				// 		branchPoints[pointsCount + 2] = currentPosition[2];
+				// 		pointsCount += 3;
+				//
+				// 		leafPoints[leafCount + 0] = currentPosition[0];														// Add the point to the leaf array (where leaves will be placed)
+				// 		leafPoints[leafCount + 1] = currentPosition[1];
+				// 		leafPoints[leafCount + 2] = currentPosition[2];
+				// 		leafCount += 3;
+				//
+				// 		cout << "Updated position added" << endl;
+				// 		cout << currentPosition[0] << endl;
+				// 		cout << currentPosition[1] << endl;
+				// 		cout << currentPosition[2] << endl;
+				// 	}
+				//
+				// }
 
 					for (int t = 1; t < counterF; t++){
 
@@ -837,7 +900,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 			// cout << "End of Else" << endl;
 
 		}
-		cout << ""<< endl;
+		// cout << ""<< endl;
 	}
 
 
