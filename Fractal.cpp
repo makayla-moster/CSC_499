@@ -373,11 +373,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		cout<<"T pressed\n";																												// Rotates the tree positively along the X axis
 		rx += 0.1;
 	}
-	if(key == GLFW_KEY_F && action == GLFW_REPEAT){
+	if((key == GLFW_KEY_F && action == GLFW_REPEAT) || (key == GLFW_KEY_F && action == GLFW_PRESS) ){
 		cout<<"F pressed\n";																												// Rotates the tree negatively along the Y axis
 		ry -= 0.1;
 	}
-	if(key == GLFW_KEY_G && action == GLFW_REPEAT){
+	if((key == GLFW_KEY_G && action == GLFW_REPEAT) || (key == GLFW_KEY_G && action == GLFW_PRESS)){
 		cout<<"G pressed\n";																												// Rotates the tree positively along the Y axis
 		ry += 0.1;
 	}
@@ -602,12 +602,12 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 
 
 			else if (pattern.substr(idx, 1).compare("]") == 0){													// ELSE IF the character matches ]
-				// if (currentPosition[0] < box && currentPosition[1] < box){
+				if ((currentPosition[0] < box && currentPosition[1] < box) && (currentPosition[0] >= -box && currentPosition[1] >= -box)  && (currentPosition[2] <= box && currentPosition[2] >= -box)){
 					leafPoints[leafCount + 0] = currentPosition[0];														// Add the point to the leaf array (where leaves will be placed)
 					leafPoints[leafCount + 1] = currentPosition[1];
 					leafPoints[leafCount + 2] = currentPosition[2];
 					leafCount += 3;																													// Increment leafCount by 3
-				// }
+				}
 
 
 					// cout << endl << "After:" << endl;
@@ -659,10 +659,10 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 					GLfloat lastPosY = currentPosition[1];
 					GLfloat lastPosZ = currentPosition[2];
 
-					// if (pointsCount > 6){																											// IF pointsCount is greater than 6
-					// 	float currentZ = RandomFloat(-1.0, 1.0);																// Generate a random float in between -1 and 1
-					// 	currentHeading[2] = currentZ;																						// Set that float to be the z value of the current heading
-					// }
+					if (pointsCount > 6){																											// IF pointsCount is greater than 6
+						float currentZ = RandomFloat(-1.0, 1.0);																// Generate a random float in between -1 and 1
+						currentHeading[2] = currentZ;																						// Set that float to be the z value of the current heading
+					}
 
 					currentPosition[0] += currentHeading[0]*.15;																// Add the currentPosition and the currentHeading together
 					currentPosition[1] += currentHeading[1]*.15;																// Multiply by .2 to change the height of the tree
@@ -677,8 +677,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 					GLfloat midY = (lastPosY + currentPosition[1]) / 2;
 					GLfloat midZ = (lastPosZ + currentPosition[2]) / 2;
 
-					// if (((currentPosition[0] <= box || currentPosition[1] <= box) || (currentPosition[1] <= box || currentPosition[2] <= box)) || ((currentPosition[0] >= -box || currentPosition[1] >= -box) || (currentPosition[1] >= -box || currentPosition[2] >= -box))){
-					if (currentPosition[0] <= box && currentPosition[1] <= box){
+					if ((currentPosition[0] <= box && currentPosition[1] <= box) && (currentPosition[0] >= -box && currentPosition[1] >= -box) && (currentPosition[2] <= box && currentPosition[2] >= -box)){
 
 						leafPoints[leafCount + 0] = midX;																					// Adds the midpoint to the leaf array
 						leafPoints[leafCount + 1] = midY;
@@ -741,17 +740,16 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 			// cout << "Position Y: " << currentPosition[1] << endl;
 			// cout << "Position Z: " << currentPosition[2] << endl << endl;
 
-			if (currentPosition[0] >= box || (currentPosition[1] >= box)){
-				// cout << "HERE" << endl;
+			if ((currentPosition[0] >= box || currentPosition[1] >= box) || currentPosition[2] >= box){
 
 				lastPos[0] = currentPosition[0];
 				lastPos[1] = currentPosition[1];
 				lastPos[2] = currentPosition[2];
 				lastPos[3] = currentPosition[3];
 
-				cout << "Position X: " << currentPosition[0] << endl;
-				cout << "Position Y: " << currentPosition[1] << endl;
-				cout << "Position Z: " << currentPosition[2] << endl << endl;
+				// cout << "Position X: " << currentPosition[0] << endl;
+				// cout << "Position Y: " << currentPosition[1] << endl;
+				// cout << "Position Z: " << currentPosition[2] << endl << endl;
 
 				for (int times = 0; times < 3; times ++){
 					currentPosition[0] -= (currentHeading[0]*.3);
@@ -762,18 +760,16 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 
 				// cout << "Before While" << endl;
 
-				while (((currentPosition[0] < box) && (currentPosition[1] < box))){
+				while (((currentPosition[0] < box) && (currentPosition[1] < box)) && currentPosition[2] < box){
 					currentPosition[0] += currentHeading[0]*.01;
 					currentPosition[1] += currentHeading[1]*.01;
 					currentPosition[2] += currentHeading[2]*.01;
-
-					// counter12++;
 				}
 
 				// cout << "After while" << endl;
 
-				if ((currentPosition[0] < (box + 0.03)) && (currentPosition[1] < (box+0.03))){
-					cout << "In if" << endl;
+				if (((currentPosition[0] < (box + 0.03)) && (currentPosition[1] < (box+0.03))) && currentPosition[2] < (box + 0.03)){
+					// cout << "In if" << endl;
 					branchPoints[pointsCount + 0] = currentPosition[0];												//Adds the currentPosition to the list of branching points
 					branchPoints[pointsCount + 1] = currentPosition[1];
 					branchPoints[pointsCount + 2] = currentPosition[2];
@@ -786,21 +782,66 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 				}
 
 
-				cout << "A Position X: " << currentPosition[0] << endl;
-				cout << "Position Y: " << currentPosition[1] << endl;
-				cout << "Position Z: " << currentPosition[2] << endl << endl;
+					// cout << "A Position X: " << currentPosition[0] << endl;
+					// cout << "Position Y: " << currentPosition[1] << endl;
+					// cout << "Position Z: " << currentPosition[2] << endl << endl;
 
-				currentPosition[0] = lastPos[0];
-				currentPosition[1] = lastPos[1];
-				currentPosition[2] = lastPos[2];
-				currentPosition[3] = lastPos[3];
+					currentPosition[0] = lastPos[0];
+					currentPosition[1] = lastPos[1];
+					currentPosition[2] = lastPos[2];
+					currentPosition[3] = lastPos[3];
+				}
+
+				else if ((currentPosition[0] <= -box || currentPosition[1] <= -box) || currentPosition[2] <= - box){
+					lastPos[0] = currentPosition[0];
+					lastPos[1] = currentPosition[1];
+					lastPos[2] = currentPosition[2];
+					lastPos[3] = currentPosition[3];
+
+					// cout << "Position X: " << currentPosition[0] << endl;
+					// cout << "Position Y: " << currentPosition[1] << endl;
+					// cout << "Position Z: " << currentPosition[2] << endl << endl;
+
+					for (int times = 0; times < 3; times ++){
+						currentPosition[0] += (currentHeading[0]*.3);
+						currentPosition[1] += (currentHeading[1]*.3);
+						currentPosition[2] += (currentHeading[2]*.3);
+					}
+
+					while (((currentPosition[0] > -box) && (currentPosition[1] > -box)) && currentPosition[2] > -box){
+						currentPosition[0] -= currentHeading[0]*.01;
+						currentPosition[1] -= currentHeading[1]*.01;
+						currentPosition[2] -= currentHeading[2]*.01;
+					}
+
+					if (((currentPosition[0] > (-box - 0.03)) && (currentPosition[1] > (-box - 0.03))) && currentPosition[2] > (-box - 0.03)){
+						// cout << "In if" << endl;
+						branchPoints[pointsCount + 0] = currentPosition[0];												//Adds the currentPosition to the list of branching points
+						branchPoints[pointsCount + 1] = currentPosition[1];
+						branchPoints[pointsCount + 2] = currentPosition[2];
+						pointsCount += 3;
+
+						leafPoints[leafCount + 0] = currentPosition[0];														// Add the point to the leaf array (where leaves will be placed)
+						leafPoints[leafCount + 1] = currentPosition[1];
+						leafPoints[leafCount + 2] = currentPosition[2];
+						leafCount += 3;
+					}
+
+						// cout << "A Position X: " << currentPosition[0] << endl;
+						// cout << "Position Y: " << currentPosition[1] << endl;
+						// cout << "Position Z: " << currentPosition[2] << endl << endl;
+
+						currentPosition[0] = lastPos[0];
+						currentPosition[1] = lastPos[1];
+						currentPosition[2] = lastPos[2];
+						currentPosition[3] = lastPos[3];
+
+				}
+
 			}
 
-			}
-
-			// cout << "HERE" << endl;
 		}
-	// }
+
 
 
 	// cout << pointsCount << endl;
