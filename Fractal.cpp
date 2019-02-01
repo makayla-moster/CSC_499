@@ -572,7 +572,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	int counter12 = 0;
 	bool b1 = false;
 	float box = 0.5;
-	float radius = 0.4;
+	float radius = 0.5;
 	int shape = 1; // 0 is box, 1 is circle
 	GLfloat lastPos[] = {0.0f, 0.0f, 0.0f, 0.0f};
 
@@ -609,7 +609,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 					leafPoints[leafCount + 2] = currentPosition[2];
 					leafCount += 3;																													// Increment leafCount by 3
 				}
-				else if (((((currentPosition[0]-0)*(currentPosition[0]-0)) + ((currentPosition[1] - 0.085)*(currentPosition[1] - 0.085)) + ((currentPosition[2] - 0)*(currentPosition[2] - 0))) <= ((radius * radius) + 0.03)) && (shape == 1)){
+				else if (((((currentPosition[0]-0)*(currentPosition[0]-0)) + ((currentPosition[1] - 0.085)*(currentPosition[1] - 0.085)) + ((currentPosition[2] - 0)*(currentPosition[2] - 0))) <= (radius * radius)) && (shape == 1)){
 					leafPoints[leafCount + 0] = currentPosition[0];														// Add the point to the leaf array (where leaves will be placed)
 					leafPoints[leafCount + 1] = currentPosition[1];
 					leafPoints[leafCount + 2] = currentPosition[2];
@@ -701,7 +701,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 						branchPoints[pointsCount + 2] = currentPosition[2];
 						pointsCount += 3;																													// Increments pointsCount by 3
 					}
-					else if (((((currentPosition[0]-0)*(currentPosition[0]-0)) + ((currentPosition[1] - 0.085)*(currentPosition[1] - 0.085)) + ((currentPosition[2] - 0)*(currentPosition[2] - 0))) <= ((radius * radius) + 0.03)) && ((shape == 1))){
+					else if (((((currentPosition[0]-0)*(currentPosition[0]-0)) + ((currentPosition[1] - 0.085)*(currentPosition[1] - 0.085)) + ((currentPosition[2] - 0)*(currentPosition[2] - 0))) <= (radius * radius)) && ((shape == 1))){
 						leafPoints[leafCount + 0] = midX;																					// Adds the midpoint to the leaf array
 						leafPoints[leafCount + 1] = midY;
 						leafPoints[leafCount + 2] = midZ;
@@ -869,52 +869,80 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 				else if (((sphereX + sphereY + sphereZ) >= (radius * radius)) && shape == 1){
 				// cout << "HERE" << endl;
 
+				GLfloat newPt[] = {0.0f, 0.0f, 0.0f};
+
+				newPt[0] = currentPosition[0] - origin[0];
+				newPt[1] = currentPosition[1] - origin[1];
+				newPt[2] = currentPosition[2] - origin[2];
+
 					lastPos[0] = currentPosition[0];
 					lastPos[1] = currentPosition[1];
 					lastPos[2] = currentPosition[2];
 					lastPos[3] = currentPosition[3];
 
-					cout << "Before while" << endl;
+					// cout << "Before while" << endl;
 
-					// while ((((currentPosition[0]-0)*(currentPosition[0]-0)) + ((currentPosition[1] - 0.085)*(currentPosition[1] - 0.085)) + ((currentPosition[2] - 0)*(currentPosition[2] - 0)) > (radius * radius))){
-					while (((sphereX + sphereY + sphereZ) > (radius * radius))){
-						currentPosition[0] -= (currentHeading[0]*.3);
-						currentPosition[1] -= (currentHeading[1]*.3);
-						currentPosition[2] -= (currentHeading[2]*.3);
+						// if ((currentPosition[0] < 0 && currentHeading[0] > 0) && (currentPosition[1] > 0 && currentHeading[1] > 0)){    // Is this even close? Three dimensions are hard.
+						// 	cout << "In if" << endl;
+							while (((sphereX + sphereY + sphereZ) > (radius * radius))){
+								currentPosition[0] -= (newPt[0]*.3);
+								currentPosition[1] -= (newPt[1]*.3);
+								currentPosition[2] -= (newPt[2]*.3);
 
-						cout << "A Position X: " << currentPosition[0] << endl;
-						cout << "Position Y: " << currentPosition[1] << endl;
-						cout << "Position Z: " << currentPosition[2] << endl << endl;
+								sphereX = (currentPosition[0] - origin[0]) * (currentPosition[0] - origin[0]);
+								sphereY = (currentPosition[1] - origin[1]) * (currentPosition[1] - origin[1]);
+								sphereZ = (currentPosition[2] - origin[2]) * (currentPosition[2] - origin[2]);
+							}
+						// }
+						// else{
+						// 	cout << "in else" << endl;
+						// 	while (((sphereX + sphereY + sphereZ) > (radius * radius))){
+						// 		currentPosition[0] -= (currentHeading[0]*.3);
+						// 		currentPosition[1] -= (currentHeading[1]*.3);
+						// 		currentPosition[2] -= (currentHeading[2]*.3);
+						//
+						// 		sphereX = (currentPosition[0] - origin[0]) * (currentPosition[0] - origin[0]);
+						// 		sphereY = (currentPosition[1] - origin[1]) * (currentPosition[1] - origin[1]);
+						// 		sphereZ = (currentPosition[2] - origin[2]) * (currentPosition[2] - origin[2]);
+						// 	}
+						// }
 
-						cout << "Heading X: " << currentHeading[0] << endl;
-						cout << "Heading Y: " << currentHeading[1] << endl;
-						cout << "Heading Z: " << currentHeading[2] << endl << endl;
+						// cout << "A Position X: " << currentPosition[0] << endl;
+						// cout << "Position Y: " << currentPosition[1] << endl;
+						// cout << "Position Z: " << currentPosition[2] << endl << endl;
 
-						cout << "X^2 + Y^2 + Z^2 " << sphereX + sphereY + sphereZ << endl;
-						cout << "Radius squared " << radius * radius << endl << endl;
+						// cout << "Heading X: " << currentHeading[0] << endl;
+						// cout << "Heading Y: " << currentHeading[1] << endl;
+						// cout << "Heading Z: " << currentHeading[2] << endl << endl;
 
-						sphereX = (currentPosition[0] - origin[0]) * (currentPosition[0] - origin[0]);
-						sphereY = (currentPosition[1] - origin[1]) * (currentPosition[1] - origin[1]);
-						sphereZ = (currentPosition[2] - origin[2]) * (currentPosition[2] - origin[2]);
-					}
+						// cout << "X^2 + Y^2 + Z^2 " << sphereX + sphereY + sphereZ << endl;
+						// cout << "Radius squared " << radius * radius << endl << endl;
 
-					cout << "After while 1" << endl;
-					cout << "Before while" << endl;
+					// cout << "After while 1" << endl;
+					// cout << "Before while" << endl;
 
 					// while ((((currentPosition[0]-0)*(currentPosition[0]-0)) + ((currentPosition[1] - 0.085)*(currentPosition[1] - 0.085)) + ((currentPosition[2] - 0)*(currentPosition[2] - 0)) < (radius * radius))){
-					while ((sphereX + sphereY + sphereZ) < (radius * radius)){
+					while ((sphereX + sphereY + sphereZ) < (radius * radius) && currentPosition[2] > 0){
 						currentPosition[0] += (currentHeading[0]*.01);
 						currentPosition[1] += (currentHeading[1]*.01);
 						currentPosition[2] += (currentHeading[2]*.01);
 
+						// currentPosition[0] += (newPt[0]*.01);
+						// currentPosition[1] += (newPt[1]*.01);
+						// currentPosition[2] += (newPt[2]*.01);
+
+						// cout << "A Position X: " << currentPosition[0] << endl;
+						// cout << "Position Y: " << currentPosition[1] << endl;
+						// cout << "Position Z: " << currentPosition[2] << endl << endl;
+
 						sphereX = (currentPosition[0] - origin[0]) * (currentPosition[0] - origin[0]);
 						sphereY = (currentPosition[1] - origin[1]) * (currentPosition[1] - origin[1]);
 						sphereZ = (currentPosition[2] - origin[2]) * (currentPosition[2] - origin[2]);
 					}
-					cout << "After while 2" << endl;
+					// cout << "After while 2" << endl;
 
 					// if ((((currentPosition[0]-0)*(currentPosition[0]-0)) + ((currentPosition[1] - 0.085)*(currentPosition[1] - 0.085)) + ((currentPosition[2] - 0)*(currentPosition[2] - 0)) <= ((radius + 0.05) * (radius + 0.05)))){
-					if ((sphereX + sphereY + sphereZ) <= ((radius + 0.05) * (radius + 0.05))){
+					if (((sphereX + sphereY + sphereZ) <= (radius * radius)) && currentPosition[2] > 0){
 						// cout << "In if" << endl;
 						branchPoints[pointsCount + 0] = currentPosition[0];												//Adds the currentPosition to the list of branching points
 						branchPoints[pointsCount + 1] = currentPosition[1];
