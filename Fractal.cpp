@@ -571,9 +571,25 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	int counterF = 0;
 	int counter12 = 0;
 	bool b1 = false;
-	float box = 0.5;
-	float radius = 0.5;
-	int shape = 1; // 0 is box, 1 is circle
+
+	int shape;
+	cout << "Enter 0 for cube and 1 for sphere: ";
+	cin >> shape;
+	float box;
+	float radius;
+
+	if (shape == 0){
+		cout << "You chose cube. Please enter a float between 0.1 and 0.7: ";
+		cin >> box;
+	}
+	else if (shape == 1){
+		cout << "You chose sphere. Please enter a float between 0.1 and 0.7 for the radius: ";
+		cin >> radius;
+	}
+
+	// float box = 0.5;
+	// float radius = 0.5;
+	// int shape = 0; // 0 is box, 1 is circle
 	GLfloat lastPos[] = {0.0f, 0.0f, 0.0f, 0.0f};
 
 	/* End code for user interaction feature */
@@ -780,23 +796,30 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 				// cout << "Position Z: " << currentPosition[2] << endl << endl;
 
 				for (int times = 0; times < 3; times ++){
-					currentPosition[0] -= (currentHeading[0]*.3);
-					currentPosition[1] -= (currentHeading[1]*.3);
-					currentPosition[2] -= (currentHeading[2]*.3);
+					// currentPosition[0] -= (currentHeading[0]*.3);
+					// currentPosition[1] -= (currentHeading[1]*.3);
+					// currentPosition[2] -= (currentHeading[2]*.3);
+
+					currentPosition[0] -= origin[0]*.3;
+					currentPosition[1] -= origin[1]*.3;
+					currentPosition[2] -= origin[2]*.3;
 				}
 
 
 				// cout << "Before While" << endl;
 
 				while (((currentPosition[0] < box) && (currentPosition[1] < box)) && currentPosition[2] < box){
-					currentPosition[0] += currentHeading[0]*.01;
-					currentPosition[1] += currentHeading[1]*.01;
-					currentPosition[2] += currentHeading[2]*.01;
+					// currentPosition[0] += currentHeading[0]*.01;
+					// currentPosition[1] += currentHeading[1]*.01;
+					// currentPosition[2] += currentHeading[2]*.01;
+					currentPosition[0] += origin[0]*.01;
+					currentPosition[1] += origin[1]*.01;
+					currentPosition[2] += origin[2]*.01;
 				}
 
 				// cout << "After while" << endl;
 
-				if (((currentPosition[0] < (box + 0.02)) && (currentPosition[1] < (box+0.02))) && currentPosition[2] < (box + 0.02) && shape == 0){
+				if (((currentPosition[0] < box) && (currentPosition[1] < box)) && currentPosition[2] < (box) && shape == 0){
 					// cout << "In if" << endl;
 					branchPoints[pointsCount + 0] = currentPosition[0];												//Adds the currentPosition to the list of branching points
 					branchPoints[pointsCount + 1] = currentPosition[1];
@@ -831,18 +854,26 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 					// cout << "Position Z: " << currentPosition[2] << endl << endl;
 
 					for (int times = 0; times < 3; times ++){
-						currentPosition[0] += (currentHeading[0]*.3);
-						currentPosition[1] += (currentHeading[1]*.3);
-						currentPosition[2] += (currentHeading[2]*.3);
+						// currentPosition[0] += (currentHeading[0]*.3);
+						// currentPosition[1] += (currentHeading[1]*.3);
+						// currentPosition[2] += (currentHeading[2]*.3);
+
+						currentPosition[0] += origin[0]*.3;
+						currentPosition[1] += origin[1]*.3;
+						currentPosition[2] += origin[2]*.3;
 					}
 
 					while (((currentPosition[0] > -box) && (currentPosition[1] > -box)) && currentPosition[2] > -box){
-						currentPosition[0] -= currentHeading[0]*.01;
-						currentPosition[1] -= currentHeading[1]*.01;
-						currentPosition[2] -= currentHeading[2]*.01;
+						// currentPosition[0] -= currentHeading[0]*.01;
+						// currentPosition[1] -= currentHeading[1]*.01;
+						// currentPosition[2] -= currentHeading[2]*.01;
+
+						currentPosition[0] -= origin[0]*.01;
+						currentPosition[1] -= origin[1]*.01;
+						currentPosition[2] -= origin[2]*.01;
 					}
 
-					if (((currentPosition[0] > (-box - 0.02)) && (currentPosition[1] > (-box - 0.02))) && currentPosition[2] > (-box - 0.02)){
+					if (((currentPosition[0] > -box) && (currentPosition[1] > -box)) && currentPosition[2] > -box){
 						// cout << "In if" << endl;
 						branchPoints[pointsCount + 0] = currentPosition[0];												//Adds the currentPosition to the list of branching points
 						branchPoints[pointsCount + 1] = currentPosition[1];
