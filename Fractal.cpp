@@ -5,6 +5,7 @@
 
 // g++ -w -o monkm.exe gl_utils.cpp maths_funcs.cpp Fractal.cpp libglfw3dll.a libglew32.dll.a -I include -lgdi32 -lopengl32 -L ./ -lglew32 -lglfw3
 
+#include "CImg.h"
 #include "gl_utils.h"
 #include "maths_funcs.h"
 #include <GL/glew.h>																														/* include GLEW and new version of GL on Windows */
@@ -21,6 +22,7 @@
 #include <string.h>
 #include <stdarg.h>
 #define GL_LOG_FILE "gl.log"
+using namespace cimg_library;
 using namespace std;
 
 void multiplyNew(GLfloat matrix1[], GLfloat matrix2[], GLfloat result[]){  			// multiply for the user interaction
@@ -281,15 +283,15 @@ float sy = 1.0;																																	// Variable - scale matrix y com
 float sx = 1.0;																																	// Variable - scale matrix x component
 float sz = 0.0;																																	// Variable - scale matrix z component
 float d = 1.6;																																	// Variable - initializes the skew amount
-float fov = 67 * 3.14159 /180.0;																								// Variable - initilizes field of view
+float fov = (67 * 3.14159) /180.0;																								// Variable - initilizes field of view
 float aspect = 1.0;																															// Variable - initializes aspect ratio
-float near = 0.01;																															// Variable - initializes near
-float far = 100.0;																															// Variable - initializes far
-float range = tan(fov*0.5)*near;																								// Variable - initializes the range of view
-float Sx = (2*near)/((range*aspect)+(range*aspect));														// Variable - for proMat
-float Sy = near/range;																													// Variable - for proMat
-float Sz = -(far+near)/(far-near);																							// Variable - for proMat
-float Pz = -(2*far*near)/(far-near);																						// Variable - for proMat
+float near1 = 0.01;																															// Variable - initializes near1
+float far1 = 100.0;																															// Variable - initializes far
+float range = tan(fov*0.5)*near1;																								// Variable - initializes the range of view
+float Sx = (2*near1)/((range*aspect)+(range*aspect));														// Variable - for proMat
+float Sy = near1/range;																													// Variable - for proMat
+float Sz = -(far1+near1)/(far1-near1);																							// Variable - for proMat
+float Pz = -(2*far1*near1)/(far1-near1);																						// Variable - for proMat
 
 GLfloat proMat[] = {Sx, 0.0f, 0.0f, 0.0f,																				// Matrix - ??
 				0.0f, Sy, 0.0f, 0.0f,
@@ -572,21 +574,27 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	int counter12 = 0;
 	bool b1 = false;
 
+	cout << endl;
+
 	int shape;
-	cout << "Enter 0 for cube and 1 for sphere: ";
+	cout << "Choose your shape. Enter 0 for cube or 1 for sphere or 2 for tree: ";
 	cin >> shape;
 	float box;
 	float radius;
 
 	if (shape == 0){
-		cout << "You chose cube. Please enter a float between 0.1 and 0.7: ";
+		cout << "You chose to create a cube tree. Please enter a float between 0.1 and 0.7: ";
 		cin >> box;
 	}
 	else if (shape == 1){
-		cout << "You chose sphere. Please enter a float between 0.1 and 0.7 for the radius: ";
+		cout << "You chose to create a spherical tree. Please enter a float between 0.1 and 0.7 for the radius: ";
 		cin >> radius;
 	}
+	else if (shape == 2){
+		cout << "You chose to create a normal tree.";
+	}
 
+	cout << endl << endl;
 	// float box = 0.5;
 	// float radius = 0.5;
 	// int shape = 0; // 0 is box, 1 is circle
@@ -626,6 +634,12 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 					leafCount += 3;																													// Increment leafCount by 3
 				}
 				else if (((((currentPosition[0]-0)*(currentPosition[0]-0)) + ((currentPosition[1] - 0.085)*(currentPosition[1] - 0.085)) + ((currentPosition[2] - 0)*(currentPosition[2] - 0))) <= (radius * radius)) && (shape == 1)){
+					leafPoints[leafCount + 0] = currentPosition[0];														// Add the point to the leaf array (where leaves will be placed)
+					leafPoints[leafCount + 1] = currentPosition[1];
+					leafPoints[leafCount + 2] = currentPosition[2];
+					leafCount += 3;
+				}
+				else if (shape == 2){
 					leafPoints[leafCount + 0] = currentPosition[0];														// Add the point to the leaf array (where leaves will be placed)
 					leafPoints[leafCount + 1] = currentPosition[1];
 					leafPoints[leafCount + 2] = currentPosition[2];
@@ -718,6 +732,17 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 						pointsCount += 3;																													// Increments pointsCount by 3
 					}
 					else if (((((currentPosition[0]-0)*(currentPosition[0]-0)) + ((currentPosition[1] - 0.085)*(currentPosition[1] - 0.085)) + ((currentPosition[2] - 0)*(currentPosition[2] - 0))) <= (radius * radius)) && ((shape == 1))){
+						leafPoints[leafCount + 0] = midX;																					// Adds the midpoint to the leaf array
+						leafPoints[leafCount + 1] = midY;
+						leafPoints[leafCount + 2] = midZ;
+						leafCount += 3;																														// Increments leafCount by 3
+
+						branchPoints[pointsCount + 0] = currentPosition[0];												//Adds the currentPosition to the list of branching points
+						branchPoints[pointsCount + 1] = currentPosition[1];
+						branchPoints[pointsCount + 2] = currentPosition[2];
+						pointsCount += 3;																													// Increments pointsCount by 3
+					}
+					else if (shape == 2){
 						leafPoints[leafCount + 0] = midX;																					// Adds the midpoint to the leaf array
 						leafPoints[leafCount + 1] = midY;
 						leafPoints[leafCount + 2] = midZ;
@@ -1599,11 +1624,11 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 		rotateZ[1]=sin(rz);
 		rotateZ[4]=-sin(rz);
 		rotateZ[5]=cos(rz);
-		float range = tan(fov*0.5)*near;
-		proMat[0] = (2*near)/((range*aspect)+(range*aspect));
-		proMat[5] = near/range;
-		proMat[10] = -(far+near)/(far-near);
-		proMat[14] = -(2*far*near)/(far-near);
+		float range = tan(fov*0.5)*near1;
+		proMat[0] = (2*near1)/((range*aspect)+(range*aspect));
+		proMat[5] = near1/range;
+		proMat[10] = -(far1+near1)/(far1-near1);
+		proMat[14] = -(2*far1*near1)/(far1-near1);
 		viewMat = ortho;
 		multiplyNew(view, viewMat, viewResult);
 
