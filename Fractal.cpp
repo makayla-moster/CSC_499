@@ -429,6 +429,55 @@ int g_gl_height = 480;																													// Variable - height of the w
 GLFWwindow* g_window = NULL;
 
 int main() {																																		// MAIN FUNCTION WHERE CODE WILL BE RUN
+
+	bool inShape = true;
+	int leftX;
+	int leftY;
+	int rightX;
+	int rightY;
+
+	CImg<unsigned char> orig("Circle.bmp");
+	CImg<unsigned char> filledShape(orig.width(), orig.height(), 1, 3, 0);
+
+	for (int i = 0; i < orig.width(); i++){
+		for(int j = 0; j < orig.height(); j++){
+
+			if ((int(orig(i,j, 0, 0)) == 0) && (int(orig(i,j,0,1)) == 0) && (int(orig(i,j,0,2)) == 0) && inShape == true){
+
+				filledShape(i,j,0,0) = 0.0;
+				filledShape(i,j,0,1) = 0.0;
+				filledShape(i,j,0,2) = 255.0;
+
+				if ((int(orig(i,j+1, 0, 0)) == 255) && (int(orig(i,j + 1,0,1)) == 255) && (int(orig(i,j+1,0,2)) == 255)){
+					leftX = i;
+					leftY = j;
+				}
+
+			}
+			else if((int(orig(i,j, 0, 0)) == 255) && (int(orig(i,j,0,1)) == 255) && (int(orig(i,j,0,2)) == 255) && leftY < j && leftX == i && inShape == true){
+				filledShape(i,j,0,0) = 0.0;
+				filledShape(i,j,0,1) = 0.0;
+				filledShape(i,j,0,2) = 0.0;
+
+				if ((int(orig(i,j + 1,0,0)) == 0) && int(orig(i,j+1,0,1)) == 0 && (int(orig(i,j+1,0,2))) == 0){
+					inShape = false;
+				}
+			}
+			else{
+				filledShape(i,j,0,0) = 255.0;
+				filledShape(i,j,0,1) = 255.0;
+				filledShape(i,j,0,2) = 255.0;
+			}
+
+		}
+		inShape = true;
+	}
+
+	CImgDisplay disp(filledShape);
+	while (!disp.is_closed())
+		disp.wait();
+
+
 	const GLubyte *renderer;
 	const GLubyte *version;
 	GLuint vao;																																		// Variable - Vertex Array Object initialized
