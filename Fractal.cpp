@@ -442,35 +442,54 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	for (int i = 0; i < orig.width(); i++){
 		for(int j = 0; j < orig.height(); j++){
 
-			if ((int(orig(i,j, 0, 0)) == 0) && (int(orig(i,j,0,1)) == 0) && (int(orig(i,j,0,2)) == 0) && inShape == true){
-
-				filledShape(i,j,0,0) = 0.0;
-				filledShape(i,j,0,1) = 0.0;
-				filledShape(i,j,0,2) = 255.0;
-
-				if ((int(orig(i,j+1, 0, 0)) == 255) && (int(orig(i,j + 1,0,1)) == 255) && (int(orig(i,j+1,0,2)) == 255)){
-					leftX = i;
-					leftY = j;
-				}
-
-			}
-			else if((int(orig(i,j, 0, 0)) == 255) && (int(orig(i,j,0,1)) == 255) && (int(orig(i,j,0,2)) == 255) && leftY < j && leftX == i && inShape == true){
-				filledShape(i,j,0,0) = 0.0;
+			if ((int(orig(i,j, 0, 0)) == 0) && (int(orig(i,j,0,1)) == 0) && (int(orig(i,j,0,2)) == 0) && inShape == true){ //If not in shape and orig is black
+				filledShape(i,j,0,0) = 0.0;				// fill shape with black pixels
 				filledShape(i,j,0,1) = 0.0;
 				filledShape(i,j,0,2) = 0.0;
 
-				if ((int(orig(i,j + 1,0,0)) == 0) && int(orig(i,j+1,0,1)) == 0 && (int(orig(i,j+1,0,2))) == 0){
-					inShape = false;
+				if ((int(orig(i,j+1, 0, 0)) == 255) && (int(orig(i,j + 1,0,1)) == 255) && (int(orig(i,j+1,0,2)) == 255)){		// if orig is black and next pixel is white
+					leftX = i;						// save the edge
+					leftY = j;
+					inShape = true;				// becomes in shape
 				}
+
 			}
-			else{
+			else if((int(orig(i,j, 0, 0)) == 255) && (int(orig(i,j,0,1)) == 255) && (int(orig(i,j,0,2)) == 255) && leftY < j && leftX == i && inShape == true && leftY > 0 && leftX > 0){		// if orig is white and inshape is true
+
+				if ((int(orig(i,j + 1,0,0)) == 0) && int(orig(i,j+1,0,1)) == 0 && (int(orig(i,j+1,0,2))) == 0){			// if the next orig pixel is black
+					inShape = false;																																									// set in shape to false
+				}
+
+				filledShape(i,j,0,0) = 0.0;																																					// fill current pixel with black
+				filledShape(i,j,0,1) = 0.0;
+				filledShape(i,j,0,2) = 0.0;
+			}
+			else{																																																	// otherwise pixel
 				filledShape(i,j,0,0) = 255.0;
 				filledShape(i,j,0,1) = 255.0;
 				filledShape(i,j,0,2) = 255.0;
 			}
 
 		}
+
+		if (int(filledShape(i, orig.height()-1, 0,0)) == 0 && int(filledShape(i, orig.height()-1, 0,1)) == 0 && int(filledShape(i, orig.height()-1, 0,2)) == 0){
+			for (int u = leftY-5; u < orig.height(); u++){
+				if (int(orig(i, u, 0, 0)) == 0 && int(orig(i, u, 0, 1)) == 0 && int(orig(i, u, 0, 2)) == 0){
+					filledShape(i,u,0,0) = 0.0;																																					// fill current pixel with black
+					filledShape(i,u,0,1) = 0.0;
+					filledShape(i,u,0,2) = 0.0;
+				}
+				else{
+					filledShape(i,u,0,0) = 255.0;
+					filledShape(i,u,0,1) = 255.0;
+					filledShape(i,u,0,2) = 255.0;
+				}
+			}
+		}
+
 		inShape = true;
+		leftX = 0;
+		leftY = 0;
 	}
 
 	CImgDisplay disp(filledShape);
