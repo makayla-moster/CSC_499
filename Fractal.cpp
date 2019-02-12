@@ -340,36 +340,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		cout<<"Z pressed\n";																												// Moves the tree negatively along the Z axis
 		z -= 0.1;
 	}
-	// if(key == GLFW_KEY_I && action == GLFW_PRESS){
-	// 	cout<<"I pressed\n";																												// Scales the tree's x value negatively
-	// 	sx -= 0.1;
-	// 	//cout<<"-sx :"<<sx<<"\n";
-	// }
-	// if(key == GLFW_KEY_K && action == GLFW_PRESS){
-	// 	cout<<"K pressed\n";																												// Scales the tree's x value positively
-	// 	sx += 0.1;
-	// 	//cout<<"+sx :"<<sx<<"\n";
-	// }
-	// if(key == GLFW_KEY_L && action == GLFW_PRESS){
-	// 	cout<<"L pressed\n";																												// Scales the tree's y value positively
-	// 	sy += 0.1;
-	// 	//cout<<"+sy :"<<sy<<"\n";
-	// }
-	// if(key == GLFW_KEY_J && action == GLFW_PRESS){
-	// 	cout<<"J pressed\n";																												// Scales the tree's y value negatively
-	// 	sy -= 0.1;
-	// 	//cout<<"-sy :"<<sy<<"\n";
-	// }
-	// if(key == GLFW_KEY_M && action == GLFW_PRESS){
-	// 	cout<<"M pressed\n";																												// Scales the tree's z value positively
-	// 	sz += 0.1;
-	// 	//cout<<"+sz :"<<sz<<"\n";
-	// }
-	// if(key == GLFW_KEY_N && action == GLFW_PRESS){
-	// 	cout<<"N pressed\n";																												// Scales the tree's z value negatively
-	// 	sz -= 0.1;
-	// 	//cout<<"-sz :"<<sz<<"\n";
-	// }
 	if(key == GLFW_KEY_R && action == GLFW_PRESS){
 		cout<<"R pressed\n";																												// Rotates the tree negatively along the X axis
 		rx -= 0.1;
@@ -436,7 +406,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	int rightX;
 	int rightY;
 
-	CImg<unsigned char> orig("Circle.bmp");
+	CImg<unsigned char> orig("Square.bmp");
 	CImg<unsigned char> filledShape(orig.width(), orig.height(), 1, 3, 0);
 
 	for (int i = 0; i < orig.width(); i++){
@@ -495,7 +465,6 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	CImgDisplay disp(filledShape);
 	while (!disp.is_closed())
 		disp.wait();
-
 
 	const GLubyte *renderer;
 	const GLubyte *version;
@@ -897,8 +866,6 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 					currentPosition[1] -= origin[1]*.3;
 					currentPosition[2] -= origin[2]*.3;
 				}
-
-
 				// cout << "Before While" << endl;
 
 				while (((currentPosition[0] < box) && (currentPosition[1] < box)) && currentPosition[2] < box){
@@ -1017,35 +984,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 								sphereY = (currentPosition[1] - origin[1]) * (currentPosition[1] - origin[1]);
 								sphereZ = (currentPosition[2] - origin[2]) * (currentPosition[2] - origin[2]);
 							}
-						// }
-						// else{
-						// 	cout << "in else" << endl;
-						// 	while (((sphereX + sphereY + sphereZ) > (radius * radius))){
-						// 		currentPosition[0] -= (currentHeading[0]*.3);
-						// 		currentPosition[1] -= (currentHeading[1]*.3);
-						// 		currentPosition[2] -= (currentHeading[2]*.3);
-						//
-						// 		sphereX = (currentPosition[0] - origin[0]) * (currentPosition[0] - origin[0]);
-						// 		sphereY = (currentPosition[1] - origin[1]) * (currentPosition[1] - origin[1]);
-						// 		sphereZ = (currentPosition[2] - origin[2]) * (currentPosition[2] - origin[2]);
-						// 	}
-						// }
 
-						// cout << "A Position X: " << currentPosition[0] << endl;
-						// cout << "Position Y: " << currentPosition[1] << endl;
-						// cout << "Position Z: " << currentPosition[2] << endl << endl;
-
-						// cout << "Heading X: " << currentHeading[0] << endl;
-						// cout << "Heading Y: " << currentHeading[1] << endl;
-						// cout << "Heading Z: " << currentHeading[2] << endl << endl;
-
-						// cout << "X^2 + Y^2 + Z^2 " << sphereX + sphereY + sphereZ << endl;
-						// cout << "Radius squared " << radius * radius << endl << endl;
-
-					// cout << "After while 1" << endl;
-					// cout << "Before while" << endl;
-
-					// while ((((currentPosition[0]-0)*(currentPosition[0]-0)) + ((currentPosition[1] - 0.085)*(currentPosition[1] - 0.085)) + ((currentPosition[2] - 0)*(currentPosition[2] - 0)) < (radius * radius))){
 					while ((sphereX + sphereY + sphereZ) < (radius * radius) && currentPosition[2] > 0){
 						currentPosition[0] += (currentHeading[0]*.01);
 						currentPosition[1] += (currentHeading[1]*.01);
@@ -1063,9 +1002,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 						sphereY = (currentPosition[1] - origin[1]) * (currentPosition[1] - origin[1]);
 						sphereZ = (currentPosition[2] - origin[2]) * (currentPosition[2] - origin[2]);
 					}
-					// cout << "After while 2" << endl;
 
-					// if ((((currentPosition[0]-0)*(currentPosition[0]-0)) + ((currentPosition[1] - 0.085)*(currentPosition[1] - 0.085)) + ((currentPosition[2] - 0)*(currentPosition[2] - 0)) <= ((radius + 0.05) * (radius + 0.05)))){
 					if (((sphereX + sphereY + sphereZ) <= (radius * radius)) && currentPosition[2] > 0){
 						// cout << "In if" << endl;
 						branchPoints[pointsCount + 0] = currentPosition[0];												//Adds the currentPosition to the list of branching points
@@ -1106,25 +1043,6 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 		// cout << newPoints[y + 1] << endl;
 		// cout << newPoints[y + 2] << endl << endl;
 	}
-
-
-	// for (int y = 0; y < pointsCount; y += 3){
-	// 	if( branchPoints[y] > 0.5){
-	// 		cout << "Position X: " << branchPoints[y] << endl;
-	// 		cout << "Position X: " << branchPoints[y + 1] << endl;
-	// 		cout << "Position X: " << branchPoints[y + 2] << endl << endl;
-	// 	}
-	// 	else if (branchPoints[y + 1] > 0.5){
-	// 		cout << "Position X: " << branchPoints[y] << endl;
-	// 		cout << "Position X: " << branchPoints[y + 1] << endl;
-	// 		cout << "Position X: " << branchPoints[y + 2] << endl << endl;
-	// 	}
-	// 	else if (branchPoints[y + 2] > 0.5){
-	// 		cout << "Position X: " << branchPoints[y] << endl;
-	// 		cout << "Position X: " << branchPoints[y + 1] << endl;
-	// 		cout << "Position X: " << branchPoints[y + 2] << endl << endl;
-	// 	}
-	// }
 
 	string modelName = "Leaf.obj";																								// Variable - Name of the OBJ to load.
 
