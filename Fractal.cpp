@@ -462,9 +462,40 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 		leftY = 0;
 	}
 
+	int areaIm = 640 * 480;
+	// cout << filledShape.width()<<endl;
+	int fillIm[640][480] = {};
+
+	for (int w = 0; w < filledShape.width(); w++){
+		for (int h = 0; h < filledShape.height(); h++){
+			if (filledShape(w, h, 0, 0) == 0.0){
+				fillIm[w][h] = 1;
+			}
+			else{
+				fillIm[w][h] = 0;
+			}
+		}
+	}
+
 	CImgDisplay disp(filledShape);
 	while (!disp.is_closed())
 		disp.wait();
+
+	// int colorCount = 0;
+	//
+	// for (int width = 0; width < filledShape.width(); width++){
+	// 	for (int height = 0; height < filledShape.height(); height++){
+	// 		int areaIm = filledShape.width() * filledShape.height();
+	// 		int* fillIm = new int[areaIm];
+	// 		if (filledShape(width, height, 0, 0) == 0 && colorCount < areaIm){
+	// 			fillIm[colorCount] = 1;
+	// 		}
+	// 		else{
+	// 			fillIm[colorCount] = 0;
+	// 		}
+	// 		colorCount++;
+	// 	}
+	// }
 
 	const GLubyte *renderer;
 	const GLubyte *version;
@@ -614,10 +645,12 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	cout << endl;
 
 	int shape;
-	cout << "Choose your shape. Enter 0 for cube or 1 for sphere or 2 for tree: ";
+	cout << "Choose your shape. Enter 0 for cube, 1 for sphere, 2 for tree, or 3 for drawing: ";
 	cin >> shape;
 	float box;
 	float radius;
+	int xBar;
+	int yBar;
 
 	if (shape == 0){
 		cout << "You chose to create a cube tree. Please enter a float between 0.1 and 0.7: ";
@@ -626,6 +659,9 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	else if (shape == 1){
 		cout << "You chose to create a spherical tree. Please enter a float between 0.1 and 0.7 for the radius: ";
 		cin >> radius;
+	}
+	else if (shape == 3){
+		cout << "You chose to create a tree from a drawing.";
 	}
 	else if (shape == 2){
 		cout << "You chose to create a normal tree.";
@@ -681,6 +717,18 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 					leafPoints[leafCount + 1] = currentPosition[1];
 					leafPoints[leafCount + 2] = currentPosition[2];
 					leafCount += 3;
+				}
+				else if (shape == 3){
+					xBar = (320 * currentPosition[0]) + 320;
+					yBar = (-240 * currentPosition[1]) + 240;
+					if (fillIm[xBar][yBar] == 1){
+						// cout << "XBAR " << xBar << endl;
+						// cout << "YBAR" << yBar << endl;
+						leafPoints[leafCount + 0] = currentPosition[0];														// Add the point to the leaf array (where leaves will be placed)
+						leafPoints[leafCount + 1] = currentPosition[1];
+						leafPoints[leafCount + 2] = currentPosition[2];
+						leafCount += 3;
+					}
 				}
 
 
@@ -789,6 +837,23 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 						branchPoints[pointsCount + 1] = currentPosition[1];
 						branchPoints[pointsCount + 2] = currentPosition[2];
 						pointsCount += 3;																													// Increments pointsCount by 3
+					}
+					else if (shape == 3){
+						xBar = (320 * currentPosition[0]) + 320;
+						yBar = (-240 * currentPosition[1]) + 240;
+						if (fillIm[xBar][yBar] == 1){
+							// cout << "XBAR " << xBar << endl;
+							// cout << "YBAR" << yBar << endl;
+							leafPoints[leafCount + 0] = midX;																					// Adds the midpoint to the leaf array
+							leafPoints[leafCount + 1] = midY;
+							leafPoints[leafCount + 2] = midZ;
+							leafCount += 3;																														// Increments leafCount by 3
+
+							branchPoints[pointsCount + 0] = currentPosition[0];												//Adds the currentPosition to the list of branching points
+							branchPoints[pointsCount + 1] = currentPosition[1];
+							branchPoints[pointsCount + 2] = currentPosition[2];
+							pointsCount += 3;																													// Increments pointsCount by 3
+						}
 					}
 					else {
 						// cout << "HERE" << endl;
@@ -986,13 +1051,13 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 							}
 
 					while ((sphereX + sphereY + sphereZ) < (radius * radius) && currentPosition[2] > 0){
-						currentPosition[0] += (currentHeading[0]*.01);
-						currentPosition[1] += (currentHeading[1]*.01);
-						currentPosition[2] += (currentHeading[2]*.01);
+						// currentPosition[0] += (currentHeading[0]*.01);
+						// currentPosition[1] += (currentHeading[1]*.01);
+						// currentPosition[2] += (currentHeading[2]*.01);
 
-						// currentPosition[0] += (newPt[0]*.01);
-						// currentPosition[1] += (newPt[1]*.01);
-						// currentPosition[2] += (newPt[2]*.01);
+						currentPosition[0] += (newPt[0]*.01);
+						currentPosition[1] += (newPt[1]*.01);
+						currentPosition[2] += (newPt[2]*.01);
 
 						// cout << "A Position X: " << currentPosition[0] << endl;
 						// cout << "Position Y: " << currentPosition[1] << endl;
@@ -1566,7 +1631,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 
 		glUseProgram(shader_programme2);
 		glBindVertexArray(vao2);
-		// glDrawArrays(GL_TRIANGLES, 0, leavesWanted * numPoints);
+		glDrawArrays(GL_TRIANGLES, 0, leavesWanted * numPoints);
 
 		//View matrix info
 		int trans_mat_location = glGetUniformLocation (shader_programme, "model");
