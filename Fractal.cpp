@@ -400,103 +400,6 @@ GLFWwindow* g_window = NULL;
 
 int main() {																																		// MAIN FUNCTION WHERE CODE WILL BE RUN
 
-	bool inShape = true;
-	int leftX;
-	int leftY;
-	int rightX;
-	int rightY;
-
-	CImg<unsigned char> orig("Square.bmp");
-	CImg<unsigned char> filledShape(orig.width(), orig.height(), 1, 3, 0);
-
-	for (int i = 0; i < orig.width(); i++){
-		for(int j = 0; j < orig.height(); j++){
-
-			if ((int(orig(i,j, 0, 0)) == 0) && (int(orig(i,j,0,1)) == 0) && (int(orig(i,j,0,2)) == 0) && inShape == true){ //If not in shape and orig is black
-				filledShape(i,j,0,0) = 0.0;				// fill shape with black pixels
-				filledShape(i,j,0,1) = 0.0;
-				filledShape(i,j,0,2) = 0.0;
-
-				if ((int(orig(i,j+1, 0, 0)) == 255) && (int(orig(i,j + 1,0,1)) == 255) && (int(orig(i,j+1,0,2)) == 255)){		// if orig is black and next pixel is white
-					leftX = i;						// save the edge
-					leftY = j;
-					inShape = true;				// becomes in shape
-				}
-
-			}
-			else if((int(orig(i,j, 0, 0)) == 255) && (int(orig(i,j,0,1)) == 255) && (int(orig(i,j,0,2)) == 255) && leftY < j && leftX == i && inShape == true && leftY > 0 && leftX > 0){		// if orig is white and inshape is true
-
-				if ((int(orig(i,j + 1,0,0)) == 0) && int(orig(i,j+1,0,1)) == 0 && (int(orig(i,j+1,0,2))) == 0){			// if the next orig pixel is black
-					inShape = false;																																									// set in shape to false
-				}
-
-				filledShape(i,j,0,0) = 0.0;																																					// fill current pixel with black
-				filledShape(i,j,0,1) = 0.0;
-				filledShape(i,j,0,2) = 0.0;
-			}
-			else{																																																	// otherwise pixel
-				filledShape(i,j,0,0) = 255.0;
-				filledShape(i,j,0,1) = 255.0;
-				filledShape(i,j,0,2) = 255.0;
-			}
-
-		}
-
-		if (int(filledShape(i, orig.height()-1, 0,0)) == 0 && int(filledShape(i, orig.height()-1, 0,1)) == 0 && int(filledShape(i, orig.height()-1, 0,2)) == 0){
-			for (int u = leftY-5; u < orig.height(); u++){
-				if (int(orig(i, u, 0, 0)) == 0 && int(orig(i, u, 0, 1)) == 0 && int(orig(i, u, 0, 2)) == 0){
-					filledShape(i,u,0,0) = 0.0;																																					// fill current pixel with black
-					filledShape(i,u,0,1) = 0.0;
-					filledShape(i,u,0,2) = 0.0;
-				}
-				else{
-					filledShape(i,u,0,0) = 255.0;
-					filledShape(i,u,0,1) = 255.0;
-					filledShape(i,u,0,2) = 255.0;
-				}
-			}
-		}
-
-		inShape = true;
-		leftX = 0;
-		leftY = 0;
-	}
-
-	int areaIm = 640 * 480;
-	// cout << filledShape.width()<<endl;
-	int fillIm[640][480] = {};
-
-	for (int w = 0; w < filledShape.width(); w++){
-		for (int h = 0; h < filledShape.height(); h++){
-			if (filledShape(w, h, 0, 0) == 0.0){
-				fillIm[w][h] = 1;
-			}
-			else{
-				fillIm[w][h] = 0;
-			}
-		}
-	}
-
-	CImgDisplay disp(filledShape);
-	while (!disp.is_closed())
-		disp.wait();
-
-	// int colorCount = 0;
-	//
-	// for (int width = 0; width < filledShape.width(); width++){
-	// 	for (int height = 0; height < filledShape.height(); height++){
-	// 		int areaIm = filledShape.width() * filledShape.height();
-	// 		int* fillIm = new int[areaIm];
-	// 		if (filledShape(width, height, 0, 0) == 0 && colorCount < areaIm){
-	// 			fillIm[colorCount] = 1;
-	// 		}
-	// 		else{
-	// 			fillIm[colorCount] = 0;
-	// 		}
-	// 		colorCount++;
-	// 	}
-	// }
-
 	const GLubyte *renderer;
 	const GLubyte *version;
 	GLuint vao;																																		// Variable - Vertex Array Object initialized
@@ -651,6 +554,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	float radius;
 	int xBar;
 	int yBar;
+	int fillIm[640][480] = {};
 
 	if (shape == 0){
 		cout << "You chose to create a cube tree. Please enter a float between 0.1 and 0.7: ";
@@ -662,6 +566,116 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	}
 	else if (shape == 3){
 		cout << "You chose to create a tree from a drawing.";
+
+		bool inShape = true;
+		int leftX;
+		int leftY;
+		int rightX;
+		int rightY;
+		int Xpos;
+		int Ypos;
+		unsigned char color[] = {255, 0, 0};
+
+		CImg<unsigned char> userIm(640, 480, 1, 3, 0);
+		for (int i = 0; i < 640; i++){
+			for(int j = 0; j < 480; j++){
+				userIm(i, j, 0, 0) = 255.0;
+				userIm(i, j, 0, 1) = 255.0;
+				userIm(i, j, 0, 2) = 255.0;
+			}
+		}
+
+		userIm.draw_circle(320, 240, 5, color);
+
+
+		CImgDisplay disp(userIm, "Please draw a shape");
+		while (!disp.is_closed()){
+			if (disp.button()&1){
+				Xpos = disp.mouse_x();
+				Ypos = disp.mouse_y();
+				// cout << "X " << Xpos << endl;
+				// cout << "Y " << Ypos << endl;
+				userIm(Xpos, Ypos, 0, 0) = 0.0;
+				userIm(Xpos, Ypos, 0, 1) = 0.0;
+				userIm(Xpos, Ypos, 0, 2) = 0.0;
+				userIm.display(disp);
+			}
+			disp.wait();
+		}
+
+		CImg<unsigned char> orig(userIm);
+		CImg<unsigned char> filledShape(orig.width(), orig.height(), 1, 3, 0);
+
+		for (int i = 0; i < orig.width(); i++){
+			for(int j = 0; j < orig.height(); j++){
+
+				if ((int(orig(i,j, 0, 0)) == 0) && (int(orig(i,j,0,1)) == 0) && (int(orig(i,j,0,2)) == 0) && inShape == true){ //If not in shape and orig is black
+					filledShape(i,j,0,0) = 0.0;				// fill shape with black pixels
+					filledShape(i,j,0,1) = 0.0;
+					filledShape(i,j,0,2) = 0.0;
+
+					if ((int(orig(i,j+1, 0, 0)) == 255) && (int(orig(i,j + 1,0,1)) == 255) && (int(orig(i,j+1,0,2)) == 255)){		// if orig is black and next pixel is white
+						leftX = i;						// save the edge
+						leftY = j;
+						inShape = true;				// becomes in shape
+					}
+
+				}
+				else if((int(orig(i,j, 0, 0)) == 255) && (int(orig(i,j,0,1)) == 255) && (int(orig(i,j,0,2)) == 255) && leftY < j && leftX == i && inShape == true && leftY > 0 && leftX > 0){		// if orig is white and inshape is true
+
+					if ((int(orig(i,j + 1,0,0)) == 0) && int(orig(i,j+1,0,1)) == 0 && (int(orig(i,j+1,0,2))) == 0){			// if the next orig pixel is black
+						inShape = false;																																									// set in shape to false
+					}
+
+					filledShape(i,j,0,0) = 0.0;																																					// fill current pixel with black
+					filledShape(i,j,0,1) = 0.0;
+					filledShape(i,j,0,2) = 0.0;
+				}
+				else{																																																	// otherwise pixel
+					filledShape(i,j,0,0) = 255.0;
+					filledShape(i,j,0,1) = 255.0;
+					filledShape(i,j,0,2) = 255.0;
+				}
+
+			}
+
+			if (int(filledShape(i, orig.height()-1, 0,0)) == 0 && int(filledShape(i, orig.height()-1, 0,1)) == 0 && int(filledShape(i, orig.height()-1, 0,2)) == 0){
+				for (int u = leftY-5; u < orig.height(); u++){
+					if (int(orig(i, u, 0, 0)) == 0 && int(orig(i, u, 0, 1)) == 0 && int(orig(i, u, 0, 2)) == 0){
+						filledShape(i,u,0,0) = 0.0;																																					// fill current pixel with black
+						filledShape(i,u,0,1) = 0.0;
+						filledShape(i,u,0,2) = 0.0;
+					}
+					else{
+						filledShape(i,u,0,0) = 255.0;
+						filledShape(i,u,0,1) = 255.0;
+						filledShape(i,u,0,2) = 255.0;
+					}
+				}
+			}
+
+			inShape = true;
+			leftX = 0;
+			leftY = 0;
+		}
+
+		int areaIm = 640 * 480;
+		// cout << filledShape.width()<<endl;
+
+		for (int w = 0; w < filledShape.width(); w++){
+			for (int h = 0; h < filledShape.height(); h++){
+				if (filledShape(w, h, 0, 0) == 0.0){
+					fillIm[w][h] = 1;
+				}
+				else{
+					fillIm[w][h] = 0;
+				}
+			}
+		}
+
+		CImgDisplay displ(filledShape, "Filled Shape");
+		while (!displ.is_closed())
+			displ.wait();
 	}
 	else if (shape == 2){
 		cout << "You chose to create a normal tree.";
@@ -749,12 +763,45 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 					currentPosition[3] = PositionStack.top();
 					PositionStack.pop();
 
+					if (pointsCount > 6){
 
-					branchPoints[pointsCount + 0] = currentPosition[0];												// Adds the currentPosition to the list of branching points.
-					branchPoints[pointsCount + 1] = currentPosition[1];
-					branchPoints[pointsCount + 2] = currentPosition[2];
-					pointsCount += 3;																													// Increments pointsCount by 3
-
+						if ((currentPosition[0] < box && currentPosition[1] < box) && (currentPosition[0] >= -box && currentPosition[1] >= -box)  && (currentPosition[2] <= box && currentPosition[2] >= -box) && shape == 0){
+							branchPoints[pointsCount + 0] = currentPosition[0];												// Adds the currentPosition to the list of branching points.
+							branchPoints[pointsCount + 1] = currentPosition[1];
+							branchPoints[pointsCount + 2] = currentPosition[2];
+							pointsCount += 3;																													// Increments pointsCount by 3
+						}
+						else if (((((currentPosition[0]-0)*(currentPosition[0]-0)) + ((currentPosition[1] - 0.085)*(currentPosition[1] - 0.085)) + ((currentPosition[2] - 0)*(currentPosition[2] - 0))) <= (radius * radius)) && (shape == 1)){
+							branchPoints[pointsCount + 0] = currentPosition[0];												// Adds the currentPosition to the list of branching points.
+							branchPoints[pointsCount + 1] = currentPosition[1];
+							branchPoints[pointsCount + 2] = currentPosition[2];
+							pointsCount += 3;																													// Increments pointsCount by 3
+						}
+						else if (shape == 2){
+							branchPoints[pointsCount + 0] = currentPosition[0];												// Adds the currentPosition to the list of branching points.
+							branchPoints[pointsCount + 1] = currentPosition[1];
+							branchPoints[pointsCount + 2] = currentPosition[2];
+							pointsCount += 3;																													// Increments pointsCount by 3
+						}
+						else if (shape == 3){
+							xBar = (320 * currentPosition[0]) + 320;
+							yBar = (-240 * currentPosition[1]) + 240;
+							if (fillIm[xBar][yBar] == 1){
+								// cout << "XBAR " << xBar << endl;
+								// cout << "YBAR" << yBar << endl;
+								branchPoints[pointsCount + 0] = currentPosition[0];												// Adds the currentPosition to the list of branching points.
+								branchPoints[pointsCount + 1] = currentPosition[1];
+								branchPoints[pointsCount + 2] = currentPosition[2];
+								pointsCount += 3;																													// Increments pointsCount by 3
+							}
+						}
+					}
+					else{
+						branchPoints[pointsCount + 0] = currentPosition[0];												// Adds the currentPosition to the list of branching points.
+						branchPoints[pointsCount + 1] = currentPosition[1];
+						branchPoints[pointsCount + 2] = currentPosition[2];
+						pointsCount += 3;																													// Increments pointsCount by 3
+					}
 
 					currentHeading[0] = HeadingStack.top();																		// Sets the currentHeading to the top of the HeadingStack.
 					HeadingStack.pop();																												// Pops the currentHeading from the top of the stack.
