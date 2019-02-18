@@ -588,16 +588,38 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 		userIm.draw_circle(320, 240, 5, color);
 
 
-		CImgDisplay disp(userIm, "Please draw a shape");
+		CImgDisplay disp(userIm, "Please draw a closed shape around the origin point.");
 		while (!disp.is_closed()){
 			if (disp.button()&1){
 				Xpos = disp.mouse_x();
 				Ypos = disp.mouse_y();
-				// cout << "X " << Xpos << endl;
-				// cout << "Y " << Ypos << endl;
 				userIm(Xpos, Ypos, 0, 0) = 0.0;
+				userIm(Xpos, Ypos + 1, 0, 0) = 0.0;
+				userIm(Xpos, Ypos - 1, 0, 0) = 0.0;
+				userIm(Xpos + 1, Ypos, 0, 0) = 0.0;
+				userIm(Xpos - 1, Ypos, 0, 0) = 0.0;
+				userIm(Xpos + 1, Ypos + 1, 0, 0) = 0.0;
+				userIm(Xpos - 1, Ypos - 1, 0, 0) = 0.0;
+				userIm(Xpos + 1, Ypos - 1, 0, 0) = 0.0;
+				userIm(Xpos - 1, Ypos + 1, 0, 0) = 0.0;
 				userIm(Xpos, Ypos, 0, 1) = 0.0;
+				userIm(Xpos + 1, Ypos, 0, 1) = 0.0;
+				userIm(Xpos - 1, Ypos, 0, 1) = 0.0;
+				userIm(Xpos, Ypos + 1, 0, 1) = 0.0;
+				userIm(Xpos, Ypos - 1, 0, 1) = 0.0;
+				userIm(Xpos + 1, Ypos + 1, 0, 1) = 0.0;
+				userIm(Xpos - 1, Ypos - 1, 0, 1) = 0.0;
+				userIm(Xpos - 1, Ypos + 1, 0, 1) = 0.0;
+				userIm(Xpos + 1, Ypos - 1, 0, 1) = 0.0;
 				userIm(Xpos, Ypos, 0, 2) = 0.0;
+				userIm(Xpos + 1, Ypos, 0, 2) = 0.0;
+				userIm(Xpos - 1, Ypos, 0, 2) = 0.0;
+				userIm(Xpos, Ypos + 1, 0, 2) = 0.0;
+				userIm(Xpos, Ypos - 1, 0, 2) = 0.0;
+				userIm(Xpos + 1, Ypos + 1, 0, 2) = 0.0;
+				userIm(Xpos - 1, Ypos -1, 0, 2) = 0.0;
+				userIm(Xpos - 1, Ypos + 1, 0, 2) = 0.0;
+				userIm(Xpos + 1, Ypos - 1, 0, 2) = 0.0;
 				userIm.display(disp);
 			}
 			disp.wait();
@@ -627,6 +649,11 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 						inShape = false;																																									// set in shape to false
 					}
 
+					filledShape(i,j,0,0) = 0.0;																																					// fill current pixel with black
+					filledShape(i,j,0,1) = 0.0;
+					filledShape(i,j,0,2) = 0.0;
+				}
+				else if((int(orig(i,j, 0, 0)) == 255) && (int(orig(i,j,0,1)) == 0) && (int(orig(i,j,0,2)) == 0)){
 					filledShape(i,j,0,0) = 0.0;																																					// fill current pixel with black
 					filledShape(i,j,0,1) = 0.0;
 					filledShape(i,j,0,2) = 0.0;
@@ -813,7 +840,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 					HeadingStack.pop();
 
 					counterF --;
-				// }
+
 			}
 
 			else if (pattern.substr(idx, 1).compare("F") == 0){													// ELSE IF the character matches F
