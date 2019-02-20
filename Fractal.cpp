@@ -565,8 +565,10 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 		cin >> radius;
 	}
 	else if (shape == 3){
-		cout << "You chose to create a tree from a drawing.";
+		cout << "You chose to create a tree from a drawing." << endl;
+		cout << "Please draw a closed shape around the red circle." << endl << endl;
 
+		int userAns = 0;
 		bool inShape = true;
 		int leftX;
 		int leftY;
@@ -577,132 +579,136 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 		unsigned char color[] = {255, 0, 0};
 
 		CImg<unsigned char> userIm(640, 480, 1, 3, 0);
-		for (int i = 0; i < 640; i++){
-			for(int j = 0; j < 480; j++){
-				userIm(i, j, 0, 0) = 255.0;
-				userIm(i, j, 0, 1) = 255.0;
-				userIm(i, j, 0, 2) = 255.0;
+		while (userAns != 1){
+			for (int i = 0; i < 640; i++){
+				for(int j = 0; j < 480; j++){
+					userIm(i, j, 0, 0) = 255.0;
+					userIm(i, j, 0, 1) = 255.0;
+					userIm(i, j, 0, 2) = 255.0;
+				}
 			}
-		}
 
-		userIm.draw_circle(320, 240, 5, color);
+			userIm.draw_circle(320, 240, 5, color);
 
 
-		CImgDisplay disp(userIm, "Please draw a closed shape around the origin point.");
-		while (!disp.is_closed()){
-			if (disp.button()&1){
-				Xpos = disp.mouse_x();
-				Ypos = disp.mouse_y();
-				userIm(Xpos, Ypos, 0, 0) = 0.0;
-				userIm(Xpos, Ypos + 1, 0, 0) = 0.0;
-				userIm(Xpos, Ypos - 1, 0, 0) = 0.0;
-				userIm(Xpos + 1, Ypos, 0, 0) = 0.0;
-				userIm(Xpos - 1, Ypos, 0, 0) = 0.0;
-				userIm(Xpos + 1, Ypos + 1, 0, 0) = 0.0;
-				userIm(Xpos - 1, Ypos - 1, 0, 0) = 0.0;
-				userIm(Xpos + 1, Ypos - 1, 0, 0) = 0.0;
-				userIm(Xpos - 1, Ypos + 1, 0, 0) = 0.0;
-				userIm(Xpos, Ypos, 0, 1) = 0.0;
-				userIm(Xpos + 1, Ypos, 0, 1) = 0.0;
-				userIm(Xpos - 1, Ypos, 0, 1) = 0.0;
-				userIm(Xpos, Ypos + 1, 0, 1) = 0.0;
-				userIm(Xpos, Ypos - 1, 0, 1) = 0.0;
-				userIm(Xpos + 1, Ypos + 1, 0, 1) = 0.0;
-				userIm(Xpos - 1, Ypos - 1, 0, 1) = 0.0;
-				userIm(Xpos - 1, Ypos + 1, 0, 1) = 0.0;
-				userIm(Xpos + 1, Ypos - 1, 0, 1) = 0.0;
-				userIm(Xpos, Ypos, 0, 2) = 0.0;
-				userIm(Xpos + 1, Ypos, 0, 2) = 0.0;
-				userIm(Xpos - 1, Ypos, 0, 2) = 0.0;
-				userIm(Xpos, Ypos + 1, 0, 2) = 0.0;
-				userIm(Xpos, Ypos - 1, 0, 2) = 0.0;
-				userIm(Xpos + 1, Ypos + 1, 0, 2) = 0.0;
-				userIm(Xpos - 1, Ypos -1, 0, 2) = 0.0;
-				userIm(Xpos - 1, Ypos + 1, 0, 2) = 0.0;
-				userIm(Xpos + 1, Ypos - 1, 0, 2) = 0.0;
-				userIm.display(disp);
+			CImgDisplay disp(userIm, "Please draw a closed shape around the origin point.");
+			while (!disp.is_closed()){
+				if (disp.button()&1){
+					Xpos = disp.mouse_x();
+					Ypos = disp.mouse_y();
+					userIm(Xpos, Ypos, 0, 0) = 0.0;
+					userIm(Xpos, Ypos + 1, 0, 0) = 0.0;
+					userIm(Xpos, Ypos - 1, 0, 0) = 0.0;
+					userIm(Xpos + 1, Ypos, 0, 0) = 0.0;
+					userIm(Xpos - 1, Ypos, 0, 0) = 0.0;
+					userIm(Xpos + 1, Ypos + 1, 0, 0) = 0.0;
+					userIm(Xpos - 1, Ypos - 1, 0, 0) = 0.0;
+					userIm(Xpos + 1, Ypos - 1, 0, 0) = 0.0;
+					userIm(Xpos - 1, Ypos + 1, 0, 0) = 0.0;
+					userIm(Xpos, Ypos, 0, 1) = 0.0;
+					userIm(Xpos + 1, Ypos, 0, 1) = 0.0;
+					userIm(Xpos - 1, Ypos, 0, 1) = 0.0;
+					userIm(Xpos, Ypos + 1, 0, 1) = 0.0;
+					userIm(Xpos, Ypos - 1, 0, 1) = 0.0;
+					userIm(Xpos + 1, Ypos + 1, 0, 1) = 0.0;
+					userIm(Xpos - 1, Ypos - 1, 0, 1) = 0.0;
+					userIm(Xpos - 1, Ypos + 1, 0, 1) = 0.0;
+					userIm(Xpos + 1, Ypos - 1, 0, 1) = 0.0;
+					userIm(Xpos, Ypos, 0, 2) = 0.0;
+					userIm(Xpos + 1, Ypos, 0, 2) = 0.0;
+					userIm(Xpos - 1, Ypos, 0, 2) = 0.0;
+					userIm(Xpos, Ypos + 1, 0, 2) = 0.0;
+					userIm(Xpos, Ypos - 1, 0, 2) = 0.0;
+					userIm(Xpos + 1, Ypos + 1, 0, 2) = 0.0;
+					userIm(Xpos - 1, Ypos -1, 0, 2) = 0.0;
+					userIm(Xpos - 1, Ypos + 1, 0, 2) = 0.0;
+					userIm(Xpos + 1, Ypos - 1, 0, 2) = 0.0;
+					userIm.display(disp);
+				}
+				disp.wait();
 			}
-			disp.wait();
-		}
 
-		CImg<unsigned char> orig(userIm);
-		CImg<unsigned char> filledShape(orig.width(), orig.height(), 1, 3, 0);
+			CImg<unsigned char> orig(userIm);
+			CImg<unsigned char> filledShape(orig.width(), orig.height(), 1, 3, 0);
 
-		for (int i = 0; i < orig.width(); i++){
-			for(int j = 0; j < orig.height(); j++){
+			for (int i = 0; i < orig.width(); i++){
+				for(int j = 0; j < orig.height(); j++){
 
-				if ((int(orig(i,j, 0, 0)) == 0) && (int(orig(i,j,0,1)) == 0) && (int(orig(i,j,0,2)) == 0) && inShape == true){ //If not in shape and orig is black
-					filledShape(i,j,0,0) = 0.0;				// fill shape with black pixels
-					filledShape(i,j,0,1) = 0.0;
-					filledShape(i,j,0,2) = 0.0;
+					if ((int(orig(i,j, 0, 0)) == 0) && (int(orig(i,j,0,1)) == 0) && (int(orig(i,j,0,2)) == 0) && inShape == true){ //If not in shape and orig is black
+						filledShape(i,j,0,0) = 0.0;				// fill shape with black pixels
+						filledShape(i,j,0,1) = 0.0;
+						filledShape(i,j,0,2) = 0.0;
 
-					if ((int(orig(i,j+1, 0, 0)) == 255) && (int(orig(i,j + 1,0,1)) == 255) && (int(orig(i,j+1,0,2)) == 255)){		// if orig is black and next pixel is white
-						leftX = i;						// save the edge
-						leftY = j;
-						inShape = true;				// becomes in shape
+						if ((int(orig(i,j+1, 0, 0)) == 255) && (int(orig(i,j + 1,0,1)) == 255) && (int(orig(i,j+1,0,2)) == 255)){		// if orig is black and next pixel is white
+							leftX = i;						// save the edge
+							leftY = j;
+							inShape = true;				// becomes in shape
+						}
+
+					}
+					else if((int(orig(i,j, 0, 0)) == 255) && (int(orig(i,j,0,1)) == 255) && (int(orig(i,j,0,2)) == 255) && leftY < j && leftX == i && inShape == true && leftY > 0 && leftX > 0){		// if orig is white and inshape is true
+
+						if ((int(orig(i,j + 1,0,0)) == 0) && int(orig(i,j+1,0,1)) == 0 && (int(orig(i,j+1,0,2))) == 0){			// if the next orig pixel is black
+							inShape = false;																																									// set in shape to false
+						}
+
+						filledShape(i,j,0,0) = 0.0;																																					// fill current pixel with black
+						filledShape(i,j,0,1) = 0.0;
+						filledShape(i,j,0,2) = 0.0;
+					}
+					else if((int(orig(i,j, 0, 0)) == 255) && (int(orig(i,j,0,1)) == 0) && (int(orig(i,j,0,2)) == 0)){
+						filledShape(i,j,0,0) = 0.0;																																					// fill current pixel with black
+						filledShape(i,j,0,1) = 0.0;
+						filledShape(i,j,0,2) = 0.0;
+					}
+					else{																																																	// otherwise pixel
+						filledShape(i,j,0,0) = 255.0;
+						filledShape(i,j,0,1) = 255.0;
+						filledShape(i,j,0,2) = 255.0;
 					}
 
 				}
-				else if((int(orig(i,j, 0, 0)) == 255) && (int(orig(i,j,0,1)) == 255) && (int(orig(i,j,0,2)) == 255) && leftY < j && leftX == i && inShape == true && leftY > 0 && leftX > 0){		// if orig is white and inshape is true
 
-					if ((int(orig(i,j + 1,0,0)) == 0) && int(orig(i,j+1,0,1)) == 0 && (int(orig(i,j+1,0,2))) == 0){			// if the next orig pixel is black
-						inShape = false;																																									// set in shape to false
+				if (int(filledShape(i, orig.height()-1, 0,0)) == 0 && int(filledShape(i, orig.height()-1, 0,1)) == 0 && int(filledShape(i, orig.height()-1, 0,2)) == 0){
+					for (int u = leftY-5; u < orig.height(); u++){
+						if (int(orig(i, u, 0, 0)) == 0 && int(orig(i, u, 0, 1)) == 0 && int(orig(i, u, 0, 2)) == 0){
+							filledShape(i,u,0,0) = 0.0;																																					// fill current pixel with black
+							filledShape(i,u,0,1) = 0.0;
+							filledShape(i,u,0,2) = 0.0;
+						}
+						else{
+							filledShape(i,u,0,0) = 255.0;
+							filledShape(i,u,0,1) = 255.0;
+							filledShape(i,u,0,2) = 255.0;
+						}
 					}
-
-					filledShape(i,j,0,0) = 0.0;																																					// fill current pixel with black
-					filledShape(i,j,0,1) = 0.0;
-					filledShape(i,j,0,2) = 0.0;
-				}
-				else if((int(orig(i,j, 0, 0)) == 255) && (int(orig(i,j,0,1)) == 0) && (int(orig(i,j,0,2)) == 0)){
-					filledShape(i,j,0,0) = 0.0;																																					// fill current pixel with black
-					filledShape(i,j,0,1) = 0.0;
-					filledShape(i,j,0,2) = 0.0;
-				}
-				else{																																																	// otherwise pixel
-					filledShape(i,j,0,0) = 255.0;
-					filledShape(i,j,0,1) = 255.0;
-					filledShape(i,j,0,2) = 255.0;
 				}
 
+				inShape = true;
+				leftX = 0;
+				leftY = 0;
 			}
 
-			if (int(filledShape(i, orig.height()-1, 0,0)) == 0 && int(filledShape(i, orig.height()-1, 0,1)) == 0 && int(filledShape(i, orig.height()-1, 0,2)) == 0){
-				for (int u = leftY-5; u < orig.height(); u++){
-					if (int(orig(i, u, 0, 0)) == 0 && int(orig(i, u, 0, 1)) == 0 && int(orig(i, u, 0, 2)) == 0){
-						filledShape(i,u,0,0) = 0.0;																																					// fill current pixel with black
-						filledShape(i,u,0,1) = 0.0;
-						filledShape(i,u,0,2) = 0.0;
+			int areaIm = 640 * 480;
+			// cout << filledShape.width()<<endl;
+
+			for (int w = 0; w < filledShape.width(); w++){
+				for (int h = 0; h < filledShape.height(); h++){
+					if (filledShape(w, h, 0, 0) == 0.0){
+						fillIm[w][h] = 1;
 					}
 					else{
-						filledShape(i,u,0,0) = 255.0;
-						filledShape(i,u,0,1) = 255.0;
-						filledShape(i,u,0,2) = 255.0;
+						fillIm[w][h] = 0;
 					}
 				}
 			}
 
-			inShape = true;
-			leftX = 0;
-			leftY = 0;
-		}
-
-		int areaIm = 640 * 480;
-		// cout << filledShape.width()<<endl;
-
-		for (int w = 0; w < filledShape.width(); w++){
-			for (int h = 0; h < filledShape.height(); h++){
-				if (filledShape(w, h, 0, 0) == 0.0){
-					fillIm[w][h] = 1;
-				}
-				else{
-					fillIm[w][h] = 0;
-				}
+			CImgDisplay displ(filledShape, "Filled Shape");
+			while (!displ.is_closed())
+				displ.wait();
+				cout << "Are you happy with the shape? 0 for no, 1 for yes: ";
+				cin >> userAns;
 			}
-		}
-
-		CImgDisplay displ(filledShape, "Filled Shape");
-		while (!displ.is_closed())
-			displ.wait();
 	}
 	else if (shape == 2){
 		cout << "You chose to create a normal tree.";
@@ -771,7 +777,6 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 						leafCount += 3;
 					}
 				}
-
 
 					// cout << endl << "After:" << endl;
 					// cout << "Position X: " << currentPosition[0] << endl;
