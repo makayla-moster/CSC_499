@@ -545,7 +545,13 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	int counter12 = 0;
 	bool b1 = false;
 
+	// CImg<unsigned char> userIm;
+
 	cout << endl;
+	CImg<unsigned char> userIm(640, 480, 1, 3, 0);
+	// CImg<unsigned char> orig(640,480,1,3,0);
+	// CImg<unsigned char> orig(userIm);
+	// CImg<unsigned char> filledShape(orig.width(), orig.height(), 1, 3, 0);
 
 	int shape;
 	cout << "Choose your shape. Enter 0 for cube, 1 for sphere, 2 for tree, or 3 for drawing: ";
@@ -576,10 +582,10 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 		int rightY;
 		int Xpos;
 		int Ypos;
-		unsigned char color[] = {255, 0, 0};
+		unsigned char color[] = {255, 0, 0};								// color for origin point
 
-		CImg<unsigned char> userIm(640, 480, 1, 3, 0);
-		while (userAns != 1){
+		// CImg<unsigned char> userIm(640, 480, 1, 3, 0);			// sets base for image as white
+		while (userAns != 1){																// code to ask user if shape is correct over and over
 			for (int i = 0; i < 640; i++){
 				for(int j = 0; j < 480; j++){
 					userIm(i, j, 0, 0) = 255.0;
@@ -588,7 +594,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 				}
 			}
 
-			userIm.draw_circle(320, 240, 5, color);
+			userIm.draw_circle(320, 240, 5, color);			// draws the origin point
 
 
 			CImgDisplay disp(userIm, "Please draw a closed shape around the origin point.");
@@ -689,10 +695,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 				leftY = 0;
 			}
 
-			int areaIm = 640 * 480;
-			// cout << filledShape.width()<<endl;
-
-			for (int w = 0; w < filledShape.width(); w++){
+			for (int w = 0; w < filledShape.width(); w++){										// Fills a 2D array with white or black pixels to iterate through later
 				for (int h = 0; h < filledShape.height(); h++){
 					if (filledShape(w, h, 0, 0) == 0.0){
 						fillIm[w][h] = 1;
@@ -703,11 +706,11 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 				}
 			}
 
-			CImgDisplay displ(filledShape, "Filled Shape");
+			CImgDisplay displ(filledShape, "Filled Shape");			// Displays filled in shape
 			while (!displ.is_closed())
-				displ.wait();
-				cout << "Are you happy with the shape? 0 for no, 1 for yes: ";
-				cin >> userAns;
+				displ.wait();																			// When user exits, they get prompted to draw another shape
+				cout << "Would you like to draw a different shape? Yes(0) or no(1): ";	// Prompt
+				cin >> userAns;																		// Answer
 			}
 	}
 	else if (shape == 2){
@@ -1171,6 +1174,20 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 
 			}
 
+		}
+
+		// cout << "HERE" << endl;
+		int xbar1 = 0;
+		int ybar1 = 0;
+
+		for (int w = 0; w < 640; w++){
+			for (int h = 0; h < 480; h++){
+				xbar1 = ((1/320)*w) - 1;  // NEED TO FIX THIS everything is 1 or -1
+				ybar1 = ((-1/240)*h) + 1;
+
+				cout << "X" << xbar1 << endl;
+				cout << "Y" << ybar1 << endl;
+			}
 		}
 
 
