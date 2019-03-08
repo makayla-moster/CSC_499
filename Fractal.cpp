@@ -867,10 +867,6 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 					if (pointsCount > 6){																											// IF pointsCount is greater than 6
 						float currentZ = RandomFloat(-1.0, 1.0);																// Generate a random float in between -1 and 1
 						currentHeading[2] = currentZ;																						// Set that float to be the z value of the current heading
-
-						// cout << branchPoints[3] << endl;
-						// cout << branchPoints[4] << endl;
-						// cout << branchPoints[5] << endl;
 					}
 
 					currentPosition[0] += currentHeading[0]*.15;																// Add the currentPosition and the currentHeading together
@@ -950,7 +946,14 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 			}
 
 			else if (pattern.substr(idx, 1).compare("+") == 0){													// ELSE IF the character matches +
-				rotation = rand() % 65 + 1;																								// Chooses a random number to rotate the position left from 0 to 65.
+				if (((currentPosition[0] == 0.0f) && (currentPosition[1] == 0.085f)) && ((currentPosition[2] == 0.0f) && (shape == 3))){
+					rotation = 70;																								// Chooses a random number to rotate the position right from 0 to 65.
+					// cout << "HERE" << endl;
+				}
+				else{
+					rotation = rand() % 65 + 1;																								// Chooses a random number to rotate the position right from 0 to 65.
+				}
+				// rotation = rand() % 65 + 1;																								// Chooses a random number to rotate the position left from 0 to 65.
 				// rotation = 25;
 				float numRotateZ =-  ((rotation * 3.14159) / 180);												// Variable - Converts degrees of the rotation to radians.
 				rotateZ1[0] = cos(numRotateZ);																						// Updates the Z rotational matrix
@@ -966,8 +969,15 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 				}
 
 			else if (pattern.substr(idx, 1).compare("-") == 0){													// ELSE IF the character matches -
-				rotation = rand() % 65 + 1;																								// Chooses a random number to rotate the position right from 0 to 65.
+				if (((currentPosition[0] == 0.0f) && (currentPosition[1] == 0.085f)) && ((currentPosition[2] == 0.0f) && (shape == 3))){
+					rotation = 70;																								// Chooses a random number to rotate the position right from 0 to 65.
+					// cout << "HERE" << endl;
+				}
+				else{
+					rotation = rand() % 65 + 1;																								// Chooses a random number to rotate the position right from 0 to 65.
+				}
 				// rotation = 25;
+				// rotation = rand() % 65 + 1;
 				float numRotateZ =+ ((rotation * 3.14159) / 180);													// Variable - Converts degrees of the rotation to radians.
 				rotateZ1[0] = cos(numRotateZ);																						// Updates the Z rotational matrix
 				rotateZ1[1] = sin(numRotateZ);
@@ -1176,19 +1186,33 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 
 		}
 
+
 		// cout << "HERE" << endl;
-		int xbar1 = 0;
-		int ybar1 = 0;
-
-		for (int w = 0; w < 640; w++){
-			for (int h = 0; h < 480; h++){
-				xbar1 = ((1/320)*w) - 1;  // NEED TO FIX THIS everything is 1 or -1
-				ybar1 = ((-1/240)*h) + 1;
-
-				cout << "X" << xbar1 << endl;
-				cout << "Y" << ybar1 << endl;
-			}
-		}
+		// float xbar1 = 0.0;
+		// float ybar1 = 0.0;
+		//
+		// for (int x = 0; x < 640; x++){
+		// 	for (int y = 0; y < 480; y++){
+		// 		int color = 0;
+		// 		for (int h = (x-2); h < (x + 3); h++ ){
+		// 			for(int i = (y - 2); i <(y+3); i++){
+		// 				if (fillIm[h][i] == 1){
+		// 					color++;
+		// 				}
+		// 			}
+		// 		}
+		// 		// cout << color << endl;
+		// 		xbar1 = ((1.0/320.0)*x) - 1;
+		// 		ybar1 = ((-1.0/240.0)*y) + 1;
+		//
+		// 		// if ((color == 0) && ){ // NEED to figure out how to determine if there's a branch there or not.
+		// 		// 	cout << "Hi" << endl;
+		// 		// }
+		//
+		// 		// cout << "X" << xbar1 << endl;
+		// 		// cout << "Y" << ybar1 << endl;
+		// 	}
+		// }
 
 
 
