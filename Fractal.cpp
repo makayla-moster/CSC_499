@@ -62,7 +62,7 @@ GLfloat* multiplyAgain(GLfloat matrix1[], GLfloat matrix2[], GLfloat result1[]){
 }
 
 string generatePattern(){																												//Generates a pattern to create a tree.
-    int numIts = 4; 																														// Number of iterations
+    int numIts = 3; 																														// Number of iterations
     string pattern = "F"; //"[X]";    																					// Using F for the pattern
 
     for (int i = 0; i < numIts; i++){
@@ -414,8 +414,8 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	// cout << pattern << endl << endl;
 	count = countF(pattern);																											// Variable - Function to count the number of 'F' in the string.
 	countBracket = countbracket(pattern);																					// Variable - Function to count the number of ']' in the string.
-	int totalCount = count + countBracket;																				// Variable - Total amount of points, including the backtracking points that are added for the lines.
-	int totalLeafCount = count*3 + countBracket;																	// Variable - Total amount of points*3 to create leaves
+	int totalCount = (count + countBracket)*3;																				// Variable - Total amount of points, including the backtracking points that are added for the lines.
+	int totalLeafCount = (count*3 + countBracket)*3;																	// Variable - Total amount of points*3 to create leaves
 	// cout << totalCount << endl;
 
 	GLfloat branchPoints[totalCount*3]; 																					//List of points to make the branches. Includes extra points for lines.
@@ -561,6 +561,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	int xBar;
 	int yBar;
 	int fillIm[640][480] = {};
+	int shapeCount = 0;
 
 	if (shape == 0){
 		cout << "You chose to create a cube tree. Please enter a float between 0.1 and 0.7: ";
@@ -573,7 +574,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	else if (shape == 3){
 		cout << "You chose to create a tree from a drawing." << endl;
 		cout << "Please draw a closed shape around the red circle." << endl << endl;
-
+		// pattern = shapePattern;
 		int userAns = 0;
 		bool inShape = true;
 		int leftX;
@@ -946,13 +947,25 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 			}
 
 			else if (pattern.substr(idx, 1).compare("+") == 0){													// ELSE IF the character matches +
-				if (((currentPosition[0] == 0.0f) && (currentPosition[1] == 0.085f)) && ((currentPosition[2] == 0.0f) && (shape == 3))){
-					rotation = 70;																								// Chooses a random number to rotate the position right from 0 to 65.
+				// cout << "Rotation " << idx << endl;
+				if(shape == 3){
+					if(((currentPosition[0] == 0.0f) && (currentPosition[1] == 0.085f)) && (currentPosition[2] == 0.0f)){
+						// rotation = 150;																								// Chooses a random number to rotate the position right from 0 to 65.
 					// cout << "HERE" << endl;
-				}
-				else{
-					rotation = rand() % 65 + 1;																								// Chooses a random number to rotate the position right from 0 to 65.
-				}
+						if (shapeCount == 0){
+							rotation = rand() % 65 + 1;
+						}
+						else{
+							rotation = rand() % ((360 - 180) + 1) + 180;
+							}
+						}
+						else{
+							rotation = (rand() % 65 + 1);
+						}
+					}
+					else{
+						rotation = rand() % 65 + 1;																								// Chooses a random number to rotate the position right from 0 to 65.
+					}
 				// rotation = rand() % 65 + 1;																								// Chooses a random number to rotate the position left from 0 to 65.
 				// rotation = 25;
 				float numRotateZ =-  ((rotation * 3.14159) / 180);												// Variable - Converts degrees of the rotation to radians.
@@ -969,9 +982,20 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 				}
 
 			else if (pattern.substr(idx, 1).compare("-") == 0){													// ELSE IF the character matches -
-				if (((currentPosition[0] == 0.0f) && (currentPosition[1] == 0.085f)) && ((currentPosition[2] == 0.0f) && (shape == 3))){
-					rotation = 70;																								// Chooses a random number to rotate the position right from 0 to 65.
+				if(shape == 3){
+					if(((currentPosition[0] == 0.0f) && (currentPosition[1] == 0.085f)) && (currentPosition[2] == 0.0f)){
+						// rotation = 150;																								// Chooses a random number to rotate the position right from 0 to 65.
 					// cout << "HERE" << endl;
+						if (shapeCount == 0){
+							rotation = rand() % 65 + 1;
+						}
+						else{
+							rotation = rand() % ((360 - 180) + 1) + 180;
+						}
+					}
+					else{
+						rotation = (rand() % 65 + 1);
+					}
 				}
 				else{
 					rotation = rand() % 65 + 1;																								// Chooses a random number to rotate the position right from 0 to 65.
@@ -1182,6 +1206,12 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 
 				}
 
+			}
+
+			if ((shape == 3) && (idx == (pattern.length()-1)) && (shapeCount < 2)){
+				cout << "Here" << endl;
+				idx = 0;
+				shapeCount ++;
 			}
 
 		}
@@ -1490,6 +1520,8 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	/* GL shader program object [combined, to link] */
 	GLuint shader_programme;																											// Variable - creates shader program variable
 
+	cout << "Shader Program 1" << endl;
+
 	//---------------------------------------------------------------------------------------------------------------------------  SHADERS FOR THE LEAF
 	/* these are the strings of code for the shaders
 	the vertex shader positions each vertex point */
@@ -1552,6 +1584,8 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	GLuint vert_shader2, frag_shader2;																						// Variables - creates shader variables
 	/* GL shader program object [combined, to link] */
 	GLuint shader_programme2;																											// Variable - creates second shader program variable
+
+	cout << "Shader Program 2" << endl;
 
 	//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
