@@ -62,7 +62,7 @@ GLfloat* multiplyAgain(GLfloat matrix1[], GLfloat matrix2[], GLfloat result1[]){
 }
 
 string generatePattern(){																												//Generates a pattern to create a tree.
-    int numIts = 3; 																														// Number of iterations
+    int numIts = 4; 																														// Number of iterations
     string pattern = "F"; //"[X]";    																					// Using F for the pattern
 
     for (int i = 0; i < numIts; i++){
@@ -713,6 +713,8 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 				cout << "Would you like to draw a different shape? Yes(0) or no(1): ";	// Prompt
 				cin >> userAns;																		// Answer
 			}
+
+			pattern = "F[F][-F][+F][F[F][-F][+F]][-F[F][-F][+F]][+F[F][-F][+F]][F[F][-F][+F][F[F][-F][+F]][-F[F][-F][+F]][+F[F][-F][+F]]][-F[F][-F][+F][F[F][-F][+F]][-F[F][-F][+F]][+F[F][-F][+F]]][+F[F][-F][+F][F[F][-F][+F]][-F[F][-F][+F]][+F[F][-F][+F]]]";
 	}
 	else if (shape == 2){
 		cout << "You chose to create a normal tree.";
@@ -865,10 +867,10 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 					GLfloat lastPosY = currentPosition[1];
 					GLfloat lastPosZ = currentPosition[2];
 
-					if (pointsCount > 6){																											// IF pointsCount is greater than 6
-						float currentZ = RandomFloat(-1.0, 1.0);																// Generate a random float in between -1 and 1
-						currentHeading[2] = currentZ;																						// Set that float to be the z value of the current heading
-					}
+					// if (pointsCount > 6){																											// IF pointsCount is greater than 6
+					// 	float currentZ = RandomFloat(-1.0, 1.0);																// Generate a random float in between -1 and 1
+					// 	currentHeading[2] = currentZ;																						// Set that float to be the z value of the current heading
+					// }
 
 					currentPosition[0] += currentHeading[0]*.15;																// Add the currentPosition and the currentHeading together
 					currentPosition[1] += currentHeading[1]*.15;																// Multiply by .2 to change the height of the tree
@@ -947,25 +949,26 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 			}
 
 			else if (pattern.substr(idx, 1).compare("+") == 0){													// ELSE IF the character matches +
+				rotation = (rand() % 65 + 1);
 				// cout << "Rotation " << idx << endl;
-				if(shape == 3){
-					if(((currentPosition[0] == 0.0f) && (currentPosition[1] == 0.085f)) && (currentPosition[2] == 0.0f)){
-						// rotation = 150;																								// Chooses a random number to rotate the position right from 0 to 65.
-					// cout << "HERE" << endl;
-						if (shapeCount == 0){
-							rotation = rand() % 65 + 1;
-						}
-						else{
-							rotation = rand() % ((360 - 180) + 1) + 180;
-							}
-						}
-						else{
-							rotation = (rand() % 65 + 1);
-						}
-					}
-					else{
-						rotation = rand() % 65 + 1;																								// Chooses a random number to rotate the position right from 0 to 65.
-					}
+				// if(shape == 3){
+				// 	if(((currentPosition[0] == 0.0f) && (currentPosition[1] == 0.085f)) && (currentPosition[2] == 0.0f)){
+				// 		// rotation = 150;																								// Chooses a random number to rotate the position right from 0 to 65.
+				// 	// cout << "HERE" << endl;
+				// 		if (shapeCount == 0){
+				// 			rotation = rand() % 65 + 1;
+				// 		}
+				// 		else{
+				// 			rotation = rand() % ((360 - 180) + 1) + 180;
+				// 			}
+				// 		}
+				// 		else{
+				// 			rotation = (rand() % 65 + 1);
+				// 		}
+				// 	}
+				// 	else{
+				// 		rotation = rand() % 65 + 1;																								// Chooses a random number to rotate the position right from 0 to 65.
+				// 	}
 				// rotation = rand() % 65 + 1;																								// Chooses a random number to rotate the position left from 0 to 65.
 				// rotation = 25;
 				float numRotateZ =-  ((rotation * 3.14159) / 180);												// Variable - Converts degrees of the rotation to radians.
@@ -982,24 +985,25 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 				}
 
 			else if (pattern.substr(idx, 1).compare("-") == 0){													// ELSE IF the character matches -
-				if(shape == 3){
-					if(((currentPosition[0] == 0.0f) && (currentPosition[1] == 0.085f)) && (currentPosition[2] == 0.0f)){
-						// rotation = 150;																								// Chooses a random number to rotate the position right from 0 to 65.
-					// cout << "HERE" << endl;
-						if (shapeCount == 0){
-							rotation = rand() % 65 + 1;
-						}
-						else{
-							rotation = rand() % ((360 - 180) + 1) + 180;
-						}
-					}
-					else{
-						rotation = (rand() % 65 + 1);
-					}
-				}
-				else{
-					rotation = rand() % 65 + 1;																								// Chooses a random number to rotate the position right from 0 to 65.
-				}
+				rotation = rand() % 65 + 1;
+				// if(shape == 3){
+				// 	if(((currentPosition[0] == 0.0f) && (currentPosition[1] == 0.085f)) && (currentPosition[2] == 0.0f)){
+				// 		// rotation = 150;																								// Chooses a random number to rotate the position right from 0 to 65.
+				// 	// cout << "HERE" << endl;
+				// 		if (shapeCount == 0){
+				// 			rotation = rand() % 65 + 1;
+				// 		}
+				// 		else{
+				// 			rotation = rand() % ((360 - 180) + 1) + 180;
+				// 		}
+				// 	}
+				// 	else{
+				// 		rotation = (rand() % 65 + 1);
+				// 	}
+				// }
+				// else{
+				// 	rotation = rand() % 65 + 1;																								// Chooses a random number to rotate the position right from 0 to 65.
+				// }
 				// rotation = 25;
 				// rotation = rand() % 65 + 1;
 				float numRotateZ =+ ((rotation * 3.14159) / 180);													// Variable - Converts degrees of the rotation to radians.
@@ -1208,43 +1212,26 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 
 			}
 
-			if ((shape == 3) && (idx == (pattern.length()-1)) && (shapeCount < 2)){
-				cout << "Here" << endl;
-				idx = 0;
+			if ((shape == 3) && (idx == (pattern.length()-1)) && (shapeCount == 0)){
 				shapeCount ++;
+				idx = 0;
+				currentHeading[0] = 0.5f;
+				currentHeading[1] = 0.0f;
+			}
+			else if ((shape == 3) && (idx == (pattern.length()-1)) && (shapeCount == 1)){
+				shapeCount ++;
+				idx = 0;
+				currentHeading[0] = 0.0f;
+				currentHeading[1] = -0.5f;
+			}
+			else if ((shape == 3) && (idx == (pattern.length()-1)) && (shapeCount == 2)){
+				shapeCount ++;
+				idx = 0;
+				currentHeading[0] = -0.5f;
+				currentHeading[1] = 0.0f;
 			}
 
 		}
-
-
-		// cout << "HERE" << endl;
-		// float xbar1 = 0.0;
-		// float ybar1 = 0.0;
-		//
-		// for (int x = 0; x < 640; x++){
-		// 	for (int y = 0; y < 480; y++){
-		// 		int color = 0;
-		// 		for (int h = (x-2); h < (x + 3); h++ ){
-		// 			for(int i = (y - 2); i <(y+3); i++){
-		// 				if (fillIm[h][i] == 1){
-		// 					color++;
-		// 				}
-		// 			}
-		// 		}
-		// 		// cout << color << endl;
-		// 		xbar1 = ((1.0/320.0)*x) - 1;
-		// 		ybar1 = ((-1.0/240.0)*y) + 1;
-		//
-		// 		// if ((color == 0) && ){ // NEED to figure out how to determine if there's a branch there or not.
-		// 		// 	cout << "Hi" << endl;
-		// 		// }
-		//
-		// 		// cout << "X" << xbar1 << endl;
-		// 		// cout << "Y" << ybar1 << endl;
-		// 	}
-		// }
-
-
 
 	// cout << pointsCount << endl;
 	// cout << totalCount << endl;
@@ -1520,7 +1507,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	/* GL shader program object [combined, to link] */
 	GLuint shader_programme;																											// Variable - creates shader program variable
 
-	cout << "Shader Program 1" << endl;
+	// cout << "Shader Program 1" << endl;
 
 	//---------------------------------------------------------------------------------------------------------------------------  SHADERS FOR THE LEAF
 	/* these are the strings of code for the shaders
@@ -1585,7 +1572,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	/* GL shader program object [combined, to link] */
 	GLuint shader_programme2;																											// Variable - creates second shader program variable
 
-	cout << "Shader Program 2" << endl;
+	// cout << "Shader Program 2" << endl;
 
 	//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
