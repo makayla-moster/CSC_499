@@ -1236,7 +1236,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 				branchPoints[pointsCount+1] = 0.01f;
 				branchPoints[pointsCount+2] = 0.0f;
 				branchPoints[pointsCount+3] = 0.0f;
-				branchPoints[pointsCount+4] = -0.5f;
+				branchPoints[pointsCount+4] = -0.3f;
 				branchPoints[pointsCount+5] = 0.0f;
 				pointsCount += 6;
 
