@@ -867,10 +867,14 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 					GLfloat lastPosY = currentPosition[1];
 					GLfloat lastPosZ = currentPosition[2];
 
-					// if (pointsCount > 6){																											// IF pointsCount is greater than 6
-					// 	float currentZ = RandomFloat(-1.0, 1.0);																// Generate a random float in between -1 and 1
-					// 	currentHeading[2] = currentZ;																						// Set that float to be the z value of the current heading
-					// }
+					if ((pointsCount > 6) && (shape != 3)){																											// IF pointsCount is greater than 6
+						float currentZ = RandomFloat(-1.0, 1.0);																// Generate a random float in between -1 and 1
+						currentHeading[2] = currentZ;																						// Set that float to be the z value of the current heading
+					}
+					else if (shape == 3){
+						float currentZ = RandomFloat(-0.6, 0.6);																// Generate a random float in between -1 and 1
+						currentHeading[2] = currentZ;
+					}
 
 					currentPosition[0] += currentHeading[0]*.15;																// Add the currentPosition and the currentHeading together
 					currentPosition[1] += currentHeading[1]*.15;																// Multiply by .2 to change the height of the tree
