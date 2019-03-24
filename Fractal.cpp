@@ -414,7 +414,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	// cout << pattern << endl << endl;
 	count = countF(pattern);																											// Variable - Function to count the number of 'F' in the string.
 	countBracket = countbracket(pattern);																					// Variable - Function to count the number of ']' in the string.
-	int totalCount = (count + countBracket)*3;																				// Variable - Total amount of points, including the backtracking points that are added for the lines.
+	int totalCount = ((count + countBracket)*3) + 2;																				// Variable - Total amount of points, including the backtracking points that are added for the lines.
 	int totalLeafCount = (count*3 + countBracket)*3;																	// Variable - Total amount of points*3 to create leaves
 	// cout << totalCount << endl;
 
@@ -867,10 +867,14 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 					GLfloat lastPosY = currentPosition[1];
 					GLfloat lastPosZ = currentPosition[2];
 
-					// if (pointsCount > 6){																											// IF pointsCount is greater than 6
-					// 	float currentZ = RandomFloat(-1.0, 1.0);																// Generate a random float in between -1 and 1
-					// 	currentHeading[2] = currentZ;																						// Set that float to be the z value of the current heading
-					// }
+					if ((pointsCount > 6) && (shape != 3)){																											// IF pointsCount is greater than 6
+						float currentZ = RandomFloat(-1.0, 1.0);																// Generate a random float in between -1 and 1
+						currentHeading[2] = currentZ;																						// Set that float to be the z value of the current heading
+					}
+					else if (shape == 3){
+						float currentZ = RandomFloat(-0.6, 0.6);																// Generate a random float in between -1 and 1
+						currentHeading[2] = currentZ;
+					}
 
 					currentPosition[0] += currentHeading[0]*.15;																// Add the currentPosition and the currentHeading together
 					currentPosition[1] += currentHeading[1]*.15;																// Multiply by .2 to change the height of the tree
@@ -1230,6 +1234,17 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 				currentHeading[0] = -0.5f;
 				currentHeading[1] = 0.0f;
 			}
+			else if((shape == 3) && (idx == (pattern.length()-1))){
+				cout<<"Here"<<endl;
+				branchPoints[pointsCount+0] = 0.0f;
+				branchPoints[pointsCount+1] = 0.01f;
+				branchPoints[pointsCount+2] = 0.0f;
+				branchPoints[pointsCount+3] = 0.0f;
+				branchPoints[pointsCount+4] = -0.3f;
+				branchPoints[pointsCount+5] = 0.0f;
+				pointsCount += 6;
+
+			}
 
 		}
 
@@ -1455,6 +1470,9 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 			"for(int i = 0; i < gl_in.length(); i++) {"
 						"thickLine(gl_in[0].gl_Position, gl_in[1].gl_Position, top, bottom);"
 			"}"
+			// "for(int j = gl_in.length()-3; j < gl_in.length(); j++) {"
+			// 			"thickLine(gl_in[0].gl_Position, gl_in[1].gl_Position, 0.005, 0.009);"
+			// "}"
 		"}";
 
 	/* the fragment shader colours each fragment (pixel-sized area of the
