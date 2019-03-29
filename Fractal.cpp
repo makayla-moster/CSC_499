@@ -279,6 +279,7 @@ float RandomFloat(float a, float b) {																						// Generates a random
 /* Begin Code for User Interaction feature */																		// This is the code for User Interaction
 																																								// This code will allow the user to rotate, skew, and translate the tree
 float x, y, z, rx, ry, rz = 0;																									// Variables initialized for translation and rotational matrices
+float ry2 = (90 * 3.14159) / 180.0;
 float sy = 1.0;																																	// Variable - scale matrix y component
 float sx = 1.0;																																	// Variable - scale matrix x component
 float sz = 0.0;																																	// Variable - scale matrix z component
@@ -355,6 +356,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	if((key == GLFW_KEY_G && action == GLFW_REPEAT) || (key == GLFW_KEY_G && action == GLFW_PRESS)){
 		cout<<"G pressed\n";																												// Rotates the tree positively along the Y axis
 		ry += 0.1;
+		// ry += 0.1;
 	}
 	if(key == GLFW_KEY_V && action == GLFW_PRESS){
 		cout<<"V pressed\n";																												// Rotates the tree negatively along the Z axis
@@ -404,6 +406,8 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	const GLubyte *version;
 	GLuint vao;																																		// Variable - Vertex Array Object initialized
 	GLuint vbo;																																		// Variable - Vertex Buffer Object initialized
+	GLuint vao3;																																		// Variable - Vertex Array Object initialized
+	GLuint vbo3;																																		// Variable - Vertex Buffer Object initialized
 
 	int rotation;																																	// Variable - Rotation of branches.
 	int count;																																		// Variable - Counts number of 'F' in string.
@@ -425,13 +429,14 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	stack<float> HeadingStack;																										//Stack to put branch headings on.
 	int pointsCount = 0;																													//Counts number of points needed to make a matrix of points.
 	int leafCount = 0;																														//Counts number of points needed to make a matrix for leaves.
-
+	GLfloat* result90 = new float[4];
 	float z3;
 	float numRotateZ = (90 * 3.14159) / 180;																			// Variable - For the first rotation, so the trunk is 90 degrees from the bottom of the screen.
 	float numRotateZ2 = 0; //(30 * 3.14159) / 180;																// Variable - For rotation of leaf.
 	float leafRotation = 0;																												// Variable - ??
 	float numRotateX = -(90 * 3.14159) / 180;																			// Variable - Rotates the leaf OBJ to be upright in radians.
 	float numRotateY = (0 * 3.14159) / 180;																				// Variable - Rotates the leaf along the y-axis.
+	float numRotateY90 = (90 * 3.14159) / 180;																			// Variable - Rotates the leaf along the y-axis.
 	GLfloat dx = 0;																																// Variable - For leaf translation along the x-axis.
 	GLfloat dy = 0;																																// Variable - For leaf translation along the y-axis.
 	GLfloat dz = 0;																																// Variable - For leaf translation along the z-axis.
@@ -480,6 +485,11 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 		 0,1,0,0,
 		 0,0,1,0,
 		 0,0,0,1};
+	 GLfloat rotateY90[] =																													// Matrix - Rotation matrix 3  for the y-axis.
+		 {cos(numRotateY90),0,-sin(numRotateY90),0,
+			0,1,0,0,
+			sin(numRotateY90),0,cos(numRotateY90),0,
+			0,0,0,1};
 
 /* Code to begin the User Interaction feature of this project */								// User Interaction Code - user will be able to translate, rotate, and skew the tree.
 
@@ -505,6 +515,12 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 		{cos(ry),0,-sin(ry),0,
 			0, 1,0,0,
 			sin(ry),0,cos(ry),0,
+			0,0,0,1};
+
+	GLfloat rotateYLeaf[] = 																													// Matrix - Y Rotation Matrix
+		{cos(ry2),0,-sin(ry2),0,
+			0, 1,0,0,
+			sin(ry2),0,cos(ry2),0,
 			0,0,0,1};
 
 	GLfloat rotateZ[] = 																													// Matrix - Z Rotation Matrix
@@ -538,6 +554,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 		 0,0,0,1};
 
 	GLfloat* result = new float[16];																							// Variable - New 4x4 matrix
+	GLfloat* resultLeaf = new float[16];
 	GLfloat* resultRotation = new float[16];
 	GLfloat* resultRotation2 = new float[16];
 
@@ -871,9 +888,11 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 						float currentZ = RandomFloat(-1.0, 1.0);																// Generate a random float in between -1 and 1
 						currentHeading[2] = currentZ;																						// Set that float to be the z value of the current heading
 					}
-					else if (shape == 3){
-						float currentZ = RandomFloat(-0.6, 0.6);																// Generate a random float in between -1 and 1
+					else if ((pointsCount > 6) && (shape == 3)){
+						float currentZ = RandomFloat(-0.5, 0.4);																// Generate a random float in between -1 and 1
+						// cout << currentZ << endl;
 						currentHeading[2] = currentZ;
+
 					}
 
 					currentPosition[0] += currentHeading[0]*.15;																// Add the currentPosition and the currentHeading together
@@ -933,6 +952,8 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 							leafPoints[leafCount + 1] = midY;
 							leafPoints[leafCount + 2] = midZ;
 							leafCount += 3;																														// Increments leafCount by 3
+
+							// cout << midZ << endl;
 
 							branchPoints[pointsCount + 0] = currentPosition[0];												//Adds the currentPosition to the list of branching points
 							branchPoints[pointsCount + 1] = currentPosition[1];
@@ -1235,7 +1256,6 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 				currentHeading[1] = 0.0f;
 			}
 			else if((shape == 3) && (idx == (pattern.length()-1))){
-				cout<<"Here"<<endl;
 				branchPoints[pointsCount+0] = 0.0f;
 				branchPoints[pointsCount+1] = 0.01f;
 				branchPoints[pointsCount+2] = 0.0f;
@@ -1243,9 +1263,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 				branchPoints[pointsCount+4] = -0.3f;
 				branchPoints[pointsCount+5] = 0.0f;
 				pointsCount += 6;
-
 			}
-
 		}
 
 	// cout << pointsCount << endl;
@@ -1259,6 +1277,28 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 		// cout << newPoints[y] << endl;
 		// cout << newPoints[y + 1] << endl;
 		// cout << newPoints[y + 2] << endl << endl;
+	}
+
+	GLfloat rotatedPoints[pointsCount];
+
+	if (shape == 3){
+		for (int y = 0; y < pointsCount; y+=3){
+			GLfloat* point1 = new float[4];
+			point1[0] = branchPoints[y + 0];
+			point1[1] = branchPoints[y + 1];
+			point1[2] = branchPoints[y + 2];
+			point1[3] = 1;
+
+			// cout << branchPoints[y + 0] << " " << branchPoints[y + 1] << " " << branchPoints[y + 2] << endl;
+
+			multiply(rotateY90, point1, result90);
+
+			// cout << result90[0] << " " << result90[1] << " " << result90[2] << endl << endl;
+
+			rotatedPoints[y + 0] = result90[0];
+			rotatedPoints[y + 1] = result90[1];
+			rotatedPoints[y + 2] = result90[2];
+		}
 	}
 
 	string modelName = "Leaf.obj";																								// Variable - Name of the OBJ to load.
@@ -1342,6 +1382,11 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 			GLfloat* newest4x4H = new float[16];																			// Variable - Creates a new array to hold a 4x4 matrix.
 			for (j = 0, k = 0; j < 16; j++){																					// For loop - Sets all values of 4x4 to 0.
 				newest4x4H[j] = k;
+			}
+
+			GLfloat* newLeaf = new float[16];																			// Variable - Creates a new array to hold a 4x4 matrix.
+			for (j = 0, k = 0; j < 16; j++){																					// For loop - Sets all values of 4x4 to 0.
+				newLeaf[j] = k;
 			}
 
 			GLfloat* new4x1 = new float[4];																						// Variable - Creates a new array to hold a 4x1 vector.
@@ -1522,8 +1567,10 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 
 	/* GL shader objects for vertex and fragment shader [components] */
 	GLuint vert_shader, frag_shader, geoShader;																		// Variables - creates three shader variables
+	GLuint vert_shader3, frag_shader3, geoShader3;																		// Variables - creates three shader variable
 	/* GL shader program object [combined, to link] */
 	GLuint shader_programme;																											// Variable - creates shader program variable
+	GLuint shader_programme3;
 
 	// cout << "Shader Program 1" << endl;
 
@@ -1590,6 +1637,11 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	/* GL shader program object [combined, to link] */
 	GLuint shader_programme2;																											// Variable - creates second shader program variable
 
+	/* GL shader objects for vertex and fragment shader [components] */
+	GLuint vert_shader4, frag_shader4;																						// Variables - creates shader variables
+	/* GL shader program object [combined, to link] */
+	GLuint shader_programme4;																											// Variable - creates second shader program variable
+
 	// cout << "Shader Program 2" << endl;
 
 	//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1629,6 +1681,13 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	glBindBuffer( GL_ARRAY_BUFFER, vbo );
 	glBufferData( GL_ARRAY_BUFFER, (pointsCount) * sizeof( GLfloat ), newPoints, GL_STATIC_DRAW ); // count*3 to not lose points
 
+	if (shape == 3){
+
+		glGenBuffers( 1, &vbo3 );
+		glBindBuffer( GL_ARRAY_BUFFER, vbo3 );
+		glBufferData( GL_ARRAY_BUFFER, (pointsCount) * sizeof( GLfloat ), rotatedPoints, GL_STATIC_DRAW ); // count*3 to not lose points
+	}
+
 	/* the vertex array object (VAO) is a little descriptor that defines which
 	data from vertex buffer objects should be used as input variables to vertex
 	shaders. in our case - use our only VBO, and say 'every three floats is a
@@ -1644,6 +1703,20 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	// "attribute #0 is created from every 3 variables in the above buffer, of type
 	// float (i.e. make me vec3s)"
 	glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, NULL );
+/*------------------------------------------------------------------------------------------*/
+	if (shape == 3){
+	glGenVertexArrays( 1, &vao3 );
+	glBindVertexArray(vao3);
+	// "attribute #0 should be enabled when this vao is bound"
+	glEnableVertexAttribArray(0);
+	// this VBO is already bound, but it's a good habit to explicitly specify which
+	// VBO's data the following
+	// vertex attribute pointer refers to
+	glBindBuffer( GL_ARRAY_BUFFER, vbo3 );
+	// "attribute #0 is created from every 3 variables in the above buffer, of type
+	// float (i.e. make me vec3s)"
+	glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, NULL );
+	}
 
 	//--------------------------------------------------------------------------------------------------------------------------------------------  LEAF SHADERS
 	GLuint points_vbo;
@@ -1659,6 +1732,16 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	GLuint vao2;
 	glGenVertexArrays (1, &vao2);
 	glBindVertexArray (vao2);
+	glBindBuffer (GL_ARRAY_BUFFER, points_vbo);
+	glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glBindBuffer (GL_ARRAY_BUFFER, normals_vbo);
+	glVertexAttribPointer (1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glEnableVertexAttribArray (0);
+	glEnableVertexAttribArray (1);
+
+	GLuint vao4;
+	glGenVertexArrays (1, &vao4);
+	glBindVertexArray (vao4);
 	glBindBuffer (GL_ARRAY_BUFFER, points_vbo);
 	glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 	glBindBuffer (GL_ARRAY_BUFFER, normals_vbo);
@@ -1720,6 +1803,58 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	}
 	( is_programme_valid( shader_programme ) );
 
+
+/*--------------------------------------------------------------------------------------------*/
+if (shape == 3){
+	vert_shader3 = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vert_shader3, 1, &vertex_shader, NULL);
+	glCompileShader(vert_shader3);
+
+	params = -1;
+		glGetShaderiv( vert_shader3, GL_COMPILE_STATUS, &params );
+		if ( GL_TRUE != params ) {
+			fprintf( stderr, "ERROR: vert GL shader index %i did not compile\n", vert_shader3 );
+			return 1; // or exit or something
+		}
+
+	geoShader3 = glCreateShader(GL_GEOMETRY_SHADER);
+	glShaderSource(geoShader3, 1, &geometry_shader, NULL);
+	glCompileShader(geoShader3);
+
+	// check for compile errors
+		glGetShaderiv( geoShader3, GL_COMPILE_STATUS, &params );
+		if ( GL_TRUE != params ) {
+			fprintf( stderr, "ERROR: geom GL shader index %i did not compile\n", geoShader3 );
+			return 1; // or exit or something
+		}
+
+	frag_shader3 = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(frag_shader3, 1, &fragment_shader, NULL);
+	glCompileShader(frag_shader3);
+
+	// check for compile errors
+		glGetShaderiv( frag_shader3, GL_COMPILE_STATUS, &params );
+		if ( GL_TRUE != params ) {
+			fprintf( stderr, "ERROR: frag GL shader index %i did not compile\n", frag_shader3 );
+			return 1; // or exit or something
+		}
+
+	shader_programme3 = glCreateProgram();
+	glAttachShader(shader_programme3, frag_shader3);
+	glAttachShader(shader_programme3, geoShader3);
+	glAttachShader(shader_programme3, vert_shader3);
+	glLinkProgram(shader_programme3);
+	// glPointSize(5.0);
+
+	glGetProgramiv( shader_programme3, GL_LINK_STATUS, &params );
+	if ( GL_TRUE != params ) {
+		fprintf( stderr, "ERROR: could not link shader_programme GL index %i\n",
+						 shader_programme3 );
+		return false;
+	}
+	( is_programme_valid( shader_programme3 ) );
+}
+
 	//-----------------------------------------------------------------------------------------------------------------------------------------  Leaf Shaders
 	vert_shader2 = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vert_shader2, 1, &vertex_shader2, NULL);
@@ -1758,6 +1893,43 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	( is_programme_valid( shader_programme2 ) );
 
 
+	vert_shader4 = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vert_shader4, 1, &vertex_shader2, NULL);
+	glCompileShader(vert_shader4);
+
+	// int params = -1;
+		glGetShaderiv( vert_shader4, GL_COMPILE_STATUS, &params );
+		if ( GL_TRUE != params ) {
+			fprintf( stderr, "ERROR: vert GL shader index %i did not compile\n", vert_shader4 );
+			return 1; // or exit or something
+		}
+
+	frag_shader4 = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(frag_shader4, 1, &fragment_shader2, NULL);
+	glCompileShader(frag_shader4);
+
+	// check for compile errors
+		glGetShaderiv( frag_shader4, GL_COMPILE_STATUS, &params );
+		if ( GL_TRUE != params ) {
+			fprintf( stderr, "ERROR: frag GL shader index %i did not compile\n", frag_shader4 );
+			return 1; // or exit or something
+		}
+
+
+	shader_programme4 = glCreateProgram();
+	glAttachShader(shader_programme4, frag_shader4);
+	glAttachShader(shader_programme4, vert_shader4);
+	glLinkProgram(shader_programme4);
+
+	glGetProgramiv( shader_programme4, GL_LINK_STATUS, &params );
+	if ( GL_TRUE != params ) {
+		fprintf( stderr, "ERROR: could not link shader_programme GL index %i\n",
+						 shader_programme4 );
+		return false;
+	}
+	( is_programme_valid( shader_programme4 ) );
+
+
 	//--------------------------------------------------------------------------------------------------------------------------------------------------------
 	/* this loop clears the drawing surface, then draws the geometry described
 			by the VAO onto the drawing surface. we 'poll events' to see if the window
@@ -1770,10 +1942,23 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	while ( !glfwWindowShouldClose( g_window ) ) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+
+		if (shape == 3){
+			multiplyNew(rotateY90, rotateX, resultRotation);
+			multiplyNew(rotateY, resultRotation, resultRotation);
+			multiplyNew(rotateZ, resultRotation, result);
+			multiplyNew(result, trans, result);
+			multiplyNew(result, translate, resultLeaf);
+		}
 		multiplyNew(rotateY, rotateX, resultRotation);
 		multiplyNew(rotateZ, resultRotation, result);
 		multiplyNew(result, trans, result);
 		multiplyNew(result, translate, result);
+
+		// multiplyNew(rotateYLeaf, rotateX, resultRotation);
+		// multiplyNew(rotateZ, resultRotation, resultLeaf);
+		// multiplyNew(resultLeaf, trans, resultLeaf);
+		// multiplyNew(resultLeaf, translate, resultLeaf);
 
 		//View matrix info
 		int trans_mat_location2 = glGetUniformLocation (shader_programme2, "model");
@@ -1791,6 +1976,26 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 		glUseProgram(shader_programme2);
 		glBindVertexArray(vao2);
 		glDrawArrays(GL_TRIANGLES, 0, leavesWanted * numPoints);
+
+		if (shape == 3){
+			//View matrix info
+			int trans_mat_location4 = glGetUniformLocation (shader_programme4, "model");
+			glUseProgram( shader_programme4 );
+			glUniformMatrix4fv (trans_mat_location4, 1, GL_FALSE, resultLeaf);
+			int view_mat_location4 = glGetUniformLocation (shader_programme4, "view");
+			glUseProgram( shader_programme4 );
+			glUniformMatrix4fv (view_mat_location4, 1, GL_FALSE, lookAt);
+			int proj_mat_location4 = glGetUniformLocation (shader_programme4, "proj");
+			glUseProgram( shader_programme4 );
+			glUniformMatrix4fv (proj_mat_location4, 1, GL_FALSE, viewResult);
+			//glUniformMatrix4fv (proj_mat_location, 1, GL_FALSE, proMat);
+
+
+			glUseProgram(shader_programme4);
+			glBindVertexArray(vao4);
+			glDrawArrays(GL_TRIANGLES, 0, leavesWanted * numPoints);
+			// cout << "Here" << endl;
+		}
 
 		//View matrix info
 		int trans_mat_location = glGetUniformLocation (shader_programme, "model");
@@ -1810,6 +2015,37 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 
 		/* draw points 0-3 from the currently bound VAO with current in-use shader */
 		glDrawArrays(GL_LINE_STRIP, 0, totalCount); //GL_LINE_STRIP
+
+
+/*--------------------------------------------------------------------------------------*/
+	if (shape == 3){
+		/* wipe the drawing surface clear */
+		glUseProgram(shader_programme3);
+		glBindVertexArray(vao3);
+
+		/* draw points 0-3 from the currently bound VAO with current in-use shader */
+		glDrawArrays(GL_LINE_STRIP, 0, totalCount); //GL_LINE_STRIP
+
+		//View matrix info
+		int trans_mat_location3 = glGetUniformLocation (shader_programme3, "model");
+		glUseProgram( shader_programme3 );
+		glUniformMatrix4fv (trans_mat_location3, 1, GL_FALSE, result);
+		int view_mat_location3 = glGetUniformLocation (shader_programme3, "view");
+		glUseProgram( shader_programme3 );
+		glUniformMatrix4fv (view_mat_location3, 1, GL_FALSE, lookAt);
+		int proj_mat_location3 = glGetUniformLocation (shader_programme3, "proj");
+		glUseProgram( shader_programme3 );
+		glUniformMatrix4fv (proj_mat_location3, 1, GL_FALSE, viewResult);
+		//glUniformMatrix4fv (proj_mat_location, 1, GL_FALSE, proMat);
+
+		/* wipe the drawing surface clear */
+		glUseProgram(shader_programme3);
+		glBindVertexArray(vao3);
+
+		/* draw points 0-3 from the currently bound VAO with current in-use shader */
+		glDrawArrays(GL_LINE_STRIP, 0, totalCount); //GL_LINE_STRIP
+	}
+
 
 		/* update other events like input handling */
 		glfwPollEvents();
