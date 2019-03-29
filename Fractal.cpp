@@ -279,6 +279,7 @@ float RandomFloat(float a, float b) {																						// Generates a random
 /* Begin Code for User Interaction feature */																		// This is the code for User Interaction
 																																								// This code will allow the user to rotate, skew, and translate the tree
 float x, y, z, rx, ry, rz = 0;																									// Variables initialized for translation and rotational matrices
+float ry2 = (90 * 3.14159) / 180.0;
 float sy = 1.0;																																	// Variable - scale matrix y component
 float sx = 1.0;																																	// Variable - scale matrix x component
 float sz = 0.0;																																	// Variable - scale matrix z component
@@ -355,6 +356,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	if((key == GLFW_KEY_G && action == GLFW_REPEAT) || (key == GLFW_KEY_G && action == GLFW_PRESS)){
 		cout<<"G pressed\n";																												// Rotates the tree positively along the Y axis
 		ry += 0.1;
+		// ry += 0.1;
 	}
 	if(key == GLFW_KEY_V && action == GLFW_PRESS){
 		cout<<"V pressed\n";																												// Rotates the tree negatively along the Z axis
@@ -434,7 +436,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	float leafRotation = 0;																												// Variable - ??
 	float numRotateX = -(90 * 3.14159) / 180;																			// Variable - Rotates the leaf OBJ to be upright in radians.
 	float numRotateY = (0 * 3.14159) / 180;																				// Variable - Rotates the leaf along the y-axis.
-	float numRotateY90 = (90 * 3.14159) / 180;																				// Variable - Rotates the leaf along the y-axis.
+	float numRotateY90 = (90 * 3.14159) / 180;																			// Variable - Rotates the leaf along the y-axis.
 	GLfloat dx = 0;																																// Variable - For leaf translation along the x-axis.
 	GLfloat dy = 0;																																// Variable - For leaf translation along the y-axis.
 	GLfloat dz = 0;																																// Variable - For leaf translation along the z-axis.
@@ -515,6 +517,12 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 			sin(ry),0,cos(ry),0,
 			0,0,0,1};
 
+	GLfloat rotateYLeaf[] = 																													// Matrix - Y Rotation Matrix
+		{cos(ry2),0,-sin(ry2),0,
+			0, 1,0,0,
+			sin(ry2),0,cos(ry2),0,
+			0,0,0,1};
+
 	GLfloat rotateZ[] = 																													// Matrix - Z Rotation Matrix
 		{cos(rz),sin(rz),0,0,
 		-sin(rz), cos(rz),0,0,
@@ -546,6 +554,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 		 0,0,0,1};
 
 	GLfloat* result = new float[16];																							// Variable - New 4x4 matrix
+	GLfloat* resultLeaf = new float[16];
 	GLfloat* resultRotation = new float[16];
 	GLfloat* resultRotation2 = new float[16];
 
@@ -1375,6 +1384,11 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 				newest4x4H[j] = k;
 			}
 
+			GLfloat* newLeaf = new float[16];																			// Variable - Creates a new array to hold a 4x4 matrix.
+			for (j = 0, k = 0; j < 16; j++){																					// For loop - Sets all values of 4x4 to 0.
+				newLeaf[j] = k;
+			}
+
 			GLfloat* new4x1 = new float[4];																						// Variable - Creates a new array to hold a 4x1 vector.
 			for (j = 0, k = 0; j < 4; j++){																						// For loop - Sets all values of 4x1 to 0.
 				new4x1[j] = k;
@@ -1623,6 +1637,11 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	/* GL shader program object [combined, to link] */
 	GLuint shader_programme2;																											// Variable - creates second shader program variable
 
+	/* GL shader objects for vertex and fragment shader [components] */
+	GLuint vert_shader4, frag_shader4;																						// Variables - creates shader variables
+	/* GL shader program object [combined, to link] */
+	GLuint shader_programme4;																											// Variable - creates second shader program variable
+
 	// cout << "Shader Program 2" << endl;
 
 	//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1713,6 +1732,16 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	GLuint vao2;
 	glGenVertexArrays (1, &vao2);
 	glBindVertexArray (vao2);
+	glBindBuffer (GL_ARRAY_BUFFER, points_vbo);
+	glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glBindBuffer (GL_ARRAY_BUFFER, normals_vbo);
+	glVertexAttribPointer (1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glEnableVertexAttribArray (0);
+	glEnableVertexAttribArray (1);
+
+	GLuint vao4;
+	glGenVertexArrays (1, &vao4);
+	glBindVertexArray (vao4);
 	glBindBuffer (GL_ARRAY_BUFFER, points_vbo);
 	glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 	glBindBuffer (GL_ARRAY_BUFFER, normals_vbo);
@@ -1864,6 +1893,43 @@ if (shape == 3){
 	( is_programme_valid( shader_programme2 ) );
 
 
+	vert_shader4 = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vert_shader4, 1, &vertex_shader2, NULL);
+	glCompileShader(vert_shader4);
+
+	// int params = -1;
+		glGetShaderiv( vert_shader4, GL_COMPILE_STATUS, &params );
+		if ( GL_TRUE != params ) {
+			fprintf( stderr, "ERROR: vert GL shader index %i did not compile\n", vert_shader4 );
+			return 1; // or exit or something
+		}
+
+	frag_shader4 = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(frag_shader4, 1, &fragment_shader2, NULL);
+	glCompileShader(frag_shader4);
+
+	// check for compile errors
+		glGetShaderiv( frag_shader4, GL_COMPILE_STATUS, &params );
+		if ( GL_TRUE != params ) {
+			fprintf( stderr, "ERROR: frag GL shader index %i did not compile\n", frag_shader4 );
+			return 1; // or exit or something
+		}
+
+
+	shader_programme4 = glCreateProgram();
+	glAttachShader(shader_programme4, frag_shader4);
+	glAttachShader(shader_programme4, vert_shader4);
+	glLinkProgram(shader_programme4);
+
+	glGetProgramiv( shader_programme4, GL_LINK_STATUS, &params );
+	if ( GL_TRUE != params ) {
+		fprintf( stderr, "ERROR: could not link shader_programme GL index %i\n",
+						 shader_programme4 );
+		return false;
+	}
+	( is_programme_valid( shader_programme4 ) );
+
+
 	//--------------------------------------------------------------------------------------------------------------------------------------------------------
 	/* this loop clears the drawing surface, then draws the geometry described
 			by the VAO onto the drawing surface. we 'poll events' to see if the window
@@ -1876,10 +1942,23 @@ if (shape == 3){
 	while ( !glfwWindowShouldClose( g_window ) ) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+
+		if (shape == 3){
+			multiplyNew(rotateY90, rotateX, resultRotation);
+			multiplyNew(rotateY, resultRotation, resultRotation);
+			multiplyNew(rotateZ, resultRotation, result);
+			multiplyNew(result, trans, result);
+			multiplyNew(result, translate, resultLeaf);
+		}
 		multiplyNew(rotateY, rotateX, resultRotation);
 		multiplyNew(rotateZ, resultRotation, result);
 		multiplyNew(result, trans, result);
 		multiplyNew(result, translate, result);
+
+		// multiplyNew(rotateYLeaf, rotateX, resultRotation);
+		// multiplyNew(rotateZ, resultRotation, resultLeaf);
+		// multiplyNew(resultLeaf, trans, resultLeaf);
+		// multiplyNew(resultLeaf, translate, resultLeaf);
 
 		//View matrix info
 		int trans_mat_location2 = glGetUniformLocation (shader_programme2, "model");
@@ -1897,6 +1976,26 @@ if (shape == 3){
 		glUseProgram(shader_programme2);
 		glBindVertexArray(vao2);
 		glDrawArrays(GL_TRIANGLES, 0, leavesWanted * numPoints);
+
+		if (shape == 3){
+			//View matrix info
+			int trans_mat_location4 = glGetUniformLocation (shader_programme4, "model");
+			glUseProgram( shader_programme4 );
+			glUniformMatrix4fv (trans_mat_location4, 1, GL_FALSE, resultLeaf);
+			int view_mat_location4 = glGetUniformLocation (shader_programme4, "view");
+			glUseProgram( shader_programme4 );
+			glUniformMatrix4fv (view_mat_location4, 1, GL_FALSE, lookAt);
+			int proj_mat_location4 = glGetUniformLocation (shader_programme4, "proj");
+			glUseProgram( shader_programme4 );
+			glUniformMatrix4fv (proj_mat_location4, 1, GL_FALSE, viewResult);
+			//glUniformMatrix4fv (proj_mat_location, 1, GL_FALSE, proMat);
+
+
+			glUseProgram(shader_programme4);
+			glBindVertexArray(vao4);
+			glDrawArrays(GL_TRIANGLES, 0, leavesWanted * numPoints);
+			// cout << "Here" << endl;
+		}
 
 		//View matrix info
 		int trans_mat_location = glGetUniformLocation (shader_programme, "model");
