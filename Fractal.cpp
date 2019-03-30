@@ -562,13 +562,8 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	int counter12 = 0;
 	bool b1 = false;
 
-	// CImg<unsigned char> userIm;
-
 	cout << endl;
 	CImg<unsigned char> userIm(640, 480, 1, 3, 0);
-	// CImg<unsigned char> orig(640,480,1,3,0);
-	// CImg<unsigned char> orig(userIm);
-	// CImg<unsigned char> filledShape(orig.width(), orig.height(), 1, 3, 0);
 
 	int shape;
 	cout << "Choose your shape. Enter 0 for cube, 1 for sphere, 2 for tree, or 3 for drawing: ";
@@ -591,7 +586,6 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	else if (shape == 3){
 		cout << "You chose to create a tree from a drawing." << endl;
 		cout << "Please draw a closed shape around the red circle." << endl << endl;
-		// pattern = shapePattern;
 		int userAns = 0;
 		bool inShape = true;
 		int leftX;
@@ -602,7 +596,6 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 		int Ypos;
 		unsigned char color[] = {255, 0, 0};								// color for origin point
 
-		// CImg<unsigned char> userIm(640, 480, 1, 3, 0);			// sets base for image as white
 		while (userAns != 1){																// code to ask user if shape is correct over and over
 			for (int i = 0; i < 640; i++){
 				for(int j = 0; j < 480; j++){
@@ -731,6 +724,8 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 				cin >> userAns;																		// Answer
 			}
 
+			userIm.save("userShape.bmp");
+
 			pattern = "F[F][-F][+F][F[F][-F][+F]][-F[F][-F][+F]][+F[F][-F][+F]][F[F][-F][+F][F[F][-F][+F]][-F[F][-F][+F]][+F[F][-F][+F]]][-F[F][-F][+F][F[F][-F][+F]][-F[F][-F][+F]][+F[F][-F][+F]]][+F[F][-F][+F][F[F][-F][+F]][-F[F][-F][+F]][+F[F][-F][+F]]]";
 	}
 	else if (shape == 2){
@@ -738,9 +733,6 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	}
 
 	cout << endl << endl;
-	// float box = 0.5;
-	// float radius = 0.5;
-	// int shape = 0; // 0 is box, 1 is circle
 	GLfloat lastPos[] = {0.0f, 0.0f, 0.0f, 0.0f};
 
 	/* End code for user interaction feature */
@@ -889,7 +881,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 						currentHeading[2] = currentZ;																						// Set that float to be the z value of the current heading
 					}
 					else if ((pointsCount > 6) && (shape == 3)){
-						float currentZ = RandomFloat(-0.5, 0.4);																// Generate a random float in between -1 and 1
+						float currentZ = RandomFloat(-0.5, 0.5);																// Generate a random float in between -1 and 1
 						// cout << currentZ << endl;
 						currentHeading[2] = currentZ;
 
@@ -975,27 +967,6 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 
 			else if (pattern.substr(idx, 1).compare("+") == 0){													// ELSE IF the character matches +
 				rotation = (rand() % 65 + 1);
-				// cout << "Rotation " << idx << endl;
-				// if(shape == 3){
-				// 	if(((currentPosition[0] == 0.0f) && (currentPosition[1] == 0.085f)) && (currentPosition[2] == 0.0f)){
-				// 		// rotation = 150;																								// Chooses a random number to rotate the position right from 0 to 65.
-				// 	// cout << "HERE" << endl;
-				// 		if (shapeCount == 0){
-				// 			rotation = rand() % 65 + 1;
-				// 		}
-				// 		else{
-				// 			rotation = rand() % ((360 - 180) + 1) + 180;
-				// 			}
-				// 		}
-				// 		else{
-				// 			rotation = (rand() % 65 + 1);
-				// 		}
-				// 	}
-				// 	else{
-				// 		rotation = rand() % 65 + 1;																								// Chooses a random number to rotate the position right from 0 to 65.
-				// 	}
-				// rotation = rand() % 65 + 1;																								// Chooses a random number to rotate the position left from 0 to 65.
-				// rotation = 25;
 				float numRotateZ =-  ((rotation * 3.14159) / 180);												// Variable - Converts degrees of the rotation to radians.
 				rotateZ1[0] = cos(numRotateZ);																						// Updates the Z rotational matrix
 				rotateZ1[1] = sin(numRotateZ);
@@ -1011,26 +982,6 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 
 			else if (pattern.substr(idx, 1).compare("-") == 0){													// ELSE IF the character matches -
 				rotation = rand() % 65 + 1;
-				// if(shape == 3){
-				// 	if(((currentPosition[0] == 0.0f) && (currentPosition[1] == 0.085f)) && (currentPosition[2] == 0.0f)){
-				// 		// rotation = 150;																								// Chooses a random number to rotate the position right from 0 to 65.
-				// 	// cout << "HERE" << endl;
-				// 		if (shapeCount == 0){
-				// 			rotation = rand() % 65 + 1;
-				// 		}
-				// 		else{
-				// 			rotation = rand() % ((360 - 180) + 1) + 180;
-				// 		}
-				// 	}
-				// 	else{
-				// 		rotation = (rand() % 65 + 1);
-				// 	}
-				// }
-				// else{
-				// 	rotation = rand() % 65 + 1;																								// Chooses a random number to rotate the position right from 0 to 65.
-				// }
-				// rotation = 25;
-				// rotation = rand() % 65 + 1;
 				float numRotateZ =+ ((rotation * 3.14159) / 180);													// Variable - Converts degrees of the rotation to radians.
 				rotateZ1[0] = cos(numRotateZ);																						// Updates the Z rotational matrix
 				rotateZ1[1] = sin(numRotateZ);
@@ -1079,9 +1030,6 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 				// cout << "Before While" << endl;
 
 				while (((currentPosition[0] < box) && (currentPosition[1] < box)) && currentPosition[2] < box){
-					// currentPosition[0] += currentHeading[0]*.01;
-					// currentPosition[1] += currentHeading[1]*.01;
-					// currentPosition[2] += currentHeading[2]*.01;
 					currentPosition[0] += origin[0]*.01;
 					currentPosition[1] += origin[1]*.01;
 					currentPosition[2] += origin[2]*.01;
@@ -1124,20 +1072,12 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 					// cout << "Position Z: " << currentPosition[2] << endl << endl;
 
 					for (int times = 0; times < 3; times ++){
-						// currentPosition[0] += (currentHeading[0]*.3);
-						// currentPosition[1] += (currentHeading[1]*.3);
-						// currentPosition[2] += (currentHeading[2]*.3);
-
 						currentPosition[0] += origin[0]*.3;
 						currentPosition[1] += origin[1]*.3;
 						currentPosition[2] += origin[2]*.3;
 					}
 
 					while (((currentPosition[0] > -box) && (currentPosition[1] > -box)) && currentPosition[2] > -box){
-						// currentPosition[0] -= currentHeading[0]*.01;
-						// currentPosition[1] -= currentHeading[1]*.01;
-						// currentPosition[2] -= currentHeading[2]*.01;
-
 						currentPosition[0] -= origin[0]*.01;
 						currentPosition[1] -= origin[1]*.01;
 						currentPosition[2] -= origin[2]*.01;
@@ -1166,7 +1106,6 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 						currentPosition[3] = lastPos[3];
 
 				}
-				// else if ((((currentPosition[0]-0)*(currentPosition[0]-0)) + ((currentPosition[1] - 0.085)*(currentPosition[1] - 0.085)) + ((currentPosition[2] - 0)*(currentPosition[2] - 0)) >= (radius * radius)) && shape == 1){
 				else if (((sphereX + sphereY + sphereZ) >= (radius * radius)) && shape == 1){
 				// cout << "HERE" << endl;
 
@@ -1181,10 +1120,6 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 					lastPos[2] = currentPosition[2];
 					lastPos[3] = currentPosition[3];
 
-					// cout << "Before while" << endl;
-
-						// if ((currentPosition[0] < 0 && currentHeading[0] > 0) && (currentPosition[1] > 0 && currentHeading[1] > 0)){    // Is this even close? Three dimensions are hard.
-						// 	cout << "In if" << endl;
 							while (((sphereX + sphereY + sphereZ) > (radius * radius))){
 								currentPosition[0] -= (newPt[0]*.3);
 								currentPosition[1] -= (newPt[1]*.3);
@@ -1196,10 +1131,6 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 							}
 
 					while ((sphereX + sphereY + sphereZ) < (radius * radius) && currentPosition[2] > 0){
-						// currentPosition[0] += (currentHeading[0]*.01);
-						// currentPosition[1] += (currentHeading[1]*.01);
-						// currentPosition[2] += (currentHeading[2]*.01);
-
 						currentPosition[0] += (newPt[0]*.01);
 						currentPosition[1] += (newPt[1]*.01);
 						currentPosition[2] += (newPt[2]*.01);
@@ -1515,9 +1446,6 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 			"for(int i = 0; i < gl_in.length(); i++) {"
 						"thickLine(gl_in[0].gl_Position, gl_in[1].gl_Position, top, bottom);"
 			"}"
-			// "for(int j = gl_in.length()-3; j < gl_in.length(); j++) {"
-			// 			"thickLine(gl_in[0].gl_Position, gl_in[1].gl_Position, 0.005, 0.009);"
-			// "}"
 		"}";
 
 	/* the fragment shader colours each fragment (pixel-sized area of the
