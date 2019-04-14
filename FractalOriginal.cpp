@@ -983,7 +983,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 
 		// surface reflectance
 		"vec3 Ks = vec3 (1.0, 0.0, 0.0);" // fully reflect specular light
-		"vec3 Kd = vec3 (0.0, 1.0, 0.0);" // green diffuse surface reflectance
+		"vec3 Kd = vec3 (1.0, 0.3, 0.0);" // green diffuse surface reflectance
 		"vec3 Ka = vec3 (1.0, 1.0, 1.0);" // fully reflect ambient light
 		"float specular_exponent = 100.0;" // specular 'power'
 
