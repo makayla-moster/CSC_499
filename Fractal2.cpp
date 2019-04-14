@@ -3,7 +3,7 @@
 //g++ -w -o Makayla.exe gl_utils.cpp maths_funcs.cpp Fractal.cpp libglfw3dll.a libglew32.dll.a -I include -lglfw3 -lgdi32 -lopengl32												// Not using
 // g++ -w -o Makayla.exe gl_utils.cpp maths_funcs.cpp Fractal.cpp libglfw3dll.a libglew32.dll.a -I include -lgdi32 -lopengl32 -L ./ -lglew32 -lglfw3				// Not using
 
-// g++ -w -o monkm.exe gl_utils.cpp maths_funcs.cpp Fractal.cpp libglfw3dll.a libglew32.dll.a -I include -lgdi32 -lopengl32 -L ./ -lglew32 -lglfw3
+// g++ -w -o monkm.exe gl_utils.cpp maths_funcs.cpp Fractal2.cpp libglfw3dll.a libglew32.dll.a -I include -lgdi32 -lopengl32 -L ./ -lglew32 -lglfw3
 
 /*TESTING CODE PURPOSES ONLY*/
 
@@ -620,10 +620,10 @@ int main() {
 			leafPoints[leafCount + 2] = currentPosition[2];
 			leafCount += 3;
 
-			cout << endl << "After:" << endl;
-			cout << "Position X: " << currentPosition[0] << endl;
-			cout << "Position Y: " << currentPosition[1] << endl;
-			cout << "Position Z: " << currentPosition[2] << endl << endl;
+			// cout << endl << "After:" << endl;
+			// cout << "Position X: " << currentPosition[0] << endl;
+			// cout << "Position Y: " << currentPosition[1] << endl;
+			// cout << "Position Z: " << currentPosition[2] << endl << endl;
 
 			currentPosition[0] = PositionStack.top();											//Sets the current position back to the top of the stack.
 			PositionStack.pop();																//Pops the current position from the top of the stack.
@@ -651,10 +651,10 @@ int main() {
 
 		else if (pattern.substr(idx, 1).compare("F") == 0){
 
-			cout << endl << "Before:" << endl;
-			cout << "Position X: " << currentPosition[0] << endl;
-			cout << "Position Y: " << currentPosition[1] << endl;
-			cout << "Position Z: " << currentPosition[2] << endl << endl;
+			// cout << endl << "Before:" << endl;
+			// cout << "Position X: " << currentPosition[0] << endl;
+			// cout << "Position Y: " << currentPosition[1] << endl;
+			// cout << "Position Z: " << currentPosition[2] << endl << endl;
 
 			GLfloat lastPosX = currentPosition[0];
 			GLfloat lastPosY = currentPosition[1];

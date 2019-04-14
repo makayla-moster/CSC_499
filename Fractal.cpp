@@ -352,11 +352,12 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	if((key == GLFW_KEY_F && action == GLFW_REPEAT) || (key == GLFW_KEY_F && action == GLFW_PRESS) ){
 		cout<<"F pressed\n";																												// Rotates the tree negatively along the Y axis
 		ry -= 0.1;
+		ry2 -= 0.1;
 	}
 	if((key == GLFW_KEY_G && action == GLFW_REPEAT) || (key == GLFW_KEY_G && action == GLFW_PRESS)){
 		cout<<"G pressed\n";																												// Rotates the tree positively along the Y axis
 		ry += 0.1;
-		// ry += 0.1;
+		ry2 += 0.1;
 	}
 	if(key == GLFW_KEY_V && action == GLFW_PRESS){
 		cout<<"V pressed\n";																												// Rotates the tree negatively along the Z axis
@@ -1225,10 +1226,11 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 			multiply(rotateY90, point1, result90);
 
 			// cout << result90[0] << " " << result90[1] << " " << result90[2] << endl << endl;
-
-			rotatedPoints[y + 0] = result90[0];
-			rotatedPoints[y + 1] = result90[1];
-			rotatedPoints[y + 2] = result90[2];
+			if (result90[2] <= point1[0]){
+				rotatedPoints[y + 0] = result90[0];
+				rotatedPoints[y + 1] = result90[1];
+				rotatedPoints[y + 2] = result90[2];
+			}
 		}
 	}
 
@@ -1250,6 +1252,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 
 	int leavesWanted = leafCount / 3;																							// Variable - Number of leaves wanted for the tree
 	GLfloat* points = new GLfloat[leavesWanted*9*numFaces];												// Variable - Creates array for the points of the OBJ
+	GLfloat* pointsRotation = new GLfloat[leavesWanted*9*numFaces];
 	GLfloat* normals = new GLfloat[leavesWanted*9*numFaces];											// Variable - Creates array for the normals of the OBJ
 
 	for (int l = 0; l < leavesWanted; l++){																				// For loop - Makes multiple leaves based on leavesWanted
@@ -1398,6 +1401,30 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 		//cout << dx << " " << dy << " " << dz << endl;
 		//cout << beginLeaf*9*numFaces << " " << endLeaf*9*numFaces - 1 << endl << endl;
 	}
+	for (int beginLeaf = 0; beginLeaf < leavesWanted; beginLeaf++) {							// For loop - Begins making multiple leaves.
+																																								// Variable - Sets beginLeaf to 0 and counts up to the number of leaves needed.
+		int endLeaf = beginLeaf + 1;
+		for (int i = beginLeaf*9*numFaces; i < endLeaf*9*numFaces - 1; i += 3){
+			int j;																																		// Variable - ??
+			int k;
+			GLfloat* new4x1 = new float[4];																						// Variable - Creates a new array to hold a 4x1 vector.
+			for (j = 0, k = 0; j < 4; j++){																						// For loop - Sets all values of 4x1 to 0.
+				new4x1[j] = k;
+			}
+
+			float currentLeafPoint[] = {points[i], points[i + 1], points[i + 2], 1};	// Variable - Gets the x, y, z values from points (leaf) to multiply by.
+			multiply(rotateY90, currentLeafPoint, new4x1);														// Multiplies a 4x4 and a 4x1 matrix together and makes a new 4x1 matrix.
+
+			if (new4x1[2] <= currentLeafPoint[0]){
+				pointsRotation[i+0] = currentLeafPoint[0];
+				pointsRotation[i+1] = currentLeafPoint[1];
+				pointsRotation[i+2] = currentLeafPoint[2];
+			}
+
+		}
+	}
+
+
 	cout << "Done creating " << leafCount / 3 << " leaves\n" << endl;							// Prints out the number of leaves that are being created.
 
 	/* these are the strings of code for the shaders
@@ -1652,6 +1679,11 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	glBindBuffer (GL_ARRAY_BUFFER, points_vbo);
 	glBufferData (GL_ARRAY_BUFFER, leavesWanted * 3 * numPoints * sizeof (GLfloat), points, GL_STATIC_DRAW);
 
+	GLuint points_vbo4;
+	glGenBuffers (1, &points_vbo4);
+	glBindBuffer (GL_ARRAY_BUFFER, points_vbo4);
+	glBufferData (GL_ARRAY_BUFFER, leavesWanted * 3 * numPoints * sizeof (GLfloat), pointsRotation, GL_STATIC_DRAW);
+
 	GLuint normals_vbo;
 	glGenBuffers (1, &normals_vbo);
 	glBindBuffer (GL_ARRAY_BUFFER, normals_vbo);
@@ -1667,15 +1699,17 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	glEnableVertexAttribArray (0);
 	glEnableVertexAttribArray (1);
 
-	GLuint vao4;
-	glGenVertexArrays (1, &vao4);
-	glBindVertexArray (vao4);
-	glBindBuffer (GL_ARRAY_BUFFER, points_vbo);
-	glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-	glBindBuffer (GL_ARRAY_BUFFER, normals_vbo);
-	glVertexAttribPointer (1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-	glEnableVertexAttribArray (0);
-	glEnableVertexAttribArray (1);
+		GLuint vao4;
+		if (shape == 3){
+		glGenVertexArrays (1, &vao4);
+		glBindVertexArray (vao4);
+		glBindBuffer (GL_ARRAY_BUFFER, points_vbo4);
+		glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+		glBindBuffer (GL_ARRAY_BUFFER, normals_vbo);
+		glVertexAttribPointer (1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+		glEnableVertexAttribArray (0);
+		glEnableVertexAttribArray (1);
+	}
 
 	//--------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -1820,42 +1854,42 @@ if (shape == 3){
 	}
 	( is_programme_valid( shader_programme2 ) );
 
+	if (shape == 3){
+		vert_shader4 = glCreateShader(GL_VERTEX_SHADER);
+		glShaderSource(vert_shader4, 1, &vertex_shader2, NULL);
+		glCompileShader(vert_shader4);
 
-	vert_shader4 = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vert_shader4, 1, &vertex_shader2, NULL);
-	glCompileShader(vert_shader4);
+		// int params = -1;
+			glGetShaderiv( vert_shader4, GL_COMPILE_STATUS, &params );
+			if ( GL_TRUE != params ) {
+				fprintf( stderr, "ERROR: vert GL shader index %i did not compile\n", vert_shader4 );
+				return 1; // or exit or something
+			}
 
-	// int params = -1;
-		glGetShaderiv( vert_shader4, GL_COMPILE_STATUS, &params );
+		frag_shader4 = glCreateShader(GL_FRAGMENT_SHADER);
+		glShaderSource(frag_shader4, 1, &fragment_shader2, NULL);
+		glCompileShader(frag_shader4);
+
+		// check for compile errors
+			glGetShaderiv( frag_shader4, GL_COMPILE_STATUS, &params );
+			if ( GL_TRUE != params ) {
+				fprintf( stderr, "ERROR: frag GL shader index %i did not compile\n", frag_shader4 );
+				return 1; // or exit or something
+			}
+
+		shader_programme4 = glCreateProgram();
+		glAttachShader(shader_programme4, frag_shader4);
+		glAttachShader(shader_programme4, vert_shader4);
+		glLinkProgram(shader_programme4);
+
+		glGetProgramiv( shader_programme4, GL_LINK_STATUS, &params );
 		if ( GL_TRUE != params ) {
-			fprintf( stderr, "ERROR: vert GL shader index %i did not compile\n", vert_shader4 );
-			return 1; // or exit or something
+			fprintf( stderr, "ERROR: could not link shader_programme GL index %i\n",
+							 shader_programme4 );
+			return false;
 		}
-
-	frag_shader4 = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(frag_shader4, 1, &fragment_shader2, NULL);
-	glCompileShader(frag_shader4);
-
-	// check for compile errors
-		glGetShaderiv( frag_shader4, GL_COMPILE_STATUS, &params );
-		if ( GL_TRUE != params ) {
-			fprintf( stderr, "ERROR: frag GL shader index %i did not compile\n", frag_shader4 );
-			return 1; // or exit or something
-		}
-
-
-	shader_programme4 = glCreateProgram();
-	glAttachShader(shader_programme4, frag_shader4);
-	glAttachShader(shader_programme4, vert_shader4);
-	glLinkProgram(shader_programme4);
-
-	glGetProgramiv( shader_programme4, GL_LINK_STATUS, &params );
-	if ( GL_TRUE != params ) {
-		fprintf( stderr, "ERROR: could not link shader_programme GL index %i\n",
-						 shader_programme4 );
-		return false;
+		( is_programme_valid( shader_programme4 ) );
 	}
-	( is_programme_valid( shader_programme4 ) );
 
 
 	//--------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1871,7 +1905,7 @@ if (shape == 3){
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-		if (shape == 3){
+		if (shape == 3){  // Rotating the second leaf set here
 			multiplyNew(rotateY90, rotateX, resultRotation);
 			multiplyNew(rotateY, resultRotation, resultRotation);
 			multiplyNew(rotateZ, resultRotation, result);
