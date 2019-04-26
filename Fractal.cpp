@@ -559,6 +559,8 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	GLfloat* resultRotation = new float[16];
 	GLfloat* resultRotation2 = new float[16];
 
+GLfloat origin[] = {0.0f, 0.085f, 0.0f};
+
 	int counterF = 0;
 	int counter12 = 0;
 	bool b1 = false;
@@ -882,7 +884,7 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 						currentHeading[2] = currentZ;																						// Set that float to be the z value of the current heading
 					}
 					else if ((pointsCount > 6) && (shape == 3)){
-						float currentZ = RandomFloat(-0.5, 0.5);																// Generate a random float in between -1 and 1
+						float currentZ = RandomFloat(-0.3, 0.3);																// Generate a random float in between -1 and 1
 						// cout << currentZ << endl;
 						currentHeading[2] = currentZ;
 
@@ -997,8 +999,6 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 				}
 			// }
 		if (b1 == true) {
-
-			GLfloat origin[] = {0.0f, 0.085f, 0.0f};
 			GLfloat sphereX = (currentPosition[0] - origin[0]) * (currentPosition[0] - origin[0]);
 			GLfloat sphereY = (currentPosition[1] - origin[1]) * (currentPosition[1] - origin[1]);
 			GLfloat sphereZ = (currentPosition[2] - origin[2]) * (currentPosition[2] - origin[2]);
@@ -1203,36 +1203,45 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	GLfloat newPoints[pointsCount];
 
 	for (int y = 0; y < pointsCount; y+=3){
-		newPoints[y + 0] = branchPoints[y + 0];
-		newPoints[y + 1] = branchPoints[y + 1];
-		newPoints[y + 2] = branchPoints[y + 2];
+			newPoints[y + 0] = branchPoints[y + 0];
+			newPoints[y + 1] = branchPoints[y + 1];
+			newPoints[y + 2] = branchPoints[y + 2];
 		// cout << newPoints[y] << endl;
 		// cout << newPoints[y + 1] << endl;
 		// cout << newPoints[y + 2] << endl << endl;
 	}
 
-	GLfloat rotatedPoints[pointsCount];
-
-	if (shape == 3){
-		for (int y = 0; y < pointsCount; y+=3){
-			GLfloat* point1 = new float[4];
-			point1[0] = branchPoints[y + 0];
-			point1[1] = branchPoints[y + 1];
-			point1[2] = branchPoints[y + 2];
-			point1[3] = 1;
-
-			// cout << branchPoints[y + 0] << " " << branchPoints[y + 1] << " " << branchPoints[y + 2] << endl;
-
-			multiply(rotateY90, point1, result90);
-
-			// cout << result90[0] << " " << result90[1] << " " << result90[2] << endl << endl;
-			if (result90[2] <= point1[0]){
-				rotatedPoints[y + 0] = result90[0];
-				rotatedPoints[y + 1] = result90[1];
-				rotatedPoints[y + 2] = result90[2];
-			}
-		}
-	}
+	// GLfloat rotatedPoints[pointsCount];
+	//
+	// if (shape == 3){
+	// 	for (int y = 0; y < pointsCount; y+=3){
+	// 		GLfloat* point1 = new float[4];
+	// 		point1[0] = branchPoints[y + 0];
+	// 		point1[1] = branchPoints[y + 1];
+	// 		point1[2] = branchPoints[y + 2];
+	// 		point1[3] = 1;
+	//
+	// 		// cout << branchPoints[y + 0] << " " << branchPoints[y + 1] << " " << branchPoints[y + 2] << endl;
+	//
+	// 		multiply(rotateY90, point1, result90);
+	//
+	// 		// cout << result90[0] << " " << result90[1] << " " << result90[2] << endl << endl;
+	// 		if ((result90[2] <= point1[0]) && y % 2 == 0){
+	// 			rotatedPoints[y + 0] = result90[0];
+	// 			rotatedPoints[y + 1] = result90[1];
+	// 			rotatedPoints[y + 2] = result90[2];
+	// 		}
+	// 		else if ((result90[2] <= point1[0]) && (y % 2 == 1)){
+	// 			rotatedPoints[y + 0] = origin[0];
+	// 			rotatedPoints[y + 1] = origin[1];
+	// 			rotatedPoints[y + 2] = origin[2];
+	// 			rotatedPoints[y + 3] = result90[0];
+	// 			rotatedPoints[y + 4] = result90[1];
+	// 			rotatedPoints[y + 5] = result90[2];
+	// 		}
+	// 		y += 3;
+	// 	}
+	// }
 
 	string modelName = "Leaf.obj";																								// Variable - Name of the OBJ to load.
 
@@ -1401,28 +1410,29 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 		//cout << dx << " " << dy << " " << dz << endl;
 		//cout << beginLeaf*9*numFaces << " " << endLeaf*9*numFaces - 1 << endl << endl;
 	}
-	for (int beginLeaf = 0; beginLeaf < leavesWanted; beginLeaf++) {							// For loop - Begins making multiple leaves.
-																																								// Variable - Sets beginLeaf to 0 and counts up to the number of leaves needed.
-		int endLeaf = beginLeaf + 1;
-		for (int i = beginLeaf*9*numFaces; i < endLeaf*9*numFaces - 1; i += 3){
-			int j;																																		// Variable - ??
-			int k;
-			GLfloat* new4x1 = new float[4];																						// Variable - Creates a new array to hold a 4x1 vector.
-			for (j = 0, k = 0; j < 4; j++){																						// For loop - Sets all values of 4x1 to 0.
-				new4x1[j] = k;
-			}
 
-			float currentLeafPoint[] = {points[i], points[i + 1], points[i + 2], 1};	// Variable - Gets the x, y, z values from points (leaf) to multiply by.
-			multiply(rotateY90, currentLeafPoint, new4x1);														// Multiplies a 4x4 and a 4x1 matrix together and makes a new 4x1 matrix.
-
-			if (new4x1[2] <= currentLeafPoint[0]){
-				pointsRotation[i+0] = currentLeafPoint[0];
-				pointsRotation[i+1] = currentLeafPoint[1];
-				pointsRotation[i+2] = currentLeafPoint[2];
-			}
-
-		}
-	}
+	// for (int beginLeaf = 0; beginLeaf < leavesWanted; beginLeaf++) {							// For loop - Begins making multiple leaves.
+	// 																																							// Variable - Sets beginLeaf to 0 and counts up to the number of leaves needed.
+	// 	int endLeaf = beginLeaf + 1;
+	// 	for (int i = beginLeaf*9*numFaces; i < endLeaf*9*numFaces - 1; i += 3){
+	// 		int j;																																		// Variable - ??
+	// 		int k;
+	// 		GLfloat* new4x1 = new float[4];																						// Variable - Creates a new array to hold a 4x1 vector.
+	// 		for (j = 0, k = 0; j < 4; j++){																						// For loop - Sets all values of 4x1 to 0.
+	// 			new4x1[j] = k;
+	// 		}
+	//
+	// 		float currentLeafPoint[] = {points[i], points[i + 1], points[i + 2], 1};	// Variable - Gets the x, y, z values from points (leaf) to multiply by.
+	// 		multiply(rotateY90, currentLeafPoint, new4x1);														// Multiplies a 4x4 and a 4x1 matrix together and makes a new 4x1 matrix.
+	//
+	// 		if (new4x1[2] <= currentLeafPoint[0]){
+	// 			pointsRotation[i+0] = currentLeafPoint[0];
+	// 			pointsRotation[i+1] = currentLeafPoint[1];
+	// 			pointsRotation[i+2] = currentLeafPoint[2];
+	// 		}
+	//
+	// 	}
+	// }
 
 
 	cout << "Done creating " << leafCount / 3 << " leaves\n" << endl;							// Prints out the number of leaves that are being created.
@@ -1636,12 +1646,12 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	glBindBuffer( GL_ARRAY_BUFFER, vbo );
 	glBufferData( GL_ARRAY_BUFFER, (pointsCount) * sizeof( GLfloat ), newPoints, GL_STATIC_DRAW ); // count*3 to not lose points
 
-	if (shape == 3){
-
-		glGenBuffers( 1, &vbo3 );
-		glBindBuffer( GL_ARRAY_BUFFER, vbo3 );
-		glBufferData( GL_ARRAY_BUFFER, (pointsCount) * sizeof( GLfloat ), rotatedPoints, GL_STATIC_DRAW ); // count*3 to not lose points
-	}
+	// if (shape == 3){
+	//
+	// 	glGenBuffers( 1, &vbo3 );
+	// 	glBindBuffer( GL_ARRAY_BUFFER, vbo3 );
+	// 	glBufferData( GL_ARRAY_BUFFER, (pointsCount) * sizeof( GLfloat ), rotatedPoints, GL_STATIC_DRAW ); // count*3 to not lose points
+	// }
 
 	/* the vertex array object (VAO) is a little descriptor that defines which
 	data from vertex buffer objects should be used as input variables to vertex
@@ -1659,19 +1669,19 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	// float (i.e. make me vec3s)"
 	glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, NULL );
 /*------------------------------------------------------------------------------------------*/
-	if (shape == 3){
-	glGenVertexArrays( 1, &vao3 );
-	glBindVertexArray(vao3);
-	// "attribute #0 should be enabled when this vao is bound"
-	glEnableVertexAttribArray(0);
-	// this VBO is already bound, but it's a good habit to explicitly specify which
-	// VBO's data the following
-	// vertex attribute pointer refers to
-	glBindBuffer( GL_ARRAY_BUFFER, vbo3 );
-	// "attribute #0 is created from every 3 variables in the above buffer, of type
-	// float (i.e. make me vec3s)"
-	glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, NULL );
-	}
+	// if (shape == 3){
+	// glGenVertexArrays( 1, &vao3 );
+	// glBindVertexArray(vao3);
+	// // "attribute #0 should be enabled when this vao is bound"
+	// glEnableVertexAttribArray(0);
+	// // this VBO is already bound, but it's a good habit to explicitly specify which
+	// // VBO's data the following
+	// // vertex attribute pointer refers to
+	// glBindBuffer( GL_ARRAY_BUFFER, vbo3 );
+	// // "attribute #0 is created from every 3 variables in the above buffer, of type
+	// // float (i.e. make me vec3s)"
+	// glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, NULL );
+	// }
 
 	//--------------------------------------------------------------------------------------------------------------------------------------------  LEAF SHADERS
 	GLuint points_vbo;
@@ -1679,10 +1689,10 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	glBindBuffer (GL_ARRAY_BUFFER, points_vbo);
 	glBufferData (GL_ARRAY_BUFFER, leavesWanted * 3 * numPoints * sizeof (GLfloat), points, GL_STATIC_DRAW);
 
-	GLuint points_vbo4;
-	glGenBuffers (1, &points_vbo4);
-	glBindBuffer (GL_ARRAY_BUFFER, points_vbo4);
-	glBufferData (GL_ARRAY_BUFFER, leavesWanted * 3 * numPoints * sizeof (GLfloat), pointsRotation, GL_STATIC_DRAW);
+	// GLuint points_vbo4;
+	// glGenBuffers (1, &points_vbo4);
+	// glBindBuffer (GL_ARRAY_BUFFER, points_vbo4);
+	// glBufferData (GL_ARRAY_BUFFER, leavesWanted * 3 * numPoints * sizeof (GLfloat), pointsRotation, GL_STATIC_DRAW);
 
 	GLuint normals_vbo;
 	glGenBuffers (1, &normals_vbo);
@@ -1699,17 +1709,17 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 	glEnableVertexAttribArray (0);
 	glEnableVertexAttribArray (1);
 
-		GLuint vao4;
-		if (shape == 3){
-		glGenVertexArrays (1, &vao4);
-		glBindVertexArray (vao4);
-		glBindBuffer (GL_ARRAY_BUFFER, points_vbo4);
-		glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-		glBindBuffer (GL_ARRAY_BUFFER, normals_vbo);
-		glVertexAttribPointer (1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-		glEnableVertexAttribArray (0);
-		glEnableVertexAttribArray (1);
-	}
+	// 	GLuint vao4;
+	// 	if (shape == 3){
+	// 	glGenVertexArrays (1, &vao4);
+	// 	glBindVertexArray (vao4);
+	// 	glBindBuffer (GL_ARRAY_BUFFER, points_vbo);
+	// 	glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	// 	glBindBuffer (GL_ARRAY_BUFFER, normals_vbo);
+	// 	glVertexAttribPointer (1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	// 	glEnableVertexAttribArray (0);
+	// 	glEnableVertexAttribArray (1);
+	// }
 
 	//--------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -1767,55 +1777,55 @@ int main() {																																		// MAIN FUNCTION WHERE CODE WILL B
 
 
 /*--------------------------------------------------------------------------------------------*/
-if (shape == 3){
-	vert_shader3 = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vert_shader3, 1, &vertex_shader, NULL);
-	glCompileShader(vert_shader3);
-
-	params = -1;
-		glGetShaderiv( vert_shader3, GL_COMPILE_STATUS, &params );
-		if ( GL_TRUE != params ) {
-			fprintf( stderr, "ERROR: vert GL shader index %i did not compile\n", vert_shader3 );
-			return 1; // or exit or something
-		}
-
-	geoShader3 = glCreateShader(GL_GEOMETRY_SHADER);
-	glShaderSource(geoShader3, 1, &geometry_shader, NULL);
-	glCompileShader(geoShader3);
-
-	// check for compile errors
-		glGetShaderiv( geoShader3, GL_COMPILE_STATUS, &params );
-		if ( GL_TRUE != params ) {
-			fprintf( stderr, "ERROR: geom GL shader index %i did not compile\n", geoShader3 );
-			return 1; // or exit or something
-		}
-
-	frag_shader3 = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(frag_shader3, 1, &fragment_shader, NULL);
-	glCompileShader(frag_shader3);
-
-	// check for compile errors
-		glGetShaderiv( frag_shader3, GL_COMPILE_STATUS, &params );
-		if ( GL_TRUE != params ) {
-			fprintf( stderr, "ERROR: frag GL shader index %i did not compile\n", frag_shader3 );
-			return 1; // or exit or something
-		}
-
-	shader_programme3 = glCreateProgram();
-	glAttachShader(shader_programme3, frag_shader3);
-	glAttachShader(shader_programme3, geoShader3);
-	glAttachShader(shader_programme3, vert_shader3);
-	glLinkProgram(shader_programme3);
-	// glPointSize(5.0);
-
-	glGetProgramiv( shader_programme3, GL_LINK_STATUS, &params );
-	if ( GL_TRUE != params ) {
-		fprintf( stderr, "ERROR: could not link shader_programme GL index %i\n",
-						 shader_programme3 );
-		return false;
-	}
-	( is_programme_valid( shader_programme3 ) );
-}
+// if (shape == 3){
+// 	vert_shader3 = glCreateShader(GL_VERTEX_SHADER);
+// 	glShaderSource(vert_shader3, 1, &vertex_shader, NULL);
+// 	glCompileShader(vert_shader3);
+//
+// 	params = -1;
+// 		glGetShaderiv( vert_shader3, GL_COMPILE_STATUS, &params );
+// 		if ( GL_TRUE != params ) {
+// 			fprintf( stderr, "ERROR: vert GL shader index %i did not compile\n", vert_shader3 );
+// 			return 1; // or exit or something
+// 		}
+//
+// 	geoShader3 = glCreateShader(GL_GEOMETRY_SHADER);
+// 	glShaderSource(geoShader3, 1, &geometry_shader, NULL);
+// 	glCompileShader(geoShader3);
+//
+// 	// check for compile errors
+// 		glGetShaderiv( geoShader3, GL_COMPILE_STATUS, &params );
+// 		if ( GL_TRUE != params ) {
+// 			fprintf( stderr, "ERROR: geom GL shader index %i did not compile\n", geoShader3 );
+// 			return 1; // or exit or something
+// 		}
+//
+// 	frag_shader3 = glCreateShader(GL_FRAGMENT_SHADER);
+// 	glShaderSource(frag_shader3, 1, &fragment_shader, NULL);
+// 	glCompileShader(frag_shader3);
+//
+// 	// check for compile errors
+// 		glGetShaderiv( frag_shader3, GL_COMPILE_STATUS, &params );
+// 		if ( GL_TRUE != params ) {
+// 			fprintf( stderr, "ERROR: frag GL shader index %i did not compile\n", frag_shader3 );
+// 			return 1; // or exit or something
+// 		}
+//
+// 	shader_programme3 = glCreateProgram();
+// 	glAttachShader(shader_programme3, frag_shader3);
+// 	glAttachShader(shader_programme3, geoShader3);
+// 	glAttachShader(shader_programme3, vert_shader3);
+// 	glLinkProgram(shader_programme3);
+// 	// glPointSize(5.0);
+//
+// 	glGetProgramiv( shader_programme3, GL_LINK_STATUS, &params );
+// 	if ( GL_TRUE != params ) {
+// 		fprintf( stderr, "ERROR: could not link shader_programme GL index %i\n",
+// 						 shader_programme3 );
+// 		return false;
+// 	}
+// 	( is_programme_valid( shader_programme3 ) );
+// }
 
 	//-----------------------------------------------------------------------------------------------------------------------------------------  Leaf Shaders
 	vert_shader2 = glCreateShader(GL_VERTEX_SHADER);
@@ -1854,42 +1864,42 @@ if (shape == 3){
 	}
 	( is_programme_valid( shader_programme2 ) );
 
-	if (shape == 3){
-		vert_shader4 = glCreateShader(GL_VERTEX_SHADER);
-		glShaderSource(vert_shader4, 1, &vertex_shader2, NULL);
-		glCompileShader(vert_shader4);
-
-		// int params = -1;
-			glGetShaderiv( vert_shader4, GL_COMPILE_STATUS, &params );
-			if ( GL_TRUE != params ) {
-				fprintf( stderr, "ERROR: vert GL shader index %i did not compile\n", vert_shader4 );
-				return 1; // or exit or something
-			}
-
-		frag_shader4 = glCreateShader(GL_FRAGMENT_SHADER);
-		glShaderSource(frag_shader4, 1, &fragment_shader2, NULL);
-		glCompileShader(frag_shader4);
-
-		// check for compile errors
-			glGetShaderiv( frag_shader4, GL_COMPILE_STATUS, &params );
-			if ( GL_TRUE != params ) {
-				fprintf( stderr, "ERROR: frag GL shader index %i did not compile\n", frag_shader4 );
-				return 1; // or exit or something
-			}
-
-		shader_programme4 = glCreateProgram();
-		glAttachShader(shader_programme4, frag_shader4);
-		glAttachShader(shader_programme4, vert_shader4);
-		glLinkProgram(shader_programme4);
-
-		glGetProgramiv( shader_programme4, GL_LINK_STATUS, &params );
-		if ( GL_TRUE != params ) {
-			fprintf( stderr, "ERROR: could not link shader_programme GL index %i\n",
-							 shader_programme4 );
-			return false;
-		}
-		( is_programme_valid( shader_programme4 ) );
-	}
+	// if (shape == 3){
+	// 	vert_shader4 = glCreateShader(GL_VERTEX_SHADER);
+	// 	glShaderSource(vert_shader4, 1, &vertex_shader2, NULL);
+	// 	glCompileShader(vert_shader4);
+	//
+	// 	// int params = -1;
+	// 		glGetShaderiv( vert_shader4, GL_COMPILE_STATUS, &params );
+	// 		if ( GL_TRUE != params ) {
+	// 			fprintf( stderr, "ERROR: vert GL shader index %i did not compile\n", vert_shader4 );
+	// 			return 1; // or exit or something
+	// 		}
+	//
+	// 	frag_shader4 = glCreateShader(GL_FRAGMENT_SHADER);
+	// 	glShaderSource(frag_shader4, 1, &fragment_shader2, NULL);
+	// 	glCompileShader(frag_shader4);
+	//
+	// 	// check for compile errors
+	// 		glGetShaderiv( frag_shader4, GL_COMPILE_STATUS, &params );
+	// 		if ( GL_TRUE != params ) {
+	// 			fprintf( stderr, "ERROR: frag GL shader index %i did not compile\n", frag_shader4 );
+	// 			return 1; // or exit or something
+	// 		}
+	//
+	// 	shader_programme4 = glCreateProgram();
+	// 	glAttachShader(shader_programme4, frag_shader4);
+	// 	glAttachShader(shader_programme4, vert_shader4);
+	// 	glLinkProgram(shader_programme4);
+	//
+	// 	glGetProgramiv( shader_programme4, GL_LINK_STATUS, &params );
+	// 	if ( GL_TRUE != params ) {
+	// 		fprintf( stderr, "ERROR: could not link shader_programme GL index %i\n",
+	// 						 shader_programme4 );
+	// 		return false;
+	// 	}
+	// 	( is_programme_valid( shader_programme4 ) );
+	// }
 
 
 	//--------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1905,13 +1915,13 @@ if (shape == 3){
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-		if (shape == 3){  // Rotating the second leaf set here
-			multiplyNew(rotateY90, rotateX, resultRotation);
-			multiplyNew(rotateY, resultRotation, resultRotation);
-			multiplyNew(rotateZ, resultRotation, result);
-			multiplyNew(result, trans, result);
-			multiplyNew(result, translate, resultLeaf);
-		}
+		// if (shape == 3){  // Rotating the second leaf set here
+		// 	multiplyNew(rotateY90, rotateX, resultRotation);
+		// 	multiplyNew(rotateY, resultRotation, resultRotation);
+		// 	multiplyNew(rotateZ, resultRotation, result);
+		// 	multiplyNew(result, trans, result);
+		// 	multiplyNew(result, translate, resultLeaf);
+		// }
 		multiplyNew(rotateY, rotateX, resultRotation);
 		multiplyNew(rotateZ, resultRotation, result);
 		multiplyNew(result, trans, result);
@@ -1939,25 +1949,25 @@ if (shape == 3){
 		glBindVertexArray(vao2);
 		glDrawArrays(GL_TRIANGLES, 0, leavesWanted * numPoints);
 
-		if (shape == 3){
-			//View matrix info
-			int trans_mat_location4 = glGetUniformLocation (shader_programme4, "model");
-			glUseProgram( shader_programme4 );
-			glUniformMatrix4fv (trans_mat_location4, 1, GL_FALSE, resultLeaf);
-			int view_mat_location4 = glGetUniformLocation (shader_programme4, "view");
-			glUseProgram( shader_programme4 );
-			glUniformMatrix4fv (view_mat_location4, 1, GL_FALSE, lookAt);
-			int proj_mat_location4 = glGetUniformLocation (shader_programme4, "proj");
-			glUseProgram( shader_programme4 );
-			glUniformMatrix4fv (proj_mat_location4, 1, GL_FALSE, viewResult);
-			//glUniformMatrix4fv (proj_mat_location, 1, GL_FALSE, proMat);
-
-
-			glUseProgram(shader_programme4);
-			glBindVertexArray(vao4);
-			glDrawArrays(GL_TRIANGLES, 0, leavesWanted * numPoints);
-			// cout << "Here" << endl;
-		}
+		// if (shape == 3){
+		// 	//View matrix info
+		// 	int trans_mat_location4 = glGetUniformLocation (shader_programme4, "model");
+		// 	glUseProgram( shader_programme4 );
+		// 	glUniformMatrix4fv (trans_mat_location4, 1, GL_FALSE, resultLeaf);
+		// 	int view_mat_location4 = glGetUniformLocation (shader_programme4, "view");
+		// 	glUseProgram( shader_programme4 );
+		// 	glUniformMatrix4fv (view_mat_location4, 1, GL_FALSE, lookAt);
+		// 	int proj_mat_location4 = glGetUniformLocation (shader_programme4, "proj");
+		// 	glUseProgram( shader_programme4 );
+		// 	glUniformMatrix4fv (proj_mat_location4, 1, GL_FALSE, viewResult);
+		// 	//glUniformMatrix4fv (proj_mat_location, 1, GL_FALSE, proMat);
+		//
+		//
+		// 	glUseProgram(shader_programme4);
+		// 	glBindVertexArray(vao4);
+		// 	glDrawArrays(GL_TRIANGLES, 0, leavesWanted * numPoints);
+		// 	// cout << "Here" << endl;
+		// }
 
 		//View matrix info
 		int trans_mat_location = glGetUniformLocation (shader_programme, "model");
@@ -1979,34 +1989,83 @@ if (shape == 3){
 		glDrawArrays(GL_LINE_STRIP, 0, totalCount); //GL_LINE_STRIP
 
 
-/*--------------------------------------------------------------------------------------*/
-	if (shape == 3){
-		/* wipe the drawing surface clear */
-		glUseProgram(shader_programme3);
-		glBindVertexArray(vao3);
+		// multiplyNew(rotateY90, rotateX, resultRotation);
+		// multiplyNew(rotateZ, resultRotation, result);
+		// multiplyNew(result, trans, result);
+		// multiplyNew(result, translate, result);
 
-		/* draw points 0-3 from the currently bound VAO with current in-use shader */
-		glDrawArrays(GL_LINE_STRIP, 0, totalCount); //GL_LINE_STRIP
+			multiplyNew(rotateY90, rotateX, resultRotation);
+			multiplyNew(rotateY, resultRotation, resultRotation);
+			multiplyNew(rotateZ, resultRotation, result);
+			multiplyNew(result, trans, result);
+			multiplyNew(result, translate, result);
+
 
 		//View matrix info
-		int trans_mat_location3 = glGetUniformLocation (shader_programme3, "model");
-		glUseProgram( shader_programme3 );
-		glUniformMatrix4fv (trans_mat_location3, 1, GL_FALSE, result);
-		int view_mat_location3 = glGetUniformLocation (shader_programme3, "view");
-		glUseProgram( shader_programme3 );
-		glUniformMatrix4fv (view_mat_location3, 1, GL_FALSE, lookAt);
-		int proj_mat_location3 = glGetUniformLocation (shader_programme3, "proj");
-		glUseProgram( shader_programme3 );
-		glUniformMatrix4fv (proj_mat_location3, 1, GL_FALSE, viewResult);
+		trans_mat_location2 = glGetUniformLocation (shader_programme2, "model");
+		glUseProgram( shader_programme2 );
+		glUniformMatrix4fv (trans_mat_location2, 1, GL_FALSE, result);
+		view_mat_location2 = glGetUniformLocation (shader_programme2, "view");
+		glUseProgram( shader_programme2 );
+		glUniformMatrix4fv (view_mat_location2, 1, GL_FALSE, lookAt);
+		proj_mat_location2 = glGetUniformLocation (shader_programme2, "proj");
+		glUseProgram( shader_programme2 );
+		glUniformMatrix4fv (proj_mat_location2, 1, GL_FALSE, viewResult);
+		//glUniformMatrix4fv (proj_mat_location, 1, GL_FALSE, proMat);
+
+
+		glUseProgram(shader_programme2);
+		glBindVertexArray(vao2);
+		glDrawArrays(GL_TRIANGLES, 0, leavesWanted * numPoints);
+
+		//View matrix info
+		trans_mat_location = glGetUniformLocation (shader_programme, "model");
+		glUseProgram( shader_programme );
+		glUniformMatrix4fv (trans_mat_location, 1, GL_FALSE, result);
+		view_mat_location = glGetUniformLocation (shader_programme, "view");
+		glUseProgram( shader_programme );
+		glUniformMatrix4fv (view_mat_location, 1, GL_FALSE, lookAt);
+		proj_mat_location = glGetUniformLocation (shader_programme, "proj");
+		glUseProgram( shader_programme );
+		glUniformMatrix4fv (proj_mat_location, 1, GL_FALSE, viewResult);
 		//glUniformMatrix4fv (proj_mat_location, 1, GL_FALSE, proMat);
 
 		/* wipe the drawing surface clear */
-		glUseProgram(shader_programme3);
-		glBindVertexArray(vao3);
+		glUseProgram(shader_programme);
+		glBindVertexArray(vao);
 
 		/* draw points 0-3 from the currently bound VAO with current in-use shader */
 		glDrawArrays(GL_LINE_STRIP, 0, totalCount); //GL_LINE_STRIP
-	}
+
+
+/*--------------------------------------------------------------------------------------*/
+	// if (shape == 3){
+	// 	/* wipe the drawing surface clear */
+	// 	glUseProgram(shader_programme3);
+	// 	glBindVertexArray(vao3);
+	//
+	// 	/* draw points 0-3 from the currently bound VAO with current in-use shader */
+	// 	glDrawArrays(GL_LINE_STRIP, 0, totalCount); //GL_LINE_STRIP
+	//
+	// 	//View matrix info
+	// 	int trans_mat_location3 = glGetUniformLocation (shader_programme3, "model");
+	// 	glUseProgram( shader_programme3 );
+	// 	glUniformMatrix4fv (trans_mat_location3, 1, GL_FALSE, result);
+	// 	int view_mat_location3 = glGetUniformLocation (shader_programme3, "view");
+	// 	glUseProgram( shader_programme3 );
+	// 	glUniformMatrix4fv (view_mat_location3, 1, GL_FALSE, lookAt);
+	// 	int proj_mat_location3 = glGetUniformLocation (shader_programme3, "proj");
+	// 	glUseProgram( shader_programme3 );
+	// 	glUniformMatrix4fv (proj_mat_location3, 1, GL_FALSE, viewResult);
+	// 	//glUniformMatrix4fv (proj_mat_location, 1, GL_FALSE, proMat);
+	//
+	// 	/* wipe the drawing surface clear */
+	// 	glUseProgram(shader_programme3);
+	// 	glBindVertexArray(vao3);
+	//
+	// 	/* draw points 0-3 from the currently bound VAO with current in-use shader */
+	// 	glDrawArrays(GL_LINE_STRIP, 0, totalCount); //GL_LINE_STRIP
+	// }
 
 
 		/* update other events like input handling */
